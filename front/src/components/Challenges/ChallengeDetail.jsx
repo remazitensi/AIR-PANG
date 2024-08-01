@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../../styles/ChallengeDetail.css';
 
 function ChallengeDetail() {
   const { id } = useParams();
@@ -101,25 +102,45 @@ function ChallengeDetail() {
     return new Date(dateString).toLocaleDateString('ko-KR', options);
   };
 
+  function calculateDaysLeft(start_date) {
+    const today = new Date();
+    const startDate = new Date(start_date);
+    const timeDiff = startDate - today;
+    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+    return daysLeft;
+  }
+
   if (!challenge) {
     return <p>Loading...</p>;
   }
 
   return (
-    <div>
+    <div className='detail'>
       <h1>{challenge.title}</h1>
-      <p>{challenge.description}</p>
-      <p>시작일: {formatDate(challenge.start_date)}</p>
-      <p>종료일: {formatDate(challenge.end_date)}</p>
+      <span>
+                {
+                  calculateDaysLeft(challenge.start_date) >= 1
+                  ? <div>{calculateDaysLeft(challenge.start_date)}일 후 시작</div>
+                  : ( calculateDaysLeft(challenge.end_date) < 0
+                      ? <div>종료</div>
+                      : <div>진행중</div>
+                    )
+                }
+              </span>
+      <p>{formatDate(challenge.start_date)} ~ {formatDate(challenge.end_date)}</p>
+      <p className="desc">{challenge.description}</p>
+      <div>
+        <button onClick={handleEdit}>수정하기</button>
+        <button onClick={handleDelete}>삭제하기</button>
+      </div>
       <h2>할 일 목록</h2>
       <ul>
         {tasks.map((task, index) => (
           <li key={index}>{task.description} - {task.is_completed ? '완료' : '미완료'}</li>
         ))}
       </ul>
-      <button onClick={handleEdit}>수정하기</button>
-      <button onClick={handleDelete}>삭제하기</button>
-      <div>
+      
+      <div className="progress">
         <p>달성률</p>
         <p>프로그래스 바</p>
       </div>

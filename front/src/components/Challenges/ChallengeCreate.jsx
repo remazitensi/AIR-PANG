@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import '../../styles/ChallengeCreate.css';
 
 function ChallengeCreate() {
   const [title, setTitle] = useState('');
@@ -44,6 +45,7 @@ function ChallengeCreate() {
     }
 
     const newChallenge = {
+      //user_name,
       title,
       description,
       start_date: startDate,
@@ -77,21 +79,21 @@ function ChallengeCreate() {
     //}
 
     //Axios 사용
-    //try {
+    // try {
     //  const response = await axios.post('http://localhost:8080/challenges', newChallenge, {
     //    headers: {
     //      'Content-Type': 'application/json',
     //    },
     //  });
-    //
+    
     //  if (response.status === 200 || response.status === 201) {
     //    navigate('/challenges');
     //  } else {
     //    console.error('Error creating challenge');
     //  }
-    //} catch (error) {
+    // } catch (error) {
     //  console.error('Error creating challenge:', error);
-    //}
+    // }
 
     //로컬스토리지 사용
     try {
@@ -116,35 +118,32 @@ function ChallengeCreate() {
   };
 
   return (
-    <div>
+    <div className='ChallengeCreate'>
       <h1>챌린지 생성하기</h1>
-      <form onSubmit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         <div>
-          <label>제목</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input className="title" type="text" placeholder="챌린지 제목을 입력해주세요." value={title} onChange={(e) => setTitle(e.target.value)} required />
         </div>
         <div>
-          <label>설명</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+          <textarea className="description" placeholder="상세 내용을 입력해주세요." value={description} onChange={(e) => setDescription(e.target.value)} required />
         </div>
-        <div>
-          <label>시작일</label>
-          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-          <label>종료일</label>
-          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+        <div className='inputs'>
+          <input className="date" id="start" type="date" data-placeholder="챌린지 시작일" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+          <input className="date" id="end" type="date" data-placeholder="챌린지 종료일" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
         </div>
         <p>*최소 2개의 할 일을 만들어 주세요.</p>
         <div>
-          <label></label>
-          <button type="button" onClick={handleOpenModal}>할 일 만들기</button>
+          <button className="add" type="button" onClick={handleOpenModal}>할 일 만들기</button>
           <ul>
             {tasks.map((task, index) => (
               <li key={index}>{task}</li>
             ))}
           </ul>
         </div>
-        <button type="button" onClick={handleCancel}>취소하기</button>
-        <button type="submit">만들기</button>
+        <div className='buttons'>
+          <button className="cancel" type="button" onClick={handleCancel}>취소하기</button>
+          <button className="create" type="submit">만들기</button>
+        </div>
       </form>
       {modalOpen && (
         <div className="modal">
@@ -157,11 +156,11 @@ function ChallengeCreate() {
                 type="text"
                 value={task}
                 onChange={(e) => handleTaskChange(index, e.target.value)}
-                placeholder={`할 일 ${index + 1}`}
+                placeholder={`할 일 이름`}
               />
             ))}
             <button onClick={handleSaveTasks}>저장하기</button>
-            <button onClick={() => setModalOpen(false)}>취소</button>
+            <button onClick={() => setModalOpen(false)}>X</button>
           </div>
         </div>
       )}

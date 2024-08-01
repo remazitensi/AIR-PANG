@@ -5,6 +5,7 @@ import '../../styles/ChallengeList.css';
 
 function ChallengeList() {
   const [challenges, setChallenges] = useState([]);
+  const [search, setSearch] = useState('');
 
   //원본
   //const fetchChallenges = (searchQuery = '') => {
@@ -14,15 +15,15 @@ function ChallengeList() {
   //    .catch(error => console.error('Error fetching challenges:', error));
   //};
 
-  //Axios 사용
-  //const fetchChallenges = async (searchQuery = '') => {
+  // //Axios 사용
+  // const fetchChallenges = async (searchQuery = '') => {
   //  try {
   //    const response = await axios.get(`http://localhost:8080/challenges?search=${searchQuery}`);
   //    setChallenges(response.data.challenges);
   //  } catch (error) {
   //    console.error('Error fetching challenges:', error);
   //  }
-  //};
+  // };
 
   //로컬스토리지 사용
   const fetchChallenges = async () => {
@@ -34,7 +35,7 @@ function ChallengeList() {
       console.error('Error fetching challenges:', error);
     }
   };
-
+  
   useEffect(() => {
     if (!localStorage.getItem('challenges')) {
       localStorage.setItem("challenges", JSON.stringify([{
@@ -72,11 +73,18 @@ function ChallengeList() {
           }
         ]
       }]));
-    } //중요!! 로컬스토리지에 챌린지 하나 만들어두기
-    fetchChallenges(); // 페이지 로드 시 모든 챌린지 불러오기
+   } //중요!! 로컬스토리지에 챌린지 하나 만들어두기
+   fetchChallenges(); // 페이지 로드 시 모든 챌린지 불러오기
   }, []);
 
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    fetchChallenges(search); // 검색어에 맞는 챌린지 리스트 불러오기
+  };
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -94,7 +102,16 @@ function ChallengeList() {
   return (
     <div className="ChallengeList">
       <h1>챌린지</h1>
-      <button>
+      <form className="search" onSubmit={handleSearchSubmit}>
+        <input
+          type="text"
+          placeholder="챌린지를 검색해보세요."
+          value={search}
+          onChange={handleSearchChange}
+        />
+        <button type="submit">찾기</button>
+      </form>
+      <button className="createChallenge">
         <Link to="/challenges/create">챌린지 만들기</Link>
       </button>
       <ul className="Challenges">

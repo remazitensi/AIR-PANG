@@ -1,9 +1,10 @@
 import React from "react";
 import { Route, Routes } from 'react-router-dom';
-import ChallengeDetail from "../components/Challenges/ChallengeDetail";
-import ChallengeCreate from "../components/Challenges/ChallengeCreate";
-import ChallengeEdit from "../components/Challenges/ChallengeEdit";
 import ChallengeList from "../components/Challenges/ChallengeList";
+import ChallengeCreate from "../components/Challenges/ChallengeCreate";
+import ChallengeDetail from "../components/Challenges/ChallengeDetail";
+import ChallengeEdit from "../components/Challenges/ChallengeEdit";
+
 
 function Challenges() {
   return (

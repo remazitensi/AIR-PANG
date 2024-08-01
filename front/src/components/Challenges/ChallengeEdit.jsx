@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
+import '../../styles/ChallengeEdit.css';
 
 function ChallengeEdit() {
   const { id } = useParams();
@@ -119,35 +120,35 @@ function ChallengeEdit() {
     //}
 
     //Axios 사용
-    //try {
-    //  const response = await axios.patch(`http://localhost:8080/challenges/${id}`, updatedChallenge, {
-    //    headers: {
-    //      'Content-Type': 'application/json',
-    //    },
-    //  });
-    //
-    //  if (response.status === 200) {
-    //    navigate('/challenges');
-    //  } else {
-    //    console.error('Error updating challenge');
-    //  }
-    //} catch (error) {
-    //  console.error('Error updating challenge:', error);
-    //}
+    // try {
+    //   const response = await axios.patch(`http://localhost:8080/challenges/${id}`, updatedChallenge, {
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   });
+    
+    //   if (response.status === 200) {
+    //     navigate('/challenges');
+    //   } else {
+    //     console.error('Error updating challenge');
+    //   }
+    // } catch (error) {
+    //   console.error('Error updating challenge:', error);
+    // }
 
     //로컬스토리지 사용
     try {
-      const challenges = JSON.parse(localStorage.getItem('challenges'));
-      const selectedChallenge = challenges.find(challenge => challenge.id === parseInt(id));
-      const index = challenges.indexOf(selectedChallenge)
-      // 새로운 데이터 추가
-      const newChallenges = {...selectedChallenge, ...updatedChallenge};
-      challenges[index] = newChallenges;
-      // 업데이트된 데이터를 로컬스토리지에 저장
-      localStorage.setItem('challenges', JSON.stringify(challenges));
-      navigate(-1);
+     const challenges = JSON.parse(localStorage.getItem('challenges'));
+     const selectedChallenge = challenges.find(challenge => challenge.id === parseInt(id));
+     const index = challenges.indexOf(selectedChallenge)
+     // 새로운 데이터 추가
+     const newChallenges = {...selectedChallenge, ...updatedChallenge};
+     challenges[index] = newChallenges;
+     // 업데이트된 데이터를 로컬스토리지에 저장
+     localStorage.setItem('challenges', JSON.stringify(challenges));
+     navigate(-1);
     } catch (error) {
-      console.error('Error updating challenge:', error);
+     console.error('Error updating challenge:', error);
     }
   };
 
@@ -156,36 +157,31 @@ function ChallengeEdit() {
   };
 
   return (
-    <div>
+    <div className='ChallengeEdit'>
       <h1>챌린지 수정하기</h1>
-      <form onSubmit={handleSubmit}>
+      <form className='form' onSubmit={handleSubmit}>
         <div>
-          <label>제목</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input className='title' type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </div>
         <div>
-          <label>설명</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
+          <textarea className='description' value={description} onChange={(e) => setDescription(e.target.value)} required />
+        </div>
+        <div className='inputs'>
+          <input className='date' type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+          <input className='date' type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
         </div>
         <div>
-          <label>시작일</label>
-          <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-        </div>
-        <div>
-          <label>종료일</label>
-          <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
-        </div>
-        <div>
-          <label>할 일</label>
-          <button type="button" onClick={handleOpenModal}>할 일 수정하기</button>
+          <button className='add' type="button" onClick={handleOpenModal}>할 일 수정하기</button>
           <ul>
             {tasks.map((task, index) => (
               <li key={index}>{task}</li>
             ))}
           </ul>
         </div>
-        <button type="button" onClick={handleCancel}>취소하기</button>
-        <button type="submit">저장하기</button>
+        <div className='buttons'>
+        <button className='cancel' type="button" onClick={handleCancel}>취소하기</button>
+        <button className='create' type="submit">저장하기</button>
+        </div>
       </form>
       {modalOpen && (
         <div className="modal">
@@ -197,11 +193,11 @@ function ChallengeEdit() {
                 type="text"
                 value={task}
                 onChange={(e) => handleTaskChange(index, e.target.value)}
-                placeholder={`할 일 ${index + 1}`}
+                placeholder={`할 일 이름`}
               />
             ))}
             <button onClick={handleSaveTasks}>저장하기</button>
-            <button onClick={() => setModalOpen(false)}>취소</button>
+            <button onClick={() => setModalOpen(false)}>X</button>
           </div>
         </div>
       )}

@@ -1,63 +1,160 @@
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 900;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Black.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 800;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 700;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 600;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 500;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 400;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 300;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 200;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff")
+    format("woff");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-weight: 100;
+  font-style: normal;
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff")
+    format("woff");
+}
+
 * {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
+  font-family: 'Pretendard';
 }
 
 a {
-    text-decoration: none;  /* 밑줄 제거 */
-    color: black;
+  text-decoration: none;  /* 밑줄 제거 */
+  color: black;
+}
+
+.search {
+  width: 340px;
+  height: 32px;
+  border: 1px solid #D9D9D9;
+  border-radius: 16px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+.search input {
+  width: 280px;
+  border: 0;
+  outline: none;
+  text-align: center;
+}
+.search button {
+  width: 50px;
+  height: 24px;
+  border-radius: 12px;
+  border: 0;
+  background-color: #004AAD;
+  color: white;
 }
 
 .ChallengeList {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
 }
 
-.ChallengeList button {
-    width: 92px;
-    height: 24px;
-    border: 0;
-    border-radius: 4px;
-    background-color: #004AAD;
-    color: white;
+.ChallengeList .createChallenge {
+  width: 92px;
+  height: 24px;
+  border: 0;
+  border-radius: 4px;
+  background-color: #004AAD;
+  color: white;
 }
 
-.ChallengeList button a {
-    color: white;
+.ChallengeList .createChallenge a {
+  color: white;
 }
 
 .Challenges {
-    padding: 0;
+  padding: 0;
 }
 
 .Challenges li {
-    width: 340px;
-    height: 100px;
-    border-radius: 8px;
-    margin: 12px 0;
-    padding: 20px;
-    list-style-type: none;
-    display: flex;
-    background-color: rgba(205, 237, 255, 0.7);
+  width: 340px;
+  height: 100px;
+  border-radius: 8px;
+  margin: 12px 0;
+  padding: 20px;
+  list-style-type: none;
+  display: flex;
+  background-color: rgba(205, 237, 255, 0.7);
 }
 
 .Challenges li a {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .Challenges li a span div {
-    width: 92px;
-    height: 28px;
-    border-radius: 4px;
-    background-color: #004AAD;
-    color: white;
+  width: 92px;
+  height: 28px;
+  border-radius: 4px;
+  background-color: #004AAD;
+  color: white;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
