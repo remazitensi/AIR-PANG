@@ -1,0 +1,11 @@
+.Forecast {
+  text-align: center;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-around;
+}
+
+.forecast-temperature-min {
+  color: grey;
+  margin-left: 5px;
+}

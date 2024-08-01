@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;  /* 밑줄 제거 */
+    color: black;
+}
+
+.ChallengeList {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.ChallengeList button {
+    width: 92px;
+    height: 24px;
+    border: 0;
+    border-radius: 4px;
+    background-color: #004AAD;
+    color: white;
+}
+
+.ChallengeList button a {
+    color: white;
+}
+
+.Challenges {
+    padding: 0;
+}
+
+.Challenges li {
+    width: 340px;
+    height: 100px;
+    border-radius: 8px;
+    margin: 12px 0;
+    padding: 20px;
+    list-style-type: none;
+    display: flex;
+    background-color: rgba(205, 237, 255, 0.7);
+}
+
+.Challenges li a {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.Challenges li a span div {
+    width: 92px;
+    height: 28px;
+    border-radius: 4px;
+    background-color: #004AAD;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

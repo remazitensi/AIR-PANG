@@ -1,0 +1,39 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f8f9fa;
+}
+
+.logo img {
+  height: 40px; /* 로고 크기를 조절하세요 */
+}
+
+.nav ul {
+  display: flex;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav ul li {
+  margin-left: 1rem;
+}
+
+.nav ul li:last-child {
+  margin-left: 2rem; /* 로그아웃 버튼을 조금 더 떨어뜨립니다 */
+}
+
+.nav a, .nav button {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.nav button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+}

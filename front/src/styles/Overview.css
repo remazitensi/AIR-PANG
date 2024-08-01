@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #fafafa;
+  font-family: "Pretendard", sans-serif;
+  color: black;
+}
+
+a {
+  color: #00a3ff;
+}
+
+.Overview .weather-app-data {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 50px;
+}
+
+.Overview .title {
+  line-height: 40px;
+  font-weight: 400;
+}
+
+.Overview .weather-info {
+  display: flex;
+  margin-top: 5px;
+}
+
+.Overview .date {
+  font-weight: 400;
+}
+
+.Overview .description {
+  margin-left: 5px;
+}
+
+.Overview .location {
+  text-align: right;
+  font-weight: 200;
+}
+
+.Overview .weather-app-city {
+  font-size: 28px;
+  line-height: 48px;
+  font-weight: 200;
+  text-align: right;
+}
+
+.Overview .weather-app-temperature {
+  text-align: right;
+  font-weight: 400;
+  font-size: 48px;
+}
+
+.Overview .weather-app-details {
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.Overview .weather-app-details strong {
+  color: #00a3ff;
+}
+
+.Overview .weather-app-temperature-container {
+  display: flex;
+}
+
+.Overview .icon {
+  margin-top: -28px;
+}
+
+.Overview .weather-app-temperature {
+  font-size: 50px;
+  margin-left: 10px;
+  font-weight: 300;
+}
+
+.Overview .weather-app-unit {
+  font-size: 30px;
+  font-weight: 300;
+}

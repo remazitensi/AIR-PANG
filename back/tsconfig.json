@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node", "express-session"],
+    "baseUrl": "./src",
+    "paths": {
+      "@_config/*": ["config/*"],
+      "@_controllers/*": ["controllers/*"],
+      "@_middlewares/*": ["middlewares/*"],
+      "@_routes/*": ["routes/*"],
+      "@_scripts/*": ["scripts/*"],
+      "@_services/*": ["services/*"],
+      "@_types/*": ["types/*"],
+      "@_utils/*": ["utils/*"],
+      "@controllers/*": ["controllers/*"],
+      "@routes/*": ["routes/*"],
+      "@services/*": ["services/*"],
+      "@models/*": ["models/*"],
+      "@utils/*": ["utils/*"]
+    }
+  },
+  "include": ["src/**/*", "src/**/*.d.ts"],
+  "exclude": ["node_modules"]
+}
