@@ -25,9 +25,9 @@ function UriLocations() {
           alignItems: "center",
         }}
       >
-        <LocationDetail />
-        <Locations />
-        <LocationPage />
+        {/* <LocationDetail /> */}
+        {/* <Locations /> */}
+        {/* <LocationPage /> */}
       </div>
     </div>
   );

@@ -111,7 +111,8 @@ const MapChart = () => {
       />
       <MapModal isOpen={isModalOpen} onClose={closeModal}>
         <h2>{selectedRegion}</h2>
-        <p>지역별 추가 정보 표시</p>
+        <p>이부분에 세부지역별 버튼 표시</p>
+        <p>{selectedRegion}시 OO구 요런식</p>
       </MapModal>
     </div>
   );

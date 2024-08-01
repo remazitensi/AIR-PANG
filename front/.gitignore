@@ -146,7 +146,7 @@ node_modules/
 jspm_packages/
 
 # Ignore all package-lock.json files in the entire repository
-**/package-lock.json
+# **/package-lock.json
 
 ### react ###
 .DS_*
