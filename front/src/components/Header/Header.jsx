@@ -14,22 +14,13 @@ function Header({ isLoggedIn, onLogout }) {
       </div>
       <nav className="nav">
         <ul>
+          <li><Link to="/locations">우리동네 찾아보기</Link></li>
           {!isLoggedIn ? (
-            <>
-              {location.pathname === '/' && (
-                <li><Link to="/locations">우리동네 찾아보기</Link></li>
-              )}
-              {location.pathname === '/locations' && (
-                <>
-                  <li><Link to="/locations">우리동네 찾아보기</Link></li>
-                  <li><Link to="/login">로그인</Link></li>
-                </>
-              )}
-            </>
+            <li><Link to="/login">로그인</Link></li>
           ) : (
             <>
-              <li><Link to="/locations">우리동네 찾아보기</Link></li>
-              <li><Link to="/challenges">환경챌린지 페이지</Link></li>
+              <li><Link to="/weather">날씨정보</Link></li>
+              <li><Link to="/challenges/* ">환경챌린지 페이지</Link></li>
               <li><Link to="/my">마이페이지</Link></li>
               <li><button onClick={onLogout}>로그아웃</button></li>
             </>
