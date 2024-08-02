@@ -1,3 +1,10 @@
+* {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  color: #333;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -12,6 +19,7 @@
 
 .nav ul {
   display: flex;
+  align-items: center;
   list-style-type: none;
   margin: 0;
   padding: 0;
@@ -25,15 +33,18 @@
   margin-left: 2rem; /* 로그아웃 버튼을 조금 더 떨어뜨립니다 */
 }
 
-.nav a, .nav button {
-  text-decoration: none;
-  color: #333;
-  font-weight: bold;
+.nav a,
+.nav button {
+  font-weight: 400;
+  font-size: 18px;
 }
 
 .nav button {
-  background: none;
+  width: 100px;
+  height: 40px;
   border: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 16px;
+  background-color: lightgrey;
+  margin-left: 10px;
 }

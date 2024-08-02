@@ -1,0 +1,35 @@
+.my-page {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.my-favorite,
+.challenge-status {
+  background-color: #fafafa;
+  padding: 60px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.my-favorite {
+  max-width: 320px;
+}
+
+h2 {
+  font-weight: 300;
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+p {
+  text-align: center;
+}
+
+.addFavorite {
+  text-decoration: underline;
+  color: #00a3ff;
+  line-height: 2.5;
+}

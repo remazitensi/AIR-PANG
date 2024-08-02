@@ -73,36 +73,46 @@
 * {
   margin: 0;
   padding: 0;
-  font-family: 'Pretendard';
+  font-family: "Pretendard";
 }
 
 a {
-  text-decoration: none;  /* 밑줄 제거 */
+  text-decoration: none; /* 밑줄 제거 */
   color: black;
 }
 
 .search {
-  width: 340px;
+  width: 360px;
   height: 32px;
-  border: 1px solid #D9D9D9;
   border-radius: 16px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
+
 .search input {
-  width: 280px;
-  border: 0;
-  outline: none;
-  text-align: center;
+  width: 100%;
+  padding: 20px 30px;
+  border-radius: 50px;
+  border: 1px solid lightgrey;
+  font-size: 16px;
 }
-.search button {
-  width: 50px;
-  height: 24px;
-  border-radius: 12px;
-  border: 0;
-  background-color: #004AAD;
+
+button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 50px;
+  width: 100px;
+  height: 44px;
+  position: relative;
+  margin-left: -110px;
+  background-color: #004aad;
   color: white;
+  font-size: 15px;
+}
+
+button:hover {
+  background-color: #6ac9ff;
 }
 
 .ChallengeList {
@@ -115,11 +125,13 @@ a {
 
 .ChallengeList .createChallenge {
   width: 92px;
-  height: 24px;
+  height: 28px;
   border: 0;
   border-radius: 4px;
-  background-color: #004AAD;
+  background-color: #004aad;
   color: white;
+  padding: 0px;
+  font-size: 12px;
 }
 
 .ChallengeList .createChallenge a {
@@ -151,7 +163,7 @@ a {
   width: 92px;
   height: 28px;
   border-radius: 4px;
-  background-color: #004AAD;
+  background-color: #004aad;
   color: white;
 
   display: flex;
