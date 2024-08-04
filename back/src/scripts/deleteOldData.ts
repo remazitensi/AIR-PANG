@@ -4,7 +4,7 @@ import connection from '@_config/db.config';
 // 2일 간격으로 오래된 데이터 삭제하는 함수
 export const deleteOldData = () => {
   const query = `
-    DELETE FROM Realtime_Air_Quality
+    DELETE FROM realtime_air_quality
     WHERE timestamp < DATE_SUB(NOW(), INTERVAL 2 DAY)
   `;
 

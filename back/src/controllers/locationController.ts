@@ -1,10 +1,33 @@
 import { Request, Response } from 'express';
-import { getAnnualData, getRealtimeData, getMonthlyData } from '@_services/locationService';
+import { getMainLocations, getAnnualData, getRealtimeData, getMonthlyData } from '@_services/locationService';
 import type { MonthlyData } from '@_types/location';
-import { calculateScore, getGrade, getMaxAQI,MAX_AQI, MIN_AQI } from '@_utils/aqi';
+import { getMaxAQI } from '@_utils/aqi';
 
-// 지역별 AQI 계산기
-export const getLocationDataController = async (req: Request, res: Response) => {
+// 주요 지역 평균 AQI 계산기
+export const getMainLocationAQIController = async (req: Request, res: Response) => {
+  try {
+    const mainLocations = await getMainLocations();  // 주요 지역 목록을 동적으로 가져옴
+
+    const results = await Promise.all(mainLocations.map(async (location) => {
+      const realtimeData = await getRealtimeData(location);
+
+      if (realtimeData.length === 0) {
+        return { location, averageAQI: null };
+      }
+
+      const avgAQI = realtimeData.reduce((acc, cur) => acc + getMaxAQI(cur), 0) / realtimeData.length;
+      return { location, averageAQI: Math.round(avgAQI) };
+    }));
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error(`주요 지역들의 평균 AQI를 계산하는 데 실패했습니다:`, error);
+    res.status(500).send('서버 오류발생');
+  }
+};
+
+// 세부 지역 AQI 계산기
+export const getSubLocationDataController = async (req: Request, res: Response) => {
   const location = req.query.location as string;
 
   try {
@@ -19,15 +42,10 @@ export const getLocationDataController = async (req: Request, res: Response) => 
       const annualMaxAQI = Math.round(getMaxAQI(annual));
       const realtimeMaxAQI = realtime ? Math.round(getMaxAQI(realtime)) : 0;
 
-      const score = calculateScore(annualMaxAQI, realtimeMaxAQI, MAX_AQI, MIN_AQI);
-      const grade = getGrade(realtimeMaxAQI);
-
       return {
         location: annual.address_b_name,
         annualMaxAQI,
         realtimeMaxAQI,
-        score,
-        grade,
       };
     });
 

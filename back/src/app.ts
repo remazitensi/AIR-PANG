@@ -1,32 +1,56 @@
-import express from 'express';
-import cors from 'cors';  // CORS 추가 프론트와의 연결을 위함
-import session from 'express-session';
+import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import routes from '@_routes/index'; // 라우터 가져오기
-import startCronJob from '@_scripts/updateData'; // Cron job 스크립트 가져오기
-import 'tsconfig-paths/register';
-import '@_config/env.config';
+import session from 'express-session';
 import dotenv from 'dotenv';
+import passport from 'passport';
+import routes from '@_routes/index';
+import startCronJob from '@_scripts/updateData';
+import '@_config/passport.config';
 
-// 환경 변수 로드
 dotenv.config();
 
 const app = express();
 
-// 미들웨어 설정
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'default_secret',
-  resave: false,
-  saveUninitialized: true,
+// CORS 설정
+app.use(cors({
+  origin: process.env.CLIENT_URL,
+  credentials: true 
 }));
 
-// 라우트 설정
-app.use(routes);
+app.use(express.json());
+app.use(cookieParser());
 
-// 서버 시작 시 데이터 업데이트 및 크론 작업 시작
+// 세션 설정
+app.use(session({
+  secret: process.env.SESSION_SECRET || '',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // 개발 환경에서는 secure: false
+}));
+
+// Passport 초기화
+app.use(passport.initialize());
+app.use(passport.session());
+
+// 기본적인 로깅 미들웨어
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log('Cookies:', req.cookies);
+  console.log(`Request URL: ${req.url}`);
+  console.log(`Request Method: ${req.method}`);
+  next();
+});
+
+
+// 인증된 API 라우트
+app.use('/', routes);
+
 startCronJob();
+
+// 에러 핸들러 미들웨어
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Server error:', err);
+  res.status(500).send('Something broke!');
+});
 
 export default app;

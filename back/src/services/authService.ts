@@ -1,35 +1,79 @@
-import { OAuth2Client, Credentials } from 'google-auth-library';
-import { config } from '@_config/env.config';
+import { RowDataPacket, ResultSetHeader } from 'mysql2';
+import connection from '@_config/db.config';
+import { User } from '@_types/user';
 
-const SCOPES = ['https://www.googleapis.com/auth/userinfo.profile'];
+export class UserService {
+  // 기존 메서드들...
 
-const oAuth2Client = new OAuth2Client(config.CLIENT_ID, config.CLIENT_SECRET, config.REDIRECT_URI);
+  async findOrCreateUser(googleUser: any): Promise<User> {
+    try {
+      const [existingUserRows] = await connection.promise().query<RowDataPacket[]>(
+        'SELECT * FROM users WHERE googleId = ?',
+        [googleUser.googleId]
+      );
 
-export const getAuthUrl = (): string => {
-  return oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
-    prompt: 'consent',
-  });
-};
+      if (existingUserRows.length > 0) {
+        return existingUserRows[0] as User;
+      } else {
+        const [result] = await connection.promise().query<ResultSetHeader>(
+          'INSERT INTO users (googleId, name, googleAccessToken, googleRefreshToken) VALUES (?, ?, ?, ?)',
+          [googleUser.googleId, googleUser.name, googleUser.googleAccessToken, googleUser.googleRefreshToken]
+        );
 
-export const handleOAuthCallback = async (code: string): Promise<Credentials> => {
-  const { tokens } = await oAuth2Client.getToken(code);
-  oAuth2Client.setCredentials(tokens);
-  
-  if (tokens.refresh_token) {
-    console.log(`Refresh Token: ${tokens.refresh_token}`);
-    // 데이터베이스에 저장하는 로직 추가
+        const insertId = result.insertId;
+        return {
+          id: insertId,
+          googleId: googleUser.googleId,
+          name: googleUser.name,
+          googleAccessToken: googleUser.googleAccessToken,
+          googleRefreshToken: googleUser.googleRefreshToken,
+        } as User;
+      }
+    } catch (error) {
+      console.error('Error in findOrCreateUser:', error);
+      throw error;
+    }
   }
-  console.log(`Access Token: ${tokens.access_token}`);
-  return tokens;
-};
 
-export const getTokenInfo = async (accessToken: string) => {
-  try {
-    const tokenInfo = await oAuth2Client.getTokenInfo(accessToken);
-    return tokenInfo;
-  } catch (error) {
-    throw new Error('Invalid token');
+  async findUserById(id: number): Promise<User | null> {
+    try {
+      const [rows] = await connection.promise().query<RowDataPacket[]>(
+        'SELECT * FROM users WHERE id = ? AND deleted_at IS NULL',
+        [id]
+      );
+
+      if (rows.length > 0) {
+        return rows[0] as User;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error('Error in findUserById:', error);
+      throw error;
+    }
   }
-};
+
+  async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
+    try {
+      await connection.promise().query(
+        'UPDATE users SET googleRefreshToken = ? WHERE id = ?',
+        [refreshToken, userId]
+      );
+    } catch (error) {
+      console.error('Error in saveRefreshToken:', error);
+      throw error;
+    }
+  }
+
+  async deleteUser(userId: number): Promise<void> {
+    try {
+      await connection.promise().query(
+        'UPDATE users SET deleted_at = NOW() WHERE id = ?',
+        [userId]
+      );
+    } catch (error) {
+      console.error('Error in deleteUser:', error);
+      throw error;
+    }
+  }
+}

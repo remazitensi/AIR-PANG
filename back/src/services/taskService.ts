@@ -1,6 +1,6 @@
 import connection from '@_config/db.config';
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import { Task, CreateTaskInput, UpdateTaskInput, mapRowToTask } from '@_types/task';
+import { ResultSetHeader } from 'mysql2';
+import { Task, CreateTaskInput, UpdateTaskInput } from '@_types/task';
 
 export const createTask = async ({ challenge_id, description }: CreateTaskInput): Promise<Task> => {
   const [result] = await connection.promise().query<ResultSetHeader>(
@@ -9,13 +9,11 @@ export const createTask = async ({ challenge_id, description }: CreateTaskInput)
   );
   const taskId = result.insertId;
   
-  const [createdTaskRows] = await connection.promise().query<RowDataPacket[]>(
+  const [createdTaskRows] = await connection.promise().query<Task[]>(
     `SELECT * FROM tasks WHERE id = ?`,
     [taskId]
   );
-  const createdTask = mapRowToTask(createdTaskRows[0]);
-  
-  return createdTask;
+  return createdTaskRows[0];
 };
 
 export const updateTask = async (id: string, { description, is_completed }: UpdateTaskInput): Promise<Task> => {
@@ -24,13 +22,11 @@ export const updateTask = async (id: string, { description, is_completed }: Upda
     [description, is_completed, id]
   );
 
-  const [updatedTaskRows] = await connection.promise().query<RowDataPacket[]>(
+  const [updatedTaskRows] = await connection.promise().query<Task[]>(
     `SELECT * FROM tasks WHERE id = ?`,
     [id]
   );
-  const updatedTask = mapRowToTask(updatedTaskRows[0]);
-  
-  return updatedTask;
+  return updatedTaskRows[0];
 };
 
 export const deleteTask = async (id: string): Promise<void> => {

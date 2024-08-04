@@ -9,7 +9,7 @@ interface Location extends RowDataPacket {
 
 const loadLocations = (): Promise<Location[]> => {
   return new Promise((resolve, reject) => {
-    const query = 'SELECT id, address_a_name, address_b_name FROM Locations ORDER BY id ASC';
+    const query = 'SELECT id, address_a_name, address_b_name FROM locations ORDER BY id ASC';
     connection.query<Location[]>(query, (err, results) => {
       if (err) {
         reject(err);

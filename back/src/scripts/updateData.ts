@@ -8,7 +8,12 @@ if (!process.env.LOCATION_API_KEY) {
   throw new Error('LOCATION_API_KEY is not defined');
 }
 
-const API_KEY = encodeURIComponent(process.env.LOCATION_API_KEY)
+const API_KEY = encodeURIComponent(process.env.LOCATION_API_KEY);
+
+// 타임스탬프를 MySQL에서 인식할 수 있는 형식으로 변환하는 함수
+function formatTimestamp(timestamp: string): string {
+  return new Date(timestamp).toISOString().slice(0, 19).replace('T', ' ');
+}
 
 const fetchAndStoreData = async (): Promise<void> => {
   const connectionPromise = connection.promise();
@@ -54,8 +59,11 @@ const fetchAndStoreData = async (): Promise<void> => {
           const so2Value = item.so2Value || 0;
           const dataTime = item.dataTime || new Date().toISOString();
 
+          // 타임스탬프를 MySQL 형식으로 변환(전남 데이터의 타임스탬프 형식 오류를 해결)
+          const formattedDataTime = formatTimestamp(dataTime); 
+
           const query = `
-            INSERT INTO Realtime_Air_Quality (location_id, pm10, pm25, o3, no2, co, so2, timestamp)
+            INSERT INTO realtime_air_quality (location_id, pm10, pm25, o3, no2, co, so2, timestamp)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE
               pm10 = VALUES(pm10),
@@ -75,7 +83,7 @@ const fetchAndStoreData = async (): Promise<void> => {
             no2Value,
             coValue,
             so2Value,
-            dataTime
+            formattedDataTime
           ]);
         }
 
