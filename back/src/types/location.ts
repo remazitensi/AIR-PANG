@@ -53,3 +53,22 @@ export interface AirQualityItem {
   so2Value: number | null;
   dataTime: string;
 }
+
+export interface CombinedAirQualityData extends RowDataPacket {
+  location_id: number;
+  address_a_name: string;
+  address_b_name: string;
+  pm10: number;
+  pm25: number;
+  o3: number;
+  no2: number;
+  co: number;
+  so2: number;
+  timestamp: string;
+  month: string;
+  aqi: number;
+}
+
+export interface MainLocationRow extends RowDataPacket {
+  address_a_name: string;
+}
