@@ -29,7 +29,6 @@ form {
   width: 400px;
   margin-top: 10px;
   position: absolute;
-  top: 70px;
 }
 
 .search_result::-webkit-scrollbar {

@@ -11,7 +11,6 @@ import {
   Legend,
 } from "chart.js";
 
-// Chart.js 컴포넌트 등록
 ChartJS.register(
   LineElement,
   PointElement,
@@ -24,7 +23,8 @@ ChartJS.register(
 
 const MonthlyAqi = ({ data }) => {
   console.log(data);
-  // 그래프 옵션 설정
+
+  // Graph options
   const options = {
     plugins: {
       title: {
@@ -59,9 +59,23 @@ const MonthlyAqi = ({ data }) => {
     },
   };
 
+  const chartData = {
+    labels: data.labels,
+    datasets: [
+      {
+        label: "AQI",
+        data: data.values,
+        fill: true,
+        backgroundColor: "rgba(75,192,192,0.4)",
+        borderColor: "rgba(75,192,192,1)",
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <div className="chart-container">
-      <Line data={data} options={options} />
+      <Line data={chartData} options={options} />
     </div>
   );
 };

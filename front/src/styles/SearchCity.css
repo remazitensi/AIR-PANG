@@ -4,10 +4,15 @@
   box-sizing: border-box;
 }
 
-h1 {
+.search-my-city {
+  display: 0 auto;
+}
+
+.search-page-title {
+  font-size: 36px;
   font-weight: 300;
   text-align: center;
-  margin: 80px 0 36px;
+  margin: 80px auto;
 }
 
 .search-container {
@@ -43,18 +48,36 @@ button:hover {
   background-color: #6ac9ff;
 }
 
-.results-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  border: 1px solid #ddd;
+.search-container {
+  height: 500px;
 }
 
-.results-list li {
-  padding: 8px;
+.results-list,
+.suggestions-list {
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  min-height: 50px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 125px;
+  padding-top: 100px;
+  padding: 10px 20px;
+  list-style-type: none;
+  position: absolute;
+  width: 100%;
+  background: white;
+  z-index: 1000;
+}
+
+.results-list li,
+.suggestions-list li {
+  padding: 10px;
   cursor: pointer;
 }
 
-.results-list li:hover {
-  background-color: #f0f0f0;
+.results-list li:hover,
+.suggestions-list li:hover,
+.results-list .highlighted,
+.suggestions-list .highlighted {
+  background-color: #fafafa;
 }

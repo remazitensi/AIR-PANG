@@ -7,6 +7,8 @@ import Challenges from "./pages/Challenges";
 import SearchCityPage from "./pages/SearchCityPage";
 import MyPage from "./pages/MyPage";
 import Weather from "./pages/Weather";
+import Cursor from "./components/Cursor";
+import BubbleCursor from "./components/BubbleCursor";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -17,11 +19,13 @@ function App() {
 
   return (
     <Router>
+      <Cursor />
+      <BubbleCursor />
       <Layout isLoggedIn={isLoggedIn} onLogout={handleLogout}>
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/locations" element={<UriLocations />} />
-          {/* {isLoggedIn && ( */}
+
           <>
             <Route path="/weather" element={<Weather />} />
             <Route path="/challenges/*" element={<Challenges />} />

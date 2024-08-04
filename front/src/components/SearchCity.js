@@ -1,40 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../styles/SearchCity.css";
 
-const Search = () => {
+const SearchComponent = () => {
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [searchData, setSearchData] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    filterResults();
+    if (query.trim()) {
+      fetchResults();
+    } else {
+      setSearchData([]);
+    }
   }, [query]);
 
-  const filterResults = () => {
-    // JSON 파일이나 API에서 데이터 로드하기
-    const districtsData = [];
+  const fetchResults = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/locations/detail",
+        {
+          params: {
+            location: query.split(" ")[0],
+            subLocation: query.split(" ")[1] || "",
+          },
+        }
+      );
 
-    const filteredResults = districtsData
-      .filter((district) => {
-        const queryParts = query
-          .split(" ")
-          .map((part) => part.trim())
-          .filter((part) => part);
-        const addressMatch = queryParts.every(
-          (part) =>
-            district.locations.address_a_name.includes(part) ||
-            district.locations.address_b_name.includes(part)
-        );
-        return addressMatch;
-      })
-      .sort((a, b) =>
-        a.locations.address_b_name.localeCompare(b.locations.address_b_name)
-      )
-      .slice(0, 10);
-    setResults(filteredResults);
-    setSelectedIndex(null); // 결과가 변경시 인덱스 초기화
+      console.log("Response data from results endpoint:", response.data);
+
+      const locations = response.data.locations
+        ? [response.data.locations]
+        : [];
+      setSearchData(locations);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
   };
 
   const handleChange = (e) => {
@@ -42,70 +45,39 @@ const Search = () => {
   };
 
   const handleSearch = () => {
-    filterResults(); // 찾기 버튼 누르면 필터 해주기
+    fetchResults();
   };
 
   const handleKeyDown = (e) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((prevIndex) =>
-        prevIndex === null ? 0 : Math.min(results.length - 1, prevIndex + 1)
+        prevIndex === null ? 0 : Math.min(searchData.length - 1, prevIndex + 1)
       );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex((prevIndex) =>
-        prevIndex === null ? results.length - 1 : Math.max(0, prevIndex - 1)
+        prevIndex === null ? searchData.length - 1 : Math.max(0, prevIndex - 1)
       );
     } else if (e.key === "Enter" && selectedIndex !== null) {
-      handleSelect(results[selectedIndex]);
+      handleSelect(searchData[selectedIndex]);
     }
   };
 
-  const handleSelect = async (district) => {
-    try {
-      // API 호출
-      const response = await fetch(
-        `http://localhost:8080/location/detail?location=${district.locations.address_a_name}&subLocation=${district.locations.address_b_name}`,
-        {
-          method: "GET",
-        }
-      );
+  const handleSelect = (location) => {
+    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch location details");
-      }
-
-      const data = await response.json();
-
-      // 즐겨찾기추가 API 호출
-      const addFavoriteResponse = await fetch(
-        "http://localhost:8080/my/locations",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            address_a_name: district.locations.address_a_name,
-            address_b_name: district.locations.address_b_name,
-          }),
-        }
-      );
-
-      if (!addFavoriteResponse.ok) {
-        throw new Error("Failed to add favorite");
-      }
-
-      // 추가되면 나의 페이지 이동
-      navigate("/my");
-    } catch (error) {
-      console.error("Error handling select:", error);
+    if (!favorites.some((fav) => fav.id === location.id)) {
+      favorites.push(location);
+      localStorage.setItem("favorites", JSON.stringify(favorites));
     }
+
+    navigate("/my");
   };
 
   return (
     <>
-      <h1>관심지역 설정</h1>
+      <h2>관심지역 설정하기</h2>
       <div className="search-container">
         <input
           type="text"
@@ -115,16 +87,15 @@ const Search = () => {
           placeholder="국내 도시를 검색해 보세요."
         />
         <button onClick={handleSearch}>찾기</button>
-        {results.length > 0 && (
+        {searchData.length > 0 && (
           <ul className="results-list">
-            {results.map((district, index) => (
+            {searchData.map((location, index) => (
               <li
-                key={district.locations.id}
-                onClick={() => handleSelect(district)}
+                key={location.id}
+                onClick={() => handleSelect(location)}
                 className={index === selectedIndex ? "highlighted" : ""}
               >
-                {district.locations.address_a_name}{" "}
-                {district.locations.address_b_name}
+                {location.address_a_name} {location.address_b_name}
               </li>
             ))}
           </ul>
@@ -134,4 +105,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default SearchComponent;

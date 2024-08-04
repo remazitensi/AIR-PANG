@@ -28,6 +28,9 @@ h1 {
   padding: 60px 50px 50px;
   border-radius: 20px;
   text-align: center;
+  margin-left: 100px;
+  height: auto;
+  max-height: 800px;
 }
 
 .top-section {
@@ -65,7 +68,9 @@ h2 {
 .data-item {
   background-color: rgba(255, 255, 255, 0.7);
   padding: 30px;
-  min-width: 200px;
+  width: 280px;
+  height: auto;
+  max-height: 242px;
   border-radius: 10px;
   line-height: 2;
   margin: 10px;
@@ -74,11 +79,20 @@ h2 {
 
 .data-item h3 {
   font-weight: 400;
+  font-size: 24px;
+  text-align: left;
 }
 
 .data-item p {
   font-size: 28px;
   text-align: left;
+  margin-bottom: 20px;
+}
+
+.data-item p span.unit {
+  font-size: 20px;
+  font-weight: 300;
+  color: #2e2e2e;
 }
 
 .mascot {

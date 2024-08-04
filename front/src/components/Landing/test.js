@@ -5,77 +5,72 @@ import axios from "axios";
 import pang from "../../assets/images/pang.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { useQuery } from "react-query";
 
 export default function WeatherLanding() {
-  const locationState = useLocation().state || {};
+  const { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const location = query.get("location");
+  const subLocation = query.get("subLocation");
+
   const [weatherData, setWeatherData] = useState(null);
   const [locationError, setLocationError] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [currentLocation, setCurrentLocation] = useState({
-    location: locationState.location || "서울",
-    subLocation: locationState.subLocation || "강남구",
-  });
 
   useEffect(() => {
-    const fetchWeatherData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:8080/locations/detail",
-          {
-            params: {
-              location: currentLocation.location,
-              subLocation: currentLocation.subLocation,
-            },
-          }
-        );
+    console.log("location:", location);
+    console.log("subLocation:", subLocation);
+    if (location && subLocation) {
+      fetchWeatherData(location, subLocation);
+    } else {
+      setLocationError("location or subLocation is missing.");
+    }
+  }, [location, subLocation]);
 
-        // Log the entire response and data
-        console.log("API Response:", response);
-        console.log("Response Data:", response.data);
+  const fetchWeatherData = async (location, subLocation) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3000/location/detail?location=${encodeURIComponent(
+          location
+        )}&subLocation=${encodeURIComponent(subLocation)}`
+      );
 
+      const data = response.data;
+
+      if (data) {
         setWeatherData({
-          city: `${response.data.locations.address_a_name}, ${response.data.locations.address_b_name}`,
+          city: `${data.locations.address_a_name}, ${data.locations.address_b_name}`,
           airQuality: {
-            pm10: response.data.Realtime_Air_Quality.pm10,
-            pm25: response.data.Realtime_Air_Quality.pm25,
-            o3: response.data.Realtime_Air_Quality.o3,
-            no2: response.data.Realtime_Air_Quality.no2,
-            co: response.data.Realtime_Air_Quality.co,
-            so2: response.data.Realtime_Air_Quality.so2,
-            aqi: response.data.Realtime_Air_Quality.aqi,
+            pm10: data.Realtime_Air_Quality.pm10,
+            pm25: data.Realtime_Air_Quality.pm25,
+            o3: data.Realtime_Air_Quality.o3,
+            no2: data.Realtime_Air_Quality.no2,
+            co: data.Realtime_Air_Quality.co,
+            so2: data.Realtime_Air_Quality.so2,
+            aqi: data.Realtime_Air_Quality.aqi,
           },
         });
         setLocationError(null);
-      } catch (err) {
+      } else {
+        setLocationError("No data available.");
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data.message ===
+          "주어진 지역의 월평균 데이터가 없습니다."
+      ) {
+        setLocationError(
+          "The monthly average data for the specified area is not available."
+        );
+      } else {
         console.error(
           "Error fetching weather data:",
-          err.response || err.message
+          error.response || error.message
         );
-        if (
-          err.response &&
-          err.response.data.message ===
-            "주어진 지역의 월평균 데이터가 없습니다."
-        ) {
-          setLocationError(
-            "The monthly average data for the specified area is not available."
-          );
-        } else {
-          setLocationError("Unable to fetch data.");
-        }
-      } finally {
-        setLoading(false);
+        setLocationError("Unable to fetch data.");
       }
-    };
-
-    fetchWeatherData();
-  }, [currentLocation]);
-
-  const handleLocationChange = (location, subLocation) => {
-    setCurrentLocation({ location, subLocation });
-    setLoading(true);
+    }
   };
-
-  if (loading) return <div className="weather-landing">Loading...</div>;
 
   if (locationError) {
     return <div className="weather-landing">{locationError}</div>;

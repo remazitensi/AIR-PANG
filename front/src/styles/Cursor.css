@@ -1,0 +1,9 @@
+.cursor {
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  pointer-events: none;
+  background: url("../assets/images/Patamon.webp") no-repeat center center; /* Update the path to your GIF */
+  background-size: contain;
+  z-index: 9999;
+}

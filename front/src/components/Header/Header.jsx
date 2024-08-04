@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./Header.css"; // CSS 파일을 import 합니다
+import "./Header.css";
 
 function Header({ isLoggedIn, onLogout }) {
   const location = useLocation();

@@ -1,0 +1,15 @@
+/* BubbleCursor.css */
+.bubble {
+  position: absolute;
+  width: 30px; /* Adjust size as needed */
+  height: 30px; /* Adjust size as needed */
+  background-size: cover;
+  background-repeat: no-repeat;
+  opacity: 1;
+  transition: opacity 3s ease-out; /* Adjust timing as needed */
+  pointer-events: none; /* Ensure it doesn’t block interactions */
+}
+
+.hidden {
+  opacity: 0;
+}
