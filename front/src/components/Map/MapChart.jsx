@@ -1,11 +1,14 @@
+// src/MapChart.js
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import highchartsMap from 'highcharts/modules/map';
 import proj4 from 'proj4';
 import MapModal from './MapModal';
+import MonthlyAqi from '../Chart/MonthlyAqi';
 
-// 라이브러리 추가: npm install highcharts highcharts-react-official @types/highcharts proj4
+// 라이브러리 추가: npm install highcharts highcharts-react-official @types/highcharts proj4 axios
 
 // Highcharts 맵 모듈 초기화
 if (typeof window !== 'undefined') {
@@ -50,13 +53,33 @@ const MapChart = () => {
         // 로컬 파일 import
         const topology = await import('../../data/kr-all.topo.json');
 
-        const data = [
-          ['kr-4194', 10], ['kr-kg', 11], ['kr-cb', 12], ['kr-kn', 13],
-          ['kr-2685', 14], ['kr-pu', 15], ['kr-2688', 16], ['kr-sj', 17],
-          ['kr-tj', 18], ['kr-ul', 19], ['kr-in', 20], ['kr-kw', 21],
-          ['kr-gn', 22], ['kr-cj', 23], ['kr-gb', 24], ['kr-so', 25],
-          ['kr-tg', 26], ['kr-kj', 27]
-        ]; 
+        // 데이터 가져오기
+        const response = await axios.get('http://localhost:8080/locations');
+        const locations = response.data;
+
+        // 데이터 형식 변환
+        const data = locations.map((location, index) => {
+          const mapKey = {
+            '강원': 'kr-kw',
+            '경기': 'kr-kg',
+            '경남': 'kr-kn',
+            '경북': 'kr-2688',
+            '광주': 'kr-kj',
+            '대구': 'kr-tg',
+            '대전': 'kr-tj',
+            '부산': 'kr-pu',
+            '서울': 'kr-so',
+            '세종': 'kr-sj',
+            '울산': 'kr-ul',
+            '인천': 'kr-in',
+            '전남': 'kr-2685',
+            '전북': 'kr-cb',
+            '제주': 'kr-cj',
+            '충남': 'kr-gn',
+            '충북': 'kr-gb'
+          }[location.location];
+          return [mapKey, location.averageAQI];
+        });
 
         setMapOptions({
           chart: {
@@ -72,15 +95,26 @@ const MapChart = () => {
               verticalAlign: 'bottom'
             }
           },
-          
-          //이곳에 박스안의 내용 표시
+          colorAxis: {
+            min: 0,
+            max: 300,
+            stops: [
+              [0 / 300, '#3060cf'],  // 0-50: 좋음 (파랑)
+              [50 / 300, '#66CDAA'], // 51-100: 보통 (연청록색)
+              [100 / 300, '#ffff00'], // 101-150: 민감군영향 (노랑)
+              [150 / 300, '#ff8000'], // 151-200: 나쁨 (주황)
+              [200 / 300, '#ff0000'], // 201-300: 매우 나쁨 (빨강)
+              [300 / 300, '#8B0000']  // 301 이상: 위험 (어두운 빨강)
+            ]
+          },
           series: [{ 
             data: data,
-            name: '지역별 날씨 정보',
+            name: '지역별 AQI',
             showInLegend: false,  // 레전드에서 이 시리즈를 숨깁니다
             states: {
               hover: {
-                color: '#BADA55'
+                color: '#D1E5E1'
+
               }
             },
             dataLabels: {
@@ -95,7 +129,7 @@ const MapChart = () => {
           }]
         });
       } catch (error) {
-        console.error("Error loading topology:", error);
+        console.error("Error loading topology or fetching data:", error);
       }
     };
 
@@ -110,9 +144,8 @@ const MapChart = () => {
         constructorType={'mapChart'}
       />
       <MapModal isOpen={isModalOpen} onClose={closeModal}>
-        <h2>{selectedRegion}</h2>
-        <p>이부분에 세부지역별 버튼 표시</p>
-        <p>{selectedRegion}시 OO구 요런식</p>
+        {/* <h2>{selectedRegion}</h2> */}
+        <a href='http://localhost:3000/locations=${selectedRegion}'>{selectedRegion}</a> 
       </MapModal>
     </div>
   );
