@@ -9,7 +9,9 @@ function Weather({ locationData }) {
       <p>여기가 날씨정보 페이지입니다.</p>
       <div>
         {locationData && <MonthlyAqi data={locationData.monthly_aqi} />}
+        
         <AirQualityChart />
+        <MonthlyAqi />
       </div>
     </div>
   );
