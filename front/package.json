@@ -21,6 +21,8 @@
     "proj4": "^2.11.0",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.2.0",
+    "react-cookie": "^7.2.0",
+    "react-cookies": "^0.1.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",

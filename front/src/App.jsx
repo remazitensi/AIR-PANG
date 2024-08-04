@@ -9,6 +9,7 @@ import MyPage from "./pages/MyPage";
 import Weather from "./pages/Weather";
 import Cursor from "./components/Cursor";
 import BubbleCursor from "./components/BubbleCursor";
+import GoogleCallback from "./components/Landing/GoogleCallback";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -31,6 +32,7 @@ function App() {
             <Route path="/challenges/*" element={<Challenges />} />
             <Route path="/my" element={<MyPage />} />
             <Route path="/search" element={<SearchCityPage />} />
+            <Route path="/auth/google/callback" element={<GoogleCallback />} />
           </>
           {/* )} */}
         </Routes>

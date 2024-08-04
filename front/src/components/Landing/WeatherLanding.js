@@ -5,6 +5,7 @@ import axios from "axios";
 import pang from "../../assets/images/pang.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 export default function WeatherLanding() {
   const locationState = useLocation().state || {};
@@ -89,6 +90,7 @@ export default function WeatherLanding() {
           <br />
           괜찮을까요?
         </h1>
+        <GoogleLoginButton />
       </div>
       <div className="weather-card">
         {weatherData && (

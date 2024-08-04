@@ -1,17 +1,21 @@
 .google-login-button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 80px; /* 버튼 크기 조절 */
+  height: 80px; /* 버튼 크기 조절 */
+  border-radius: 50%; /* 동그란 형태로 만들기 */
   background-color: white;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.google-login-button:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
 }
 
 .google-logo {
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
+  width: 50px; /* 로고 크기 조절 */
+  height: auto;
 }

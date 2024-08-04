@@ -1,10 +1,21 @@
-import axiosInstance from './axiosInstance';
+import axiosInstance from "./axiosInstance";
 
-const loginWithGoogle = async (token) => {
-  const response = await axiosInstance.post('/api/auth/google', { token });
-  return response.data;
+// 로그아웃 요청
+export const logout = async () => {
+  try {
+    await axiosInstance.post("/logout"); // 서버에 로그아웃 요청
+    localStorage.removeItem("jwt"); // 클라이언트에서 JWT 삭제
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
 };
 
-export default {
-  loginWithGoogle,
+// 탈퇴 요청
+export const deleteAccount = async (userId) => {
+  try {
+    await axiosInstance.post("/delete", { userId }); // 서버에 탈퇴 요청
+    localStorage.removeItem("jwt"); // 클라이언트에서 JWT 삭제
+  } catch (error) {
+    console.error("Account deletion error:", error);
+  }
 };
