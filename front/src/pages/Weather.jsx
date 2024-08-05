@@ -10,7 +10,7 @@ function Weather({ locationData }) {
       <div>
         {locationData && <MonthlyAqi data={locationData.monthly_aqi} />}
         
-        <AirQualityChart />
+        {/* <AirQualityChart /> */}
         <MonthlyAqi />
       </div>
     </div>

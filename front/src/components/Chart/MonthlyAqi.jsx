@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 
@@ -7,29 +8,37 @@ import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const MonthlyAqi = () => {
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const location = useLocation();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('http://localhost:8080/locations/detail', {
-                    params: {
-                        location: '전남',
-                        subLocation: '여수시'
-                    } // 이부분을 드랍다운으로 할지? 
-                });
-                setData(response.data);
-            } catch (err) {
-                setError(err);
-            } finally {
-                setLoading(false);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const params = new URLSearchParams(location.search);
+        const mainLocation = params.get('location');
+        const subLocation = params.get('subLocation');
+
+        if (mainLocation && subLocation) {
+          const response = await axios.get('http://localhost:8080/locations/detail', {
+            params: {
+              location: mainLocation,
+              subLocation: subLocation,
             }
-        };
+          });
+          setData(response.data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error.message);
+        setLoading(false);
+      }
+    };
 
-        fetchData();
-    }, []);
+    fetchData();
+  }, [location]);
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error.message}</p>;

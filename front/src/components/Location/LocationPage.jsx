@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { getGrade, calculateScore } from '../../utils/aqi';
-import '../../styles/LocationPage.css'
+import '../../styles/LocationPage.css';
 
 function LocationPage() {
   const { search } = useLocation();
@@ -73,7 +73,10 @@ function LocationPage() {
       <h2>{location} 데이터</h2>
       <div className="button-container">
         {data && data.map((d, index) => (
-          <Link key={index} to={`/locations/sub?location=${location}&subLocation=${d.location}`}>
+          <Link
+            key={index}
+            to={`/detail?location=${encodeURIComponent(location)}&subLocation=${encodeURIComponent(d.location)}`}
+          >
             <button
               className="location-button"
               onMouseEnter={(e) => handleMouseEnter(d.location, d.annualMaxAQI, d.realtimeMaxAQI, e)}
