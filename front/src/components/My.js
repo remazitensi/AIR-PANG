@@ -12,10 +12,10 @@ const MyPage = () => {
   }, []);
 
   const handleViewWeather = (location) => {
-    navigate("/", {
+    navigate("/weather", {
       state: {
-        location: location.address_a_name,
-        subLocation: location.address_b_name,
+        locationName: location.address_a_name,
+        subLocationName: location.address_b_name,
       },
     });
   };
@@ -24,10 +24,6 @@ const MyPage = () => {
     const updatedFavorites = favorites.filter((fav) => fav.id !== id);
     setFavorites(updatedFavorites);
     localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
-  };
-
-  const handleAddFavorite = () => {
-    navigate("/search");
   };
 
   return (

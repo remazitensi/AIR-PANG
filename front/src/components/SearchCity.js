@@ -1,108 +1,159 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../styles/SearchCity.css";
+import { useNavigate } from "react-router-dom";
+import "../styles/Search.css";
 
-const SearchComponent = () => {
-  const [query, setQuery] = useState("");
-  const [searchData, setSearchData] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(null);
+const locationsList = [
+  "서울",
+  "경기",
+  "강원",
+  "광주",
+  "인천",
+  "전남",
+  "전북",
+  "경북",
+  "경남",
+  "세종",
+  "제주",
+  "충북",
+  "충남",
+  "대전",
+  "대구",
+  "부산",
+  "울산",
+];
+
+const Search = () => {
+  const [location, setLocation] = useState("");
+  const [subLocation, setSubLocation] = useState("");
+  const [subLocations, setSubLocations] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (query.trim()) {
-      fetchResults();
-    } else {
-      setSearchData([]);
-    }
-  }, [query]);
+  const handleLocationChange = (e) => {
+    setLocation(e.target.value);
+    setSubLocation("");
+    setSubLocations([]);
+  };
 
-  const fetchResults = async () => {
+  const handleSubLocationChange = (e) => {
+    setSubLocation(e.target.value);
+    if (location && e.target.value) {
+      fetchSubLocations(e.target.value);
+    } else {
+      setSubLocations([]);
+    }
+  };
+
+  const fetchSubLocations = async (query) => {
     try {
+      setLoading(true);
       const response = await axios.get(
-        "http://localhost:8080/locations/detail",
+        "http://localhost:3000/locations/detail",
         {
           params: {
-            location: query.split(" ")[0],
-            subLocation: query.split(" ")[1] || "",
+            location,
+            subLocation: query,
           },
         }
       );
 
-      console.log("Response data from results endpoint:", response.data);
-
       const locations = response.data.locations
         ? [response.data.locations]
         : [];
-      setSearchData(locations);
+      setSubLocations(locations.map((loc) => loc.address_b_name));
     } catch (error) {
-      console.error("Error fetching search results:", error);
+      console.error("Error fetching subLocations:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleChange = (e) => {
-    setQuery(e.target.value);
+  const handleSelectSubLocation = (subLoc) => {
+    setSubLocation(subLoc);
+    setSubLocations([]);
   };
 
-  const handleSearch = () => {
-    fetchResults();
-  };
+  const addFavorite = (location, subLocation) => {
+    const newFavorite = {
+      id: Date.now(),
+      address_a_name: location,
+      address_b_name: subLocation,
+    };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setSelectedIndex((prevIndex) =>
-        prevIndex === null ? 0 : Math.min(searchData.length - 1, prevIndex + 1)
-      );
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setSelectedIndex((prevIndex) =>
-        prevIndex === null ? searchData.length - 1 : Math.max(0, prevIndex - 1)
-      );
-    } else if (e.key === "Enter" && selectedIndex !== null) {
-      handleSelect(searchData[selectedIndex]);
-    }
-  };
+    const storedFavorites = JSON.parse(localStorage.getItem("favorites")) || [];
+    const isAlreadyAdded = storedFavorites.some(
+      (fav) =>
+        fav.address_a_name === location && fav.address_b_name === subLocation
+    );
 
-  const handleSelect = (location) => {
-    const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-
-    if (!favorites.some((fav) => fav.id === location.id)) {
-      favorites.push(location);
-      localStorage.setItem("favorites", JSON.stringify(favorites));
+    if (isAlreadyAdded) {
+      alert("이미 추가한 지역입니다");
+      return;
     }
 
+    const updatedFavorites = [...storedFavorites, newFavorite];
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    alert(`${subLocation}이(가) 추가되었습니다`);
     navigate("/my");
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && location && subLocation) {
+      addFavorite(location, subLocation);
+    }
+  };
+
+  const handleButtonClick = () => {
+    if (location && subLocation) {
+      addFavorite(location, subLocation);
+    }
+  };
+
   return (
-    <>
-      <h2>관심지역 설정하기</h2>
-      <div className="search-container">
+    <div className="search-container">
+      <h1>지역 검색</h1>
+      <div className="dropdown-container">
+        <label htmlFor="location">Location:</label>
+        <select id="location" value={location} onChange={handleLocationChange}>
+          <option value="">Select Location</option>
+          {locationsList.map((loc, index) => (
+            <option key={index} value={loc}>
+              {loc}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="search-input-container">
+        <label htmlFor="subLocation">Sub Location:</label>
         <input
+          id="subLocation"
           type="text"
-          value={query}
-          onChange={handleChange}
+          value={subLocation}
+          onChange={handleSubLocationChange}
           onKeyDown={handleKeyDown}
-          placeholder="국내 도시를 검색해 보세요."
+          placeholder="검색할 sub-location 입력"
         />
-        <button onClick={handleSearch}>찾기</button>
-        {searchData.length > 0 && (
-          <ul className="results-list">
-            {searchData.map((location, index) => (
+        {loading && <p>Loading...</p>}
+        {subLocations.length > 0 && (
+          <ul className="sub-location-list">
+            {subLocations.map((subLoc, index) => (
               <li
-                key={location.id}
-                onClick={() => handleSelect(location)}
-                className={index === selectedIndex ? "highlighted" : ""}
+                key={index}
+                onClick={() => handleSelectSubLocation(subLoc)}
+                style={{ cursor: "pointer" }}
               >
-                {location.address_a_name} {location.address_b_name}
+                {subLoc}
               </li>
             ))}
           </ul>
         )}
       </div>
-    </>
+      <button onClick={handleButtonClick} className="search-button">
+        추가하기
+      </button>
+    </div>
   );
 };
 
-export default SearchComponent;
+export default Search;

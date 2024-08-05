@@ -10,20 +10,24 @@ import { User } from '@_types/user'
 
 export const getAllChallengesController = async (req: Request, res: Response) => {
   const searchQuery = req.query.search ? req.query.search.toString() : '';
+  const page = parseInt(req.query.page as string) || 1;
+  const limit = parseInt(req.query.limit as string) || 4;
   try {
-    const challenges = await getAllChallenges(searchQuery);
-    res.status(200).json({ challenges });
+    const { challenges, total } = await getAllChallenges(searchQuery, page, limit);
+    res.status(200).json({ challenges, total });
   } catch (error) {
     console.error('챌린지 데이터를 가져오는데 실패 했습니다.', error);
     res.status(500).send('서버 오류발생');
   }
 };
 
+
 export const getChallengeByIdController = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const { challenge, tasks } = await getChallengeById(id);
-    res.status(200).json({ challenge, tasks });
+    const user = req.user as User; // 현재 로그인된 사용자 정보
+    res.status(200).json({ challenge, tasks, user });
   } catch (error) {
     console.error(`${id} 아이디의 챌린지 데이터를 가져오는데 실패 했습니다.:`, error);
     res.status(500).send('서버 오류발생');

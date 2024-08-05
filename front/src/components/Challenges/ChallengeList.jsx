@@ -6,20 +6,24 @@ import '../../styles/ChallengeList.css';
 function ChallengeList() {
   const [challenges, setChallenges] = useState([]);
   const [search, setSearch] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 4;
 
-  const fetchChallenges = async (searchQuery = '') => {
-   try {
-     const response = await axios.get(`http://localhost:8080/challenges?search=${searchQuery}`, {
-      withCredentials: true // credentials 설정
-    });
-     setChallenges(response.data.challenges);
-   } catch (error) {
-     console.error('Error fetching challenges:', error);
-   }
+  const fetchChallenges = async (searchQuery = '', page = 1) => {
+    try {
+      const response = await axios.get(`http://localhost:8080/challenges?search=${searchQuery}&page=${page}&limit=${itemsPerPage}`, {
+        withCredentials: true // credentials 설정
+      });
+      setChallenges(response.data.challenges);
+      setTotalPages(Math.ceil(response.data.total / itemsPerPage));
+    } catch (error) {
+      console.error('Error fetching challenges:', error);
+    }
   };
-  
+
   useEffect(() => {
-   fetchChallenges(); // 페이지 로드 시 모든 챌린지 불러오기
+    fetchChallenges(); // 페이지 로드 시 모든 챌린지 불러오기
   }, []);
 
   const handleSearchChange = (e) => {
@@ -28,7 +32,13 @@ function ChallengeList() {
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    fetchChallenges(search); // 검색어에 맞는 챌린지 리스트 불러오기
+    fetchChallenges(search, 1); // 검색어에 맞는 챌린지 리스트 불러오기
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    fetchChallenges(search, page);
   };
 
   const formatDate = (dateString) => {
@@ -43,6 +53,32 @@ function ChallengeList() {
     const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
     return daysLeft;
   }
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxPageButtons = 5;
+    let startPage = Math.max(currentPage - Math.floor(maxPageButtons / 2), 1);
+    let endPage = startPage + maxPageButtons - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(endPage - maxPageButtons + 1, 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          className={`pageButton ${i === currentPage ? 'active' : ''}`}
+          onClick={() => handlePageChange(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    return pageNumbers;
+  };
 
   return (
     <div className="ChallengeList">
@@ -73,12 +109,29 @@ function ChallengeList() {
                     )
                 }
               </span>
-              <h3>{challenge.title}</h3>
+              <h3>{challenge.user_name}님의 챌린지: {challenge.title}</h3>
               <p>{formatDate(challenge.start_date)} ~ {formatDate(challenge.end_date)}</p>
             </Link>
           </li>
         ))}
       </ul>
+      <div className="pagination">
+        <button
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          이전
+        </button>
+        {renderPageNumbers()}
+        <button
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          다음
+        </button>
+      </div>
     </div>
   );
 }

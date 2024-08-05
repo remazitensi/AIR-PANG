@@ -1,0 +1,59 @@
+.ChallengeStatus {
+    padding: 16px;
+    height: 500px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+
+    background-color: #FAFAFA;
+}
+
+.StatusLists {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+.StatusList {
+    width: 180px;
+    height: 340px;
+    border-radius: 8px;
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    background-color: white;
+}
+
+.StatusList span div {
+    width: 72px;
+    height: 20px;
+    border-radius: 4px;
+    background-color: #004AAD;
+    font-size: 10px;
+    color: white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.StatusList ul {
+    height: 200px;
+}
+
+.StatusList li {
+    list-style-type: none;
+    margin-top: 12px;
+}
+
+.link {
+    font-size: 10px;
+    text-decoration: underline;
+}

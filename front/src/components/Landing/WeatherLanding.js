@@ -5,7 +5,8 @@ import axios from "axios";
 import pang from "../../assets/images/pang.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
-import GoogleLoginButton from "../../components/Login/GoogleLoginButton";
+import GoogleLoginButton from "../../components/Landing/GoogleLoginButton";
+
 
 export default function WeatherLanding() {
   const locationState = useLocation().state || {};

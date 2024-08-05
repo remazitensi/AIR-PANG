@@ -15,38 +15,38 @@ function ChallengeEdit() {
   const navigate = useNavigate();
 
   useEffect(() => {
-   const fetchChallenge = async () => {
-     try {
-       const response = await axios.get(`http://localhost:8080/challenges/${id}`, {
-         withCredentials: true // credentials 설정
-       });
-       const data = response.data;
-       setTitle(data.challenge.title);
-       setDescription(data.challenge.description);
-       setStartDate(data.challenge.start_date.split('T')[0]);
-       setEndDate(data.challenge.end_date.split('T')[0]);
-       setTasks(data.tasks.map(task => task.description));
-     } catch (error) {
-       console.error('Error fetching challenge:', error);
-     }
-   };
+    const fetchChallenge = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/challenges/${id}`, {
+          withCredentials: true
+        });
+        const data = response.data;
+        setTitle(data.challenge.title);
+        setDescription(data.challenge.description);
+        setStartDate(data.challenge.start_date.split('T')[0]);
+        setEndDate(data.challenge.end_date.split('T')[0]);
+        setTasks(data.tasks);
+      } catch (error) {
+        console.error('Error fetching challenge:', error);
+      }
+    };
 
-   fetchChallenge();
+    fetchChallenge();
   }, [id]);
 
-  const handleTaskChange = (index, value) => {
+  const handleTaskChange = (index, field, value) => {
     const newTasks = [...modalTasks];
-    newTasks[index] = value;
+    newTasks[index] = { ...newTasks[index], [field]: value };
     setModalTasks(newTasks);
   };
 
   const handleSaveTasks = () => {
-    setTasks(modalTasks.filter(task => task.trim() !== ''));
+    setTasks(modalTasks.filter(task => task.description.trim() !== ''));
     setModalOpen(false);
   };
 
   const handleOpenModal = () => {
-    setModalTasks(tasks.length > 0 ? tasks.concat(Array(5 - tasks.length).fill('')).slice(0, 5) : ['', '', '', '', '']);
+    setModalTasks(tasks.length > 0 ? tasks.concat(Array(5 - tasks.length).fill({ id: '', description: '', is_completed: false })).slice(0, 5) : Array(5).fill({ id: '', description: '', is_completed: false }));
     setModalOpen(true);
   };
 
@@ -58,7 +58,7 @@ function ChallengeEdit() {
       return;
     }
 
-    const filteredTasks = tasks.filter(task => task.trim() !== '');
+    const filteredTasks = tasks.filter(task => task.description.trim() !== '');
 
     if (filteredTasks.length === 0) {
       alert('최소 1개의 할 일을 추가해야 합니다.');
@@ -69,19 +69,35 @@ function ChallengeEdit() {
       title,
       description,
       start_date: startDate,
-      end_date: endDate,
-      tasks: filteredTasks.map(task => ({ description: task, is_completed: false })),
+      end_date: endDate
     };
 
     try {
       const response = await axios.patch(`http://localhost:8080/challenges/${id}`, updatedChallenge, {
         headers: {
-          'Content-Type': 'application/json',
-          withCredentials: true // credentials 설정
+          'Content-Type': 'application/json'
         },
+        withCredentials: true
       });
 
       if (response.status === 204) {
+        await Promise.all(filteredTasks.map(async task => {
+          if (task.id) {
+            await axios.patch(`http://localhost:8080/tasks/${task.id}`, task, {
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              withCredentials: true
+            });
+          } else {
+            await axios.post(`http://localhost:8080/tasks`, { challenge_id: id, description: task.description }, {
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              withCredentials: true
+            });
+          }
+        }));
         navigate(`/challenges/${id}`);
       } else {
         console.error('Error updating challenge');
@@ -96,9 +112,18 @@ function ChallengeEdit() {
   };
 
   const handleDeleteTask = (e, index) => {
+    const taskToDelete = tasks[index];
     const newTasks = tasks.filter((_, taskIndex) => taskIndex !== index);
     e.preventDefault();
     setTasks(newTasks);
+
+    if (taskToDelete.id) {
+      axios.delete(`http://localhost:8080/tasks/${taskToDelete.id}`, {
+        withCredentials: true
+      }).catch(error => {
+        console.error('Error deleting task:', error);
+      });
+    }
   };
 
   return (
@@ -119,7 +144,7 @@ function ChallengeEdit() {
           <button className='add' type="button" onClick={handleOpenModal}>할 일 수정하기</button>
           <ul>
             {tasks.map((task, index) => (
-              <li key={index}>{task} <a href="#" onClick={(e) => handleDeleteTask(e, index)}>X</a></li>
+              <li key={task.id}>{task.description} <a href="#" onClick={(e) => handleDeleteTask(e, index)}>X</a></li>
             ))}
           </ul>
         </div>
@@ -137,8 +162,8 @@ function ChallengeEdit() {
               <input
                 key={index}
                 type="text"
-                value={task}
-                onChange={(e) => handleTaskChange(index, e.target.value)}
+                value={task.description}
+                onChange={(e) => handleTaskChange(index, 'description', e.target.value)}
                 placeholder={`할 일 이름`}
               />
             ))}

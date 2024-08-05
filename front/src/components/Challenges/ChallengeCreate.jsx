@@ -11,6 +11,7 @@ function ChallengeCreate() {
   const [tasks, setTasks] = useState([]);
   const [modalTasks, setModalTasks] = useState(['', '', '', '', '']);
   const [modalOpen, setModalOpen] = useState(false);
+  const [titleError, setTitleError] = useState(''); // 제목 글자 수 초과 시 에러 메시지 상태
   const navigate = useNavigate();
 
   const handleTaskChange = (index, value) => {
@@ -27,6 +28,16 @@ function ChallengeCreate() {
   const handleOpenModal = () => {
     setModalTasks(tasks.length > 0 ? tasks.concat(Array(5 - tasks.length).fill('')) : ['', '', '', '', '']);
     setModalOpen(true);
+  };
+
+  const handleTitleChange = (e) => {
+    const newTitle = e.target.value;
+    if (newTitle.length > 30) {
+      setTitleError('30자 이상 적을 수 없습니다.');
+    } else {
+      setTitleError('');
+    }
+    setTitle(newTitle);
   };
 
   const handleSubmit = async (e) => {
@@ -53,20 +64,20 @@ function ChallengeCreate() {
     };
 
     try {
-     const response = await axios.post('http://localhost:8080/challenges', newChallenge, {
-       headers: {
-         'Content-Type': 'application/json',
-          withCredentials: true // credentials 설정
-       }
-     });
-    
-     if (response.status === 200 || response.status === 201) {
-       navigate('/challenges');
-     } else {
-       console.error('Error creating challenge');
-     }
+      const response = await axios.post('http://localhost:8080/challenges', newChallenge, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        withCredentials: true // 여기로 이동
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        navigate('/challenges');
+      } else {
+        console.error('Error creating challenge');
+      }
     } catch (error) {
-     console.error('Error creating challenge:', error);
+      console.error('Error creating challenge:', error);
     }
   };
 
@@ -85,21 +96,51 @@ function ChallengeCreate() {
       <h1>챌린지 생성하기</h1>
       <form className="form" onSubmit={handleSubmit}>
         <div>
-          <input className="title" type="text" placeholder="챌린지 제목을 입력해주세요." value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <input
+            className="title"
+            type="text"
+            placeholder="챌린지 제목을 입력해주세요."
+            value={title}
+            onChange={handleTitleChange}
+            required
+          />
+          {titleError && <p className="error">{titleError}</p>}
         </div>
         <div>
-          <textarea className="description" placeholder="상세 내용을 입력해주세요." value={description} onChange={(e) => setDescription(e.target.value)} required />
+          <textarea
+            className="description"
+            placeholder="상세 내용을 입력해주세요."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
         </div>
         <div className='inputs'>
-          <input className="date" id="start" type="date" data-placeholder="챌린지 시작일" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
-          <input className="date" id="end" type="date" data-placeholder="챌린지 종료일" value={endDate} onChange={(e) => setEndDate(e.target.value)} required />
+          <input
+            className="date"
+            id="start"
+            type="date"
+            data-placeholder="챌린지 시작일"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            required
+          />
+          <input
+            className="date"
+            id="end"
+            type="date"
+            data-placeholder="챌린지 종료일"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            required
+          />
         </div>
         <p>*최소 2개의 할 일을 만들어 주세요.</p>
         <div>
           <button className="add" type="button" onClick={handleOpenModal}>할 일 만들기</button>
           <ul>
             {tasks.map((task, index) => (
-              <li key={index}>{task} <a href="#" onClick={(e)=> handleDeleteTask(e, index)}>X</a></li>
+              <li key={index}>{task} <a href="#" onClick={(e) => handleDeleteTask(e, index)}>X</a></li>
             ))}
           </ul>
         </div>

@@ -1,36 +1,52 @@
 .detail {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
 }
 
 .detail span div {
-  width: 92px;
-  height: 28px;
-  border-radius: 4px;
-  background-color: #004AAD;
-  color: white;
+    width: 92px;
+    height: 28px;
+    border-radius: 4px;
+    background-color: #004AAD;
+    color: white;
 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .desc {
-  width: 400px;
-  height: 60px;
+    width: 400px;
+    height: 60px;
+    text-align: center;
+}
+
+.to-dos {
+    width: 400px;
+    border-radius: 8px;
+    background-color: #FAFAFA;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.to-dos li {
+    list-style-type: none;
+    margin: 8px 0 8px 0;
 }
 
 .progress {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
 
-  width: 400px;
-  height: 120px;
-  border: 1px solid #D9D9D9;
-  border-radius: 20px;
+    width: 560px;
+    height: 120px;
+    border: 1px solid #D9D9D9;
+    border-radius: 20px;
 }

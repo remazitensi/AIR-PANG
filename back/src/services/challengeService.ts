@@ -1,18 +1,24 @@
 import connection from '@_config/db.config';
 import { Task, Challenge, CreateChallengeInput, UpdateChallengeInput} from '@_types/challenge';
-import { ResultSetHeader } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 
 // 모든 챌린지 가져오기
-export const getAllChallenges = async (searchQuery: string): Promise<Challenge[]> => {
+export const getAllChallenges = async (searchQuery: string, page: number, limit: number): Promise<{ challenges: Challenge[], total: number }> => {
+  const offset = (page - 1) * limit;
   const query = `
-    SELECT c.*, u.name AS user_name 
-    FROM challenges c 
-    JOIN users u ON c.user_id = u.id 
-    WHERE c.title LIKE ?`;
-  const [rows] = await connection.promise().query<Challenge[]>(query, [`%${searchQuery}%`]);
-  return rows;
-};
+    SELECT SQL_CALC_FOUND_ROWS c.*, u.name AS user_name
+    FROM challenges c
+    JOIN users u ON c.user_id = u.id
+    WHERE c.title LIKE ?
+    LIMIT ?, ?
+  `;
+  const [rows] = await connection.promise().query<Challenge[] & RowDataPacket[]>(query, [`%${searchQuery}%`, offset, limit]);
 
+  const [totalRows] = await connection.promise().query<RowDataPacket[]>(`SELECT FOUND_ROWS() as total`);
+  const total = totalRows[0].total as number;
+
+  return { challenges: rows, total };
+};
 // 특정 챌린지 가져오기
 export const getChallengeById = async (id: string): Promise<{ challenge: Challenge, tasks: Task[] }> => {
   const query = `

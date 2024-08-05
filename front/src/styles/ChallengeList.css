@@ -2,117 +2,98 @@
   font-family: "Pretendard";
   font-weight: 900;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Black.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Black.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 800;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraBold.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 700;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 600;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 500;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 400;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 300;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Light.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 200;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-ExtraLight.woff") format("woff");
 }
 
 @font-face {
   font-family: "Pretendard";
   font-weight: 100;
   font-style: normal;
-  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff")
-    format("woff");
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Thin.woff") format("woff");
 }
 
 * {
   margin: 0;
   padding: 0;
-  font-family: "Pretendard";
+  font-family: 'Pretendard';
 }
 
 a {
-  text-decoration: none; /* 밑줄 제거 */
+  text-decoration: none;  /* 밑줄 제거 */
   color: black;
 }
 
 .search {
-  width: 360px;
+  width: 340px;
   height: 32px;
+  border: 1px solid #D9D9D9;
   border-radius: 16px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
-
 .search input {
-  width: 100%;
-  padding: 20px 30px;
-  border-radius: 50px;
-  border: 1px solid lightgrey;
-  font-size: 16px;
+  width: 280px;
+  border: 0;
+  outline: none;
+  text-align: center;
 }
-
-button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 50px;
-  width: 100px;
-  height: 44px;
-  position: relative;
-  margin-left: -110px;
-  background-color: #004aad;
+.search button {
+  width: 50px;
+  height: 24px;
+  border-radius: 12px;
+  border: 0;
+  background-color: #004AAD;
   color: white;
-  font-size: 15px;
-}
-
-button:hover {
-  background-color: #6ac9ff;
 }
 
 .ChallengeList {
@@ -120,18 +101,17 @@ button:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
+
 }
 
 .ChallengeList .createChallenge {
   width: 92px;
-  height: 28px;
+  height: 24px;
   border: 0;
   border-radius: 4px;
-  background-color: #004aad;
+  background-color: #004AAD;
   color: white;
-  padding: 0px;
-  font-size: 12px;
 }
 
 .ChallengeList .createChallenge a {
@@ -143,8 +123,8 @@ button:hover {
 }
 
 .Challenges li {
-  width: 340px;
-  height: 100px;
+  width: 400px;
+  height: 140px;
   border-radius: 8px;
   margin: 12px 0;
   padding: 20px;
@@ -163,10 +143,51 @@ button:hover {
   width: 92px;
   height: 28px;
   border-radius: 4px;
-  background-color: #004aad;
+  background-color: #004AAD;
   color: white;
 
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination-button {
+  background-color: #004AAD;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.pagination-button:hover {
+  background-color: #003580;
+}
+
+.pageButton {
+  background-color: #f0f0f0;
+  color: #333;
+  border: none;
+  padding: 10px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.pageButton:hover {
+  background-color: #ddd;
+}
+
+.pageButton.active {
+  background-color: #004AAD;
+  color: white;
 }

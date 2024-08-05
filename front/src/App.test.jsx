@@ -1,26 +1,47 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import Home from './components/Home';
+import React, { useState } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Layout from "./components/Layout/Layout";
+import MainPage from "./pages/MainPage";
+import UriLocations from "./pages/UriLocations";
+import Challenges from "./pages/Challenges";
+import SearchCityPage from "./pages/SearchCityPage";
+import MyPage from "./pages/MyPage";
+import Weather from "./pages/Weather";
 import LocationPage from './components/Location/LocationPage';
-import Locations from './components/Location/Locations';
+// import Locations from './components/Location/Locations';
 import LocationDetail from './components/Location/LocationDetail';
+import Cursor from "./components/Cursor";
+import BubbleCursor from "./components/BubbleCursor";
+import GoogleCallback from "./components/landing/googlecallback";
+import WeatherLanding from "./components/Landing/WeatherLanding";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  const handleLogout = () => {
+    setIsLoggedIn(true);
+  };
+
   return (
     <Router>
-      <div>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/locations">우리동네 찾기</Link>
-        </nav>
-        <h1>Welcome back!</h1>
+      <Cursor />
+      <BubbleCursor />
+      <Layout isLoggedIn={isLoggedIn} onLogout={handleLogout}>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/locations" element={<Locations />} />
+          <Route path="/" element={<WeatherLanding />} />
+          <Route path="/locations" element={<UriLocations />} />
           <Route path="/locations/sub" element={<LocationPage />} />
           <Route path="/location/detail" element={<LocationDetail />} />
+          <>
+            <Route path="/detail" element={<Weather />} />
+            <Route path="/challenges/*" element={<Challenges />} />
+            <Route path="/my" element={<MyPage />} />
+            <Route path="/search" element={<SearchCityPage />} />
+            <Route path="/auth/google/callback" element={<GoogleCallback />} />
+          </>
+          {/* )} */}
         </Routes>
-      </div>
+      </Layout>
     </Router>
   );
 }
