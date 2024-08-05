@@ -1,5 +1,5 @@
 import React from "react";
-import AirQualityChart from "../components/Chart/AirQualityChart";
+// import AirQualityChart from "../components/Chart/AirQualityChart";
 import MonthlyAqi from "../components/Chart/MonthlyAqi";
 
 function Weather({ locationData }) {

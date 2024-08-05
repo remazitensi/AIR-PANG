@@ -32,7 +32,7 @@ function Header({ isLoggedIn, onLogout }) {
           ) : (
             <>
               <li>
-                <Link to="/weather">날씨정보</Link>
+                <Link to="/detail">날씨정보</Link>
               </li>
               <li>
                 <Link to="/challenges">환경챌린지</Link>

@@ -1,6 +1,6 @@
 import React from 'react';
-import googleLogo from '../assets/images/google-logo.png'; // 이미지 경로
-import '../styles/GoogleLoginButton.css'; // CSS 경로
+import googleLogo from '../../assets/images/google-logo.png'; // 이미지 경로
+import '../../styles/GoogleLoginButton.css'; // CSS 경로
 
 const GoogleLoginButton = () => {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;  // 환경 변수에서 클라이언트 ID 가져오기

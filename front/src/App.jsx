@@ -12,7 +12,8 @@ import LocationPage from './components/Location/LocationPage';
 import LocationDetail from './components/Location/LocationDetail';
 import Cursor from "./components/Cursor";
 import BubbleCursor from "./components/BubbleCursor";
-import GoogleCallback from "./components/Landing/GoogleCallback";
+import GoogleCallback from "./components/Login/googlecallback";
+import WeatherLanding from "./components/Landing/WeatherLanding";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -27,7 +28,7 @@ function App() {
       <BubbleCursor />
       <Layout isLoggedIn={isLoggedIn} onLogout={handleLogout}>
         <Routes>
-          <Route path="/" element={<MainPage />} />
+          <Route path="/" element={<WeatherLanding />} />
           <Route path="/locations" element={<UriLocations />} />
           <Route path="/locations/sub" element={<LocationPage />} />
           <Route path="/location/detail" element={<LocationDetail />} />

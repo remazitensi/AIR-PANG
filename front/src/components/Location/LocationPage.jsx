@@ -90,13 +90,13 @@ function LocationPage() {
           <div
             style={{
               position: 'absolute',
-              top: tooltip.y + 20,
-              left: tooltip.x + 20,
-              backgroundColor: 'rgba(0, 0, 0, 0.75)',
+              top: tooltip.y + 45,
+              left: tooltip.x + 30,
+              backgroundColor: 'rgba(231, 246, 255, 0.70)',
               color: 'white',
               padding: '5px',
               borderRadius: '5px',
-            }} //이렇게 인라인 스타일링을 해줘도 씹힙니다 
+            }} // 버튼 모양 인라인 스타일링
           >
             <p>지역: {tooltip.location}</p>
             <p>Grade: {tooltip.grade}</p>
