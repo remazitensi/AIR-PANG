@@ -15,15 +15,19 @@ function UriLocations() {
       >
         <MapChart />
       </div>
-      <div
+      {/* <div
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
+<<<<<<< HEAD
 
       </div>
+=======
+      </div> */}
+>>>>>>> 46e8e8e58147a54f45b86828169f5cefd818a448
     </div>
   );
 }
