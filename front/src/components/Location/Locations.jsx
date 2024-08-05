@@ -9,7 +9,7 @@ function Locations() {
   return (
     <div>
       {locations.map(location => (
-        <Link key={location} to={`/location?location=${location}`}>
+        <Link key={location} to={`/locations/sub?location=${location}`}>
           <button>{location}</button>
         </Link>
       ))}

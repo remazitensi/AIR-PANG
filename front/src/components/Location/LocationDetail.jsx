@@ -10,7 +10,7 @@ function LocationDetail() {
 
   useEffect(() => {
     if (location && subLocation) {
-      fetch(`http://localhost:8080/locations/detail?location=${location}&subLocation=${subLocation}`)
+      fetch(`http://localhost:8080/locations/sub?location=${location}&subLocation=${subLocation}`)
         .then(response => response.json())
         .then(data => setData(data))
         .catch(error => console.error('Error fetching data:', error));

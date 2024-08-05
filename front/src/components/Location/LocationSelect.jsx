@@ -1,74 +1,78 @@
-// src/LocationSelect.js
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-function LocationSelect() {
-  const [locations, setLocations] = useState([]);
-  const [selectedMajorRegion, setSelectedMajorRegion] = useState("");
-  const [selectedSubRegion, setSelectedSubRegion] = useState("");
+const LocationSelector = () => {
+    const [locations, setLocations] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState('');
+    const [selectedSubLocation, setSelectedSubLocation] = useState('');
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // axios를 사용하여 데이터 가져오기
-    axios.get('http://localhost:8080/locations')
-      .then(response => {
-        setLocations(response.data.locations);
-      })
-      .catch(error => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
+    useEffect(() => {
+        fetchLocations();
+    }, []);
 
-  const handleMajorRegionChange = (event) => {
-    setSelectedMajorRegion(event.target.value);
-    setSelectedSubRegion(""); // 주요 지역이 변경될 때 세부 지역 초기화
-  };
+    const fetchLocations = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/locations/detail?location=${location}&subLocation=${subLocation}');
+            if (response.data && response.data.locations) {
+                setLocations(response.data.locations);
+            } else {
+                throw new Error('Invalid data format');
+            }
+        } catch (err) {
+            console.error('Error fetching locations:', err);
+            setError(err.response ? err.response.data.message : err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const handleSubRegionChange = (event) => {
-    setSelectedSubRegion(event.target.value);
-  };
+    const handleLocationChange = (event) => {
+        setSelectedLocation(event.target.value);
+        setSelectedSubLocation('');
+    };
 
-  // 주요 지역 목록 생성
-  const majorRegions = [...new Set(locations.map(location => location.address_a_name))];
+    const handleSubLocationChange = (event) => {
+        setSelectedSubLocation(event.target.value);
+    };
 
-  // 선택된 주요 지역에 따른 세부 지역 목록 생성
-  const subRegions = locations
-    .filter(location => location.address_a_name === selectedMajorRegion)
-    .map(location => location.address_b_name);
+    const getUniqueLocations = () => {
+        return [...new Set(locations.map(locationObj => locationObj.address_a_name))];
+    };
 
-  return (
-    <div>
-      <h1>지역 선택기</h1>
-      <div>
-        <label>주요 지역: </label>
-        <select value={selectedMajorRegion} onChange={handleMajorRegionChange}>
-          <option value="">선택하세요</option>
-          {majorRegions.map((region) => (
-            <option key={region} value={region}>{region}</option>
-          ))}
-        </select>
-      </div>
+    const getSubLocations = (location) => {
+        return locations
+            .filter(locationObj => locationObj.address_a_name === location)
+            .map(locationObj => locationObj.address_b_name);
+    };
 
-      {selectedMajorRegion && (
+    if (loading) return <p>Loading locations...</p>;
+    if (error) return <p>Error: {error}</p>;
+
+    return (
         <div>
-          <label>세부 지역: </label>
-          <select value={selectedSubRegion} onChange={handleSubRegionChange}>
-            <option value="">선택하세요</option>
-            {subRegions.map((subRegion) => (
-              <option key={subRegion} value={subRegion}>{subRegion}</option>
-            ))}
-          </select>
-        </div>
-      )}
+            <select value={selectedLocation} onChange={handleLocationChange}>
+                <option value="">주요도시 선택</option>
+                {getUniqueLocations().map(location => (
+                    <option key={location} value={location}>{location}</option>
+                ))}
+            </select>
 
-      {selectedMajorRegion && selectedSubRegion && (
-        <div>
-          <h2>선택된 지역</h2>
-          <p>주요 지역: {selectedMajorRegion}</p>
-          <p>세부 지역: {selectedSubRegion}</p>
-        </div>
-      )}
-    </div>
-  );
-}
+            <select value={selectedSubLocation} onChange={handleSubLocationChange} disabled={!selectedLocation}>
+                <option value="">상세도시 선택</option>
+                {selectedLocation && getSubLocations(selectedLocation).map(subLocation => (
+                    <option key={subLocation} value={subLocation}>{subLocation}</option>
+                ))}
+            </select>
 
-export default LocationSelect;
+            {!selectedLocation || !selectedSubLocation ? (
+                <p>위치를 선택해주세요.</p>
+            ) : (
+                <p>선택한 위치: {selectedLocation}, {selectedSubLocation}</p>
+            )}
+        </div>
+    );
+};
+
+export default LocationSelector;

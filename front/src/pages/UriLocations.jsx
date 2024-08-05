@@ -1,8 +1,5 @@
 import React from "react";
 import MapChart from "../components/Map/MapChart";
-import LocationDetail from "../components/Location/LocationDetail";
-import LocationPage from "../components/Location/LocationPage";
-import Locations from "../components/Location/Locations";
 
 function UriLocations() {
   return (
@@ -25,9 +22,7 @@ function UriLocations() {
           alignItems: "center",
         }}
       >
-        {/* <LocationDetail /> */}
-        {/* <Locations /> */}
-        {/* <LocationPage /> */}
+
       </div>
     </div>
   );

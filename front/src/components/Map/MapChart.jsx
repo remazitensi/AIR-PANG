@@ -1,13 +1,10 @@
-// src/MapChart.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import highchartsMap from 'highcharts/modules/map';
 import proj4 from 'proj4';
-import MapModal from './MapModal';
-import MonthlyAqi from '../Chart/MonthlyAqi';
-
+import { useNavigate } from 'react-router-dom';
 // 라이브러리 추가: npm install highcharts highcharts-react-official @types/highcharts proj4 axios
 
 // Highcharts 맵 모듈 초기화
@@ -34,33 +31,24 @@ const MapChart = () => {
     }
   });
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRegion, setSelectedRegion] = useState('');
+  const navigate = useNavigate();
 
   const handleRegionClick = (e) => {
     const regionName = e.point.name;
-    setSelectedRegion(regionName);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
+    const encodedRegionName = encodeURIComponent(regionName);
+    navigate(`/locations/sub?location=${encodedRegionName}`);
   };
 
   useEffect(() => {
     const fetchTopology = async () => {
       try {
-        // 로컬 파일 import
         const topology = await import('../../data/kr-all.topo.json');
-
-        // 데이터 가져오기
         const response = await axios.get('http://localhost:8080/locations');
-        const locations = response.data;
+        const locationsData = response.data;
 
-        // 데이터 형식 변환
-        const data = locations.map((location, index) => {
+        const data = locationsData.map((location) => {
           const mapKey = {
-            '강원': 'kr-kw',
+            '강원': 'kr-kw',  //보시는 바와 같이 여기서는 지도데이터랑 같이 동작하도록 매핑을 해주었습니다
             '경기': 'kr-kg',
             '경남': 'kr-kn',
             '경북': 'kr-2688',
@@ -135,7 +123,7 @@ const MapChart = () => {
 
     fetchTopology();
   }, []);
-
+  
   return (
     <div>
       <HighchartsReact
@@ -143,10 +131,6 @@ const MapChart = () => {
         options={mapOptions}
         constructorType={'mapChart'}
       />
-      <MapModal isOpen={isModalOpen} onClose={closeModal}>
-        {/* <h2>{selectedRegion}</h2> */}
-        <a href='http://localhost:3000/locations=${selectedRegion}'>{selectedRegion}</a> 
-      </MapModal>
     </div>
   );
 };
