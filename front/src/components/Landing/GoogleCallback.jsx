@@ -2,11 +2,13 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "react-cookies";
 
-const GoogleCallback = () => {
+const GoogleCallback = ({ onLogin }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchToken = async () => {
+      console.log('fetchToken');
+      debugger;
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
@@ -15,6 +17,7 @@ const GoogleCallback = () => {
           // JWT를 쿠키에 저장
           Cookies.save("jwt", token, { path: "/" });
 
+          onLogin();
           // 메인 페이지로 리디렉션
           navigate("/");
         } else {
@@ -28,7 +31,7 @@ const GoogleCallback = () => {
     };
 
     fetchToken();
-  }, [navigate]);
+  }, []);
 
   return <div>Loading...</div>;
 };

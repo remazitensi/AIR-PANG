@@ -1,9 +1,9 @@
 import React from "react";
 import WeatherLanding from "../components/Landing/WeatherLanding";
-function MainPage() {
+function MainPage({ isLoggedIn }) {
   return (
     <div>
-      <WeatherLanding />
+      <WeatherLanding isLoggedIn={isLoggedIn} />
     </div>
   );
 }

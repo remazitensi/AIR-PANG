@@ -8,7 +8,7 @@ import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import GoogleLoginButton from "../../components/Landing/GoogleLoginButton";
 
 
-export default function WeatherLanding() {
+export default function WeatherLanding({isLoggedIn}) {
   const locationState = useLocation().state || {};
   const [weatherData, setWeatherData] = useState(null);
   const [locationError, setLocationError] = useState(null);
@@ -91,7 +91,7 @@ export default function WeatherLanding() {
           <br />
           괜찮을까요?
         </h1>
-        <GoogleLoginButton />
+        {!isLoggedIn && <GoogleLoginButton />}
       </div>
       <div className="weather-card">
         {weatherData && (
