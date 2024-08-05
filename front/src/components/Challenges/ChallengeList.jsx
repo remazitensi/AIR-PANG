@@ -7,73 +7,18 @@ function ChallengeList() {
   const [challenges, setChallenges] = useState([]);
   const [search, setSearch] = useState('');
 
-  //원본
-  //const fetchChallenges = (searchQuery = '') => {
-  //  fetch(`http://localhost:8080/challenges?search=${searchQuery}`)
-  //    .then(response => response.json())
-  //    .then(data => setChallenges(data.challenges))
-  //    .catch(error => console.error('Error fetching challenges:', error));
-  //};
-
-  // //Axios 사용
-  // const fetchChallenges = async (searchQuery = '') => {
-  //  try {
-  //    const response = await axios.get(`http://localhost:8080/challenges?search=${searchQuery}`);
-  //    setChallenges(response.data.challenges);
-  //  } catch (error) {
-  //    console.error('Error fetching challenges:', error);
-  //  }
-  // };
-
-  //로컬스토리지 사용
-  const fetchChallenges = async () => {
-    try {
-      // 로컬 스토리지에서 데이터 가져오기
-      const cachedData = JSON.parse(localStorage.getItem('challenges'));
-      setChallenges(cachedData);
-    } catch (error) {
-      console.error('Error fetching challenges:', error);
-    }
+  const fetchChallenges = async (searchQuery = '') => {
+   try {
+     const response = await axios.get(`http://localhost:8080/challenges?search=${searchQuery}`, {
+      withCredentials: true // credentials 설정
+    });
+     setChallenges(response.data.challenges);
+   } catch (error) {
+     console.error('Error fetching challenges:', error);
+   }
   };
   
   useEffect(() => {
-    if (!localStorage.getItem('challenges')) {
-      localStorage.setItem("challenges", JSON.stringify([{
-        "id": 1,
-        "user_id": 1,
-        "title": "친환경 생활 실천",
-        "description": "일주일 동안 플라스틱 사용 줄이기",
-        "start_date": "2024-07-01",
-        "end_date": "2024-08-01",
-        "tasks": [
-          {
-            "description": "분리수거 하기",
-            "is_completed": false
-          },
-          {
-            "description": "포장하기",
-            "is_completed": false
-          }
-        ]
-      }, {
-        "id": 2,
-        "user_id": 1,
-        "title": "대중교통 이용",
-        "description": "자가 대신 대중교통 이용하기",
-        "start_date": "2024-08-01",
-        "end_date": "2024-09-01",
-        "tasks": [
-          {
-            "description": "버스 타기",
-            "is_completed": false
-          },
-          {
-            "description": "지하철 타기",
-            "is_completed": false
-          }
-        ]
-      }]));
-   } //중요!! 로컬스토리지에 챌린지 하나 만들어두기
    fetchChallenges(); // 페이지 로드 시 모든 챌린지 불러오기
   }, []);
 

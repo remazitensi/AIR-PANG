@@ -1,13 +1,12 @@
 import { Router } from 'express';
-import { getUserInfo, updateUser } from '@_controllers/userController';
-// import { authenticateJWT } from '@_middlewares/authMiddleware';
-// import { logout, deleteUser } from '@_controllers/authController';
+import { getUserInfo } from '@_controllers/userController';
+import { authenticateJWT } from '@_middlewares/authMiddleware';
+import { logout, deleteUser } from '@_controllers/authController';
 
 const userRouter = Router();
 
-// userRouter.get('/', authenticateJWT, getUserInfo);
-// userRouter.put('/', authenticateJWT, updateUser);
-// userRouter.post('/logout', authenticateJWT, logout);
-// userRouter.delete('/', authenticateJWT, deleteUser);
+userRouter.get('/', authenticateJWT, getUserInfo); //유저정보
+userRouter.post('/logout', authenticateJWT, logout); //로그아웃
+userRouter.delete('/', authenticateJWT, deleteUser); //탈퇴
 
 export default userRouter;

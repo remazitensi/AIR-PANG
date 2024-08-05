@@ -45,7 +45,6 @@ function ChallengeCreate() {
     }
 
     const newChallenge = {
-      //user_name,
       title,
       description,
       start_date: startDate,
@@ -53,68 +52,32 @@ function ChallengeCreate() {
       tasks: filteredTasks.map(task => ({ description: task, is_completed: false })),
     };
 
-    //로컬스토리지 전용 newChallenge
-    const storedChallenges = JSON.parse(localStorage.getItem('challenges')) || [];
-    const maxId = storedChallenges.length > 0 ? Math.max(...storedChallenges.map(challenge => challenge.id)) : 0;
-    const newId = maxId + 1;
-    const newChallengeWithId = {...newChallenge, id: newId};
-
-    //원본
-    //try {
-    //  const response = await fetch('http://localhost:8080/challenges', {
-    //    method: 'POST',
-    //    headers: {
-    //      'Content-Type': 'application/json',
-    //    },
-    //    body: JSON.stringify(newChallenge),
-    //  });
-    //
-    //  if (response.ok) {
-    //    navigate('/challenges');
-    //  } else {
-    //    console.error('Error creating challenge');
-    //  }
-    //} catch (error) {
-    //  console.error('Error creating challenge:', error);
-    //}
-
-    //Axios 사용
-    // try {
-    //  const response = await axios.post('http://localhost:8080/challenges', newChallenge, {
-    //    headers: {
-    //      'Content-Type': 'application/json',
-    //    },
-    //  });
-    
-    //  if (response.status === 200 || response.status === 201) {
-    //    navigate('/challenges');
-    //  } else {
-    //    console.error('Error creating challenge');
-    //  }
-    // } catch (error) {
-    //  console.error('Error creating challenge:', error);
-    // }
-
-    //로컬스토리지 사용
     try {
-      // 기존 데이터 가져오기
-      const storedChallenges = JSON.parse(localStorage.getItem('challenges')) || [];
-      // 새로운 데이터 추가
-      storedChallenges.push(newChallengeWithId);
-      // 업데이트된 데이터를 로컬스토리지에 저장
-      localStorage.setItem('challenges', JSON.stringify(storedChallenges));
-  
-      // 챌린지 페이지로 이동
-      navigate('/challenges');
-      
-    } catch (error) {
-      console.error('Error creating challenge:', error);
-    }
+     const response = await axios.post('http://localhost:8080/challenges', newChallenge, {
+       headers: {
+         'Content-Type': 'application/json',
+          withCredentials: true // credentials 설정
+       }
+     });
     
+     if (response.status === 200 || response.status === 201) {
+       navigate('/challenges');
+     } else {
+       console.error('Error creating challenge');
+     }
+    } catch (error) {
+     console.error('Error creating challenge:', error);
+    }
   };
 
   const handleCancel = () => {
     navigate('/challenges');
+  };
+
+  const handleDeleteTask = (e, index) => {
+    const newTasks = tasks.filter((_, taskIndex) => taskIndex !== index);
+    e.preventDefault();
+    setTasks(newTasks);
   };
 
   return (
@@ -136,7 +99,7 @@ function ChallengeCreate() {
           <button className="add" type="button" onClick={handleOpenModal}>할 일 만들기</button>
           <ul>
             {tasks.map((task, index) => (
-              <li key={index}>{task}</li>
+              <li key={index}>{task} <a href="#" onClick={(e)=> handleDeleteTask(e, index)}>X</a></li>
             ))}
           </ul>
         </div>

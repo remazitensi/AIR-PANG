@@ -14,51 +14,24 @@ function ChallengeEdit() {
   const [modalOpen, setModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  //원본
-  //useEffect(() => {
-  //  fetch(`http://localhost:8080/challenges/${id}`)
-  //    .then(response => response.json())
-  //    .then(data => {
-  //      setTitle(data.challenge.title);
-  //      setDescription(data.challenge.description);
-  //      setStartDate(data.challenge.start_date.split('T')[0]);
-  //      setEndDate(data.challenge.end_date.split('T')[0]);
-  //      setTasks(data.tasks.map(task => task.description));
-  //    })
-  //    .catch(error => console.error('Error fetching challenge:', error));
-  //}, [id]);
+  useEffect(() => {
+   const fetchChallenge = async () => {
+     try {
+       const response = await axios.get(`http://localhost:8080/challenges/${id}`, {
+         withCredentials: true // credentials 설정
+       });
+       const data = response.data;
+       setTitle(data.challenge.title);
+       setDescription(data.challenge.description);
+       setStartDate(data.challenge.start_date.split('T')[0]);
+       setEndDate(data.challenge.end_date.split('T')[0]);
+       setTasks(data.tasks.map(task => task.description));
+     } catch (error) {
+       console.error('Error fetching challenge:', error);
+     }
+   };
 
-  //Axios 사용
-  //useEffect(() => {
-  //  const fetchChallenge = async () => {
-  //    try {
-  //      const response = await axios.get(`http://localhost:8080/challenges/${id}`);
-  //      const data = response.data;
-  //      setTitle(data.challenge.title);
-  //      setDescription(data.challenge.description);
-  //      setStartDate(data.challenge.start_date.split('T')[0]);
-  //      setEndDate(data.challenge.end_date.split('T')[0]);
-  //      setTasks(data.tasks.map(task => task.description));
-  //    } catch (error) {
-  //      console.error('Error fetching challenge:', error);
-  //    }
-  //  };
-  //
-  //  fetchChallenge();
-  //}, [id]);
-
-  //로컬스토리지 사용
-  useEffect(()=> {
-    const challenges = JSON.parse(localStorage.getItem('challenges'));
-    const selectedChallenge = challenges.find(challenge => challenge.id === parseInt(id));
-    
-    if (selectedChallenge) {
-      setTitle(selectedChallenge.title);
-      setDescription(selectedChallenge.description);
-      setStartDate(selectedChallenge.start_date);
-      setEndDate(selectedChallenge.end_date);
-      setTasks(selectedChallenge.tasks.map(task => task.description));
-    }
+   fetchChallenge();
   }, [id]);
 
   const handleTaskChange = (index, value) => {
@@ -73,7 +46,7 @@ function ChallengeEdit() {
   };
 
   const handleOpenModal = () => {
-    setModalTasks(tasks.length > 0 ? tasks.concat(Array(5 - tasks.length).fill('')) : ['', '', '', '', '']);
+    setModalTasks(tasks.length > 0 ? tasks.concat(Array(5 - tasks.length).fill('')).slice(0, 5) : ['', '', '', '', '']);
     setModalOpen(true);
   };
 
@@ -100,60 +73,32 @@ function ChallengeEdit() {
       tasks: filteredTasks.map(task => ({ description: task, is_completed: false })),
     };
 
-    //원본
-    //try {
-    //  const response = await fetch(`http://localhost:8080/challenges/${id}`, {
-    //    method: 'PATCH',
-    //    headers: {
-    //      'Content-Type': 'application/json',
-    //    },
-    //    body: JSON.stringify(updatedChallenge),
-    //  });
-    //
-    //  if (response.ok) {
-    //    navigate('/challenges');
-    //  } else {
-    //    console.error('Error updating challenge');
-    //  }
-    //} catch (error) {
-    //  console.error('Error updating challenge:', error);
-    //}
-
-    //Axios 사용
-    // try {
-    //   const response = await axios.patch(`http://localhost:8080/challenges/${id}`, updatedChallenge, {
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //   });
-    
-    //   if (response.status === 200) {
-    //     navigate('/challenges');
-    //   } else {
-    //     console.error('Error updating challenge');
-    //   }
-    // } catch (error) {
-    //   console.error('Error updating challenge:', error);
-    // }
-
-    //로컬스토리지 사용
     try {
-     const challenges = JSON.parse(localStorage.getItem('challenges'));
-     const selectedChallenge = challenges.find(challenge => challenge.id === parseInt(id));
-     const index = challenges.indexOf(selectedChallenge)
-     // 새로운 데이터 추가
-     const newChallenges = {...selectedChallenge, ...updatedChallenge};
-     challenges[index] = newChallenges;
-     // 업데이트된 데이터를 로컬스토리지에 저장
-     localStorage.setItem('challenges', JSON.stringify(challenges));
-     navigate(-1);
+      const response = await axios.patch(`http://localhost:8080/challenges/${id}`, updatedChallenge, {
+        headers: {
+          'Content-Type': 'application/json',
+          withCredentials: true // credentials 설정
+        },
+      });
+
+      if (response.status === 204) {
+        navigate(`/challenges/${id}`);
+      } else {
+        console.error('Error updating challenge');
+      }
     } catch (error) {
-     console.error('Error updating challenge:', error);
+      console.error('Error updating challenge:', error);
     }
   };
 
   const handleCancel = () => {
     navigate(-1);
+  };
+
+  const handleDeleteTask = (e, index) => {
+    const newTasks = tasks.filter((_, taskIndex) => taskIndex !== index);
+    e.preventDefault();
+    setTasks(newTasks);
   };
 
   return (
@@ -174,19 +119,20 @@ function ChallengeEdit() {
           <button className='add' type="button" onClick={handleOpenModal}>할 일 수정하기</button>
           <ul>
             {tasks.map((task, index) => (
-              <li key={index}>{task}</li>
+              <li key={index}>{task} <a href="#" onClick={(e) => handleDeleteTask(e, index)}>X</a></li>
             ))}
           </ul>
         </div>
         <div className='buttons'>
-        <button className='cancel' type="button" onClick={handleCancel}>취소하기</button>
-        <button className='create' type="submit">저장하기</button>
+          <button className='cancel' type="button" onClick={handleCancel}>취소하기</button>
+          <button className='create' type="submit">저장하기</button>
         </div>
       </form>
       {modalOpen && (
         <div className="modal">
           <div className="modal-content">
             <h2>할 일 수정하기</h2>
+            <p>할 일은 최대 5개까지 생성 가능합니다.</p>
             {modalTasks.map((task, index) => (
               <input
                 key={index}

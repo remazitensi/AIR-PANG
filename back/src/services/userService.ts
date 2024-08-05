@@ -1,60 +1,55 @@
 import connection from '@_config/db.config';
-import { ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import { RowDataPacket } from 'mysql2/promise';
 
 export class UserService {
-  // 사용자 마이페이지 정보 및 참여중인 환경 챌린지 목록 조회
-  async getUserProfileAndChallenges(userId: number): Promise<{ userLocations: any[], challenges: any[] }> {
-    const [userLocations] = await connection.promise().query<RowDataPacket[]>(
-      'SELECT id, location_id FROM user_locations WHERE user_id = ?',
-      [userId]
-    );
-
-    const [challenges] = await connection.promise().query<RowDataPacket[]>(
+  // 사용자 마이페이지 정보 및 작성한 챌린지 목록 조회
+  async getUserProfileAndChallenges(userId: number): Promise<{ challenges: any[] }> {
+    const [results] = await connection.promise().query<RowDataPacket[]>(
       `SELECT 
-         c.id, 
-         c.challenge_id, 
-         c.title, 
-         c.description, 
-         c.status, 
-         c.start_date, 
-         c.end_date 
-       FROM challenges c
-       JOIN user_challenges uc ON c.id = uc.challenge_id
-       WHERE uc.user_id = ?`,
+         challenges.id, 
+         challenges.title, 
+         challenges.goal, 
+         challenges.progress, 
+         challenges.start_date, 
+         challenges.end_date, 
+         tasks.id AS task_id, 
+         tasks.description AS task_description, 
+         tasks.is_completed AS task_is_completed
+       FROM challenges
+       LEFT JOIN tasks ON challenges.id = tasks.challenge_id
+       WHERE challenges.user_id = ?
+       ORDER BY challenges.id, tasks.id`,
       [userId]
     );
 
-    return { userLocations: userLocations as any[], challenges: challenges as any[] };
-  }
+    // 챌린지와 그에 해당하는 작업을 그룹화
+    const challengesMap: { [key: number]: any } = {};
 
-  // 관심지역 페이지 조회
-  async searchLocations(query: string): Promise<any[]> {
-    const [locations] = await connection.promise().query<RowDataPacket[]>(
-      'SELECT id, name, description FROM locations WHERE name LIKE ?',
-      [`%${query}%`]
-    );
-    return locations as any[];
-  }
-
-  // 사용자 정보 업데이트
-  async updateUser(userId: number, userData: { name?: string; email?: string; location_ids?: number[] }): Promise<any> {
-    const { name, email, location_ids } = userData;
-
-    // 사용자의 정보 업데이트
-    const [result] = await connection.promise().query<ResultSetHeader>(
-      'UPDATE users SET name = ?, email = ? WHERE id = ?',
-      [name, email, userId]
-    );
-
-    // location_ids가 있을 경우, 관심지역 업데이트 처리
-    if (location_ids) {
-      await connection.promise().query('DELETE FROM user_locations WHERE user_id = ?', [userId]);
-      const locationValues = location_ids.map(locationId => [userId, locationId]);
-      if (locationValues.length > 0) {
-        await connection.promise().query('INSERT INTO user_locations (user_id, location_id) VALUES ?', [locationValues]);
+    results.forEach((row: any) => {
+      if (!challengesMap[row.id]) {
+        challengesMap[row.id] = {
+          id: row.id,
+          title: row.title,
+          goal: row.goal,
+          progress: row.progress,
+          start_date: row.start_date,
+          end_date: row.end_date,
+          tasks: []
+        };
       }
-    }
 
-    return result.affectedRows > 0 ? { userId, name, email, location_ids } : null;
+      if (row.task_id) {
+        challengesMap[row.id].tasks.push({
+          id: row.task_id,
+          description: row.task_description,
+          is_completed: row.task_is_completed
+        });
+      }
+    });
+
+    // 작업이 있는 챌린지만 반환
+    const challenges = Object.values(challengesMap);
+
+    return { challenges };
   }
 }
