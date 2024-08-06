@@ -43,7 +43,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 
 // 인증된 API 라우트
-app.use('/', routes);
+app.use('/api', routes);
 
 startCronJob();
 

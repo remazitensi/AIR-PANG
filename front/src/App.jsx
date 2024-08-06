@@ -13,6 +13,7 @@ import BubbleCursor from "./components/BubbleCursor";
 import GoogleCallback from "./components/Landing/GoogleCallback";
 import LocationPage from "./components/Location/LocationPage";
 import LocationDetail from "./components/Location/LocationDetail";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,7 +26,7 @@ function App() {
   const handleLogout = () => {
     setIsLoggedIn(true);
 
-    fetch("/my/logout", {
+    fetch(`${apiUrl}/my/logout`, {
       method: 'POST',
       credentials: 'include',
     })
