@@ -15,7 +15,7 @@ import LocationPage from "./components/Location/LocationPage";
 import LocationDetail from "./components/Location/LocationDetail";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const handleLogin = () => {
     console.log('얍얍 여러분 화이팅!!') //코치님의 응원메세지 출력
@@ -23,7 +23,6 @@ function App() {
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(true);
 
     fetch("/my/logout", {
       method: 'POST',
@@ -31,6 +30,7 @@ function App() {
     })
       .then(() => {
         console.log("성공!");
+        setIsLoggedIn(false);
       })
       .catch(() => {
         console.log("실패!");

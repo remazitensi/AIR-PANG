@@ -1,7 +1,12 @@
 import dotenv from 'dotenv';
 import { Config } from '@_types/config';
 
-dotenv.config();
+// 환경에 따라 다른 .env 파일 로드
+if (process.env.NODE_ENV === 'production') {
+  dotenv.config({ path: '.env.production' });
+} else {
+  dotenv.config({ path: '.env' });
+};
 
 export const config: Config = {
   CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',

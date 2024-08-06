@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ChallengeStatus from './Challenges/ChallengeStatus';
 import "../styles/My.css";
 
 const MyPage = () => {
@@ -28,20 +27,19 @@ const MyPage = () => {
   };
 
   return (
-    <div>
-      <h2>마이페이지</h2>
+    <div className="my-favorite-container">
       <div className="my-favorite">
+        <h3>나의 관심지역</h3>
         <ul>
           {favorites.length > 0 ? (
             favorites.map((location) => (
-              <li key={location.id}>
-                {location.address_a_name} {location.address_b_name}
-                <button
-                  className="delete-button"
+              <li key={location.id} className="favorite-item">
+                <span
+                  className="location-name"
                   onClick={() => handleViewWeather(location)}
                 >
-                  보기
-                </button>
+                  {location.address_a_name} {location.address_b_name}
+                </span>
                 <button
                   className="delete-button"
                   onClick={() => handleDelete(location.id)}
@@ -54,13 +52,11 @@ const MyPage = () => {
             <li>즐겨찾기 항목이 없습니다.</li>
           )}
         </ul>
-
         <a href="/search" className="addFavorite">
           관심지역 설정하기
         </a>
       </div>
-      <ChallengeStatus />
-      </div>
+    </div>
   );
 };
 

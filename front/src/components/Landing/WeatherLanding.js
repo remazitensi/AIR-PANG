@@ -6,9 +6,9 @@ import pang from "../../assets/images/pang.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import GoogleLoginButton from "../../components/Landing/GoogleLoginButton";
+const apiUrl = process.env.REACT_APP_API_URL;
 
-
-export default function WeatherLanding({isLoggedIn}) {
+export default function WeatherLanding({ isLoggedIn }) {
   const locationState = useLocation().state || {};
   const [weatherData, setWeatherData] = useState(null);
   const [locationError, setLocationError] = useState(null);
@@ -21,15 +21,12 @@ export default function WeatherLanding({isLoggedIn}) {
   useEffect(() => {
     const fetchWeatherData = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:8080/locations/detail",
-          {
-            params: {
-              location: currentLocation.location,
-              subLocation: currentLocation.subLocation,
-            },
-          }
-        );
+        const response = await axios.get(`${apiUrl}/locations/detail`, {
+          params: {
+            location: currentLocation.location,
+            subLocation: currentLocation.subLocation,
+          },
+        });
 
         // Log the entire response and data
         console.log("API Response:", response);

@@ -3,25 +3,14 @@
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
+  font-family: "Pretendard";
 }
 
-.my-page {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  gap: 50px;
-  padding-top: 80px;
-
-  width: 100%;
-  height: 100vh;
-}
-
-.my-page .myPageTitle {
+.my-favorite-container .my-favorite h3 {
   font-weight: 300;
-  font-size: 40px;
+  font-size: 28px;
   text-align: center;
   margin-bottom: 30px;
-  margin-top: 80px;
 }
 
 .bottom-section {
@@ -44,66 +33,39 @@
   max-width: 560px;
 }
 
-.favorite-card {
+.my-favorite ul li {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 15px 10px 20px;
   margin-bottom: 10px;
   border-radius: 50px;
-  background-color: #d6f0ff;
+  background-color: #004aad;
+}
+
+.my-favorite ul li:hover {
+  background-color: #00a3ff;
+}
+
+.my-favorite ul li.favorite-item .location-name {
+  cursor: pointer;
+  color: white;
 }
 
 .delete-button {
   background: none;
-  color: black;
+  color: white;
   border: none;
   cursor: pointer;
-  font-size: 20px;
-  margin-left: 10px;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  font-size: 12px;
+  margin-right: 10px;
 }
 
 .delete-button:hover {
-  color: #c00;
+  color: lightblue;
 }
 
-.challenges-list {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 20px;
-}
-
-.challenge-card {
-  margin-bottom: 30px;
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  max-width: 240px;
-}
-
-.my-favorite h2 {
-  font-size: 36px;
-  text-align: center;
-  font-weight: 300;
-}
-
-.my-favorite h3 {
-  font-weight: 300;
-  font-size: 32px;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.my-favorite h4 {
-  font-weight: 300;
-  font-size: 24px;
-  text-align: center;
-  margin-bottom: 10px;
-}
-
-.my-favorite p {
+p {
   text-align: center;
 }
 

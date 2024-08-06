@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import "../styles/Search.css";
+import "../styles/SearchCity.css";
+import pangVideo from "../assets/videos/pangVideo.mp4";
+import pang from "../assets/images/pang.png";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const locationsList = [
   "서울",
@@ -48,15 +51,12 @@ const Search = () => {
   const fetchSubLocations = async (query) => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        "http://localhost:3000/locations/detail",
-        {
-          params: {
-            location,
-            subLocation: query,
-          },
-        }
-      );
+      const response = await axios.get(`${apiUrl}/locations/detail`, {
+        params: {
+          location,
+          subLocation: query,
+        },
+      });
 
       const locations = response.data.locations
         ? [response.data.locations]
@@ -111,47 +111,65 @@ const Search = () => {
   };
 
   return (
-    <div className="search-container">
-      <h1>지역 검색</h1>
-      <div className="dropdown-container">
-        <label htmlFor="location">Location:</label>
-        <select id="location" value={location} onChange={handleLocationChange}>
-          <option value="">Select Location</option>
-          {locationsList.map((loc, index) => (
-            <option key={index} value={loc}>
-              {loc}
-            </option>
-          ))}
-        </select>
+    <div id="search-city-container" className="search-city-container">
+      <video
+        src={pangVideo}
+        type="video/mp4"
+        autoPlay
+        loop
+        muted
+        id="video-background"
+      ></video>
+      <div className="search-city-content">
+        <h2 className="search-city-title">관심지역 추가하기</h2>
+
+        <div className="search-city-inputs">
+          <div className="dropdown-container">
+            <select
+              id="location"
+              value={location}
+              onChange={handleLocationChange}
+            >
+              <option value="">지역 선택</option>
+              {locationsList.map((loc, index) => (
+                <option key={index} value={loc} className="option">
+                  {loc}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="search-input-container">
+            <input
+              id="subLocation"
+              type="text"
+              value={subLocation}
+              onChange={handleSubLocationChange}
+              onKeyDown={handleKeyDown}
+              placeholder="시군구를 입력해주세요"
+            />
+            {loading && <p>Loading...</p>}
+            {subLocations.length > 0 && (
+              <ul className="sub-location-list">
+                {subLocations.map((subLoc, index) => (
+                  <li
+                    key={index}
+                    onClick={() => handleSelectSubLocation(subLoc)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {subLoc}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <button onClick={handleButtonClick} className="search-city-button">
+            추가하기
+          </button>
+        </div>
       </div>
-      <div className="search-input-container">
-        <label htmlFor="subLocation">Sub Location:</label>
-        <input
-          id="subLocation"
-          type="text"
-          value={subLocation}
-          onChange={handleSubLocationChange}
-          onKeyDown={handleKeyDown}
-          placeholder="검색할 sub-location 입력"
-        />
-        {loading && <p>Loading...</p>}
-        {subLocations.length > 0 && (
-          <ul className="sub-location-list">
-            {subLocations.map((subLoc, index) => (
-              <li
-                key={index}
-                onClick={() => handleSelectSubLocation(subLoc)}
-                style={{ cursor: "pointer" }}
-              >
-                {subLoc}
-              </li>
-            ))}
-          </ul>
-        )}
+      <div className="mascot">
+        <img src={pang} alt="pang" />
       </div>
-      <button onClick={handleButtonClick} className="search-button">
-        추가하기
-      </button>
     </div>
   );
 };
