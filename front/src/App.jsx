@@ -47,7 +47,7 @@ function App() {
           <Route path="/" element={<MainPage isLoggedIn={isLoggedIn} />} />
           <Route path="/locations" element={<UriLocations />} />
           <Route path="/locations/sub" element={<LocationPage />} />
-          <Route path="/location/detail" element={<LocationDetail />} />
+          <Route path="/locations/detail" element={<LocationDetail />} />
 
           <>
             <Route path="/detail" element={<Weather />} />

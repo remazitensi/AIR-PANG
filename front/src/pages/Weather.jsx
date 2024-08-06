@@ -4,6 +4,7 @@ import AirQualityChart from "../components/Chart/AirQualityChart";
 // import TestCard from "../components/Chart/TestCard";
 import MonthlyAqi from "../components/Chart/MonthlyAqi";
 import "../styles/WeatherPage.css";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function Weather() {
   const [locationData, setLocationData] = useState(null);
@@ -19,7 +20,7 @@ function Weather() {
         const subLocation = params.get('subLocation');
 
         if (mainLocation && subLocation) {
-          const response = await axios.get('http://localhost:8080/locations/detail', {
+          const response = await axios.get(`${apiUrl}/locations/detail`, {
             params: {
               location: mainLocation,
               subLocation: subLocation,
