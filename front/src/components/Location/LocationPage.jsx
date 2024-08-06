@@ -79,7 +79,7 @@ function LocationPage() {
         {data && data.map((d, index) => (
           <Link
             key={index}
-            to={`/detail?location=${encodeURIComponent(location)}&subLocation=${encodeURIComponent(d.location)}`}
+            to={`/detail?locations=${encodeURIComponent(location)}&subLocation=${encodeURIComponent(d.location)}`}
           >
             <button
               className="location-button"

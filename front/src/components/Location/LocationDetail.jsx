@@ -11,7 +11,7 @@ function LocationDetail() {
 
   useEffect(() => {
     if (location && subLocation) {
-      fetch(`${apiUrl}/locations/sub?location=${location}&subLocation=${subLocation}`)
+      fetch(`${apiUrl}/locations/?locations=${location}&subLocation=${subLocation}`)
         .then(response => response.json())
         .then(data => setData(data))
         .catch(error => console.error('Error fetching data:', error));
