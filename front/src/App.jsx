@@ -18,6 +18,22 @@ const apiUrl = process.env.REACT_APP_API_URL;
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  useEffect(() => {
+    fetch(`${apiUrl}/refresh-token`, {
+      method: 'POST',
+      credentials: 'include',
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.token) {
+          setIsLoggedIn(true);
+        }
+      })
+      .catch(() => {
+        setIsLoggedIn(false);
+      });
+  }, []);
+
   const handleLogin = () => {
     console.log('얍얍 여러분 화이팅!!') //코치님의 응원메세지 출력
     setIsLoggedIn(true);
