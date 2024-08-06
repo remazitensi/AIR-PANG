@@ -11,7 +11,7 @@ function LocationPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [tooltip, setTooltip] = useState({ show: false, location: '', grade: '', score: '', x: 0, y: 0 });
+  const [hoveredLocation, setHoveredLocation] = useState(null);
 
   useEffect(() => {
     if (location) {
@@ -24,7 +24,7 @@ function LocationPage() {
           return response.json();
         })
         .then(data => {
-          console.log('Fetched data:', data); // 데이터 로그 추가
+          console.log('Fetched data:', data);
           setData(data);
           setLoading(false);
         })
@@ -36,21 +36,14 @@ function LocationPage() {
     }
   }, [location]);
 
-  const handleMouseEnter = (location, annualMaxAQI, realtimeMaxAQI, event) => {
+  const handleMouseEnter = (subLocation, annualMaxAQI, realtimeMaxAQI) => {
     const grade = getGrade(realtimeMaxAQI);
     const score = calculateScore(annualMaxAQI, realtimeMaxAQI);
-    setTooltip({
-      show: true,
-      location,
-      grade,
-      score,
-      x: event.clientX,
-      y: event.clientY,
-    });
+    setHoveredLocation({ subLocation, grade, score });
   };
 
   const handleMouseLeave = () => {
-    setTooltip({ show: false, location: '', grade: '', score: '', x: 0, y: 0 });
+    setHoveredLocation(null);
   };
 
   if (!location) {
@@ -72,9 +65,7 @@ function LocationPage() {
   return (
     <div className="location-page">
       <h1>{location} 세부지역</h1>
-            <p style={{
-        marginBottom: '60px'
-      }}>세부지역을 선택해주세요!</p>
+      <p style={{ marginBottom: '60px' }}>세부지역을 선택해주세요!</p>
       <div className="button-container">
         {data && data.map((d, index) => (
           <Link
@@ -83,26 +74,21 @@ function LocationPage() {
           >
             <button
               className="location-button"
-              onMouseEnter={(e) => handleMouseEnter(d.location, d.annualMaxAQI, d.realtimeMaxAQI, e)}
+              onMouseEnter={() => handleMouseEnter(d.location, d.annualMaxAQI, d.realtimeMaxAQI)}
               onMouseLeave={handleMouseLeave}
             >
               {d.location}
             </button>
           </Link>
         ))}
-        {tooltip.show && (
-          <div className="location-tooltip"
-          style={{
-            top: tooltip.y + 40,
-            left: tooltip.x + 50,
-          }}
-        >
-            <p>지역: {tooltip.location}</p>
-            <p>Grade: {tooltip.grade}</p>
-            <p>Score: {tooltip.score}</p>
-          </div>
-        )}
       </div>
+      {hoveredLocation && (
+        <div className="info-card">
+          <h2>{location} {hoveredLocation.subLocation}</h2>
+          <p>대기질 점수: {hoveredLocation.score}</p>
+          <p>대기질 등급: {hoveredLocation.grade}</p>
+        </div>
+      )}
     </div>
   );
 }
