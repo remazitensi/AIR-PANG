@@ -25,7 +25,7 @@ function App() {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.token) {
+        if (data.accessToken) {
           setIsLoggedIn(true);
         }
       })

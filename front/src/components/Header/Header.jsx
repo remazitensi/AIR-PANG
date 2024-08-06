@@ -1,9 +1,23 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Header.css";
 
 function Header({ isLoggedIn, onLogout }) {
   const location = useLocation();
+  const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID; // 환경 변수에서 클라이언트 ID 가져오기
+  const redirectUri = process.env.REACT_APP_GOOGLE_REDIRECT_URI;
+  const responseType = "code"; // 인증 코드를 사용
+  const scope = encodeURIComponent(
+    "https://www.googleapis.com/auth/userinfo.profile"
+  );
+  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=${responseType}&client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}&access_type=offline&prompt=consent`;
+
+  const navigate = useNavigate(); // useNavigate 훅 사용
+
+  const handleLogoutClick = async () => {
+    await onLogout();
+    navigate('/'); // 로그아웃 후 '/' 경로로 이동
+  };
 
   return (
     <header className="header">
@@ -27,7 +41,7 @@ function Header({ isLoggedIn, onLogout }) {
           </li>
           {!isLoggedIn ? (
             <li>
-              <Link to="/login">로그인</Link>
+              <Link to={authUrl}>로그인</Link>
             </li>
           ) : (
             <>
@@ -38,7 +52,7 @@ function Header({ isLoggedIn, onLogout }) {
                 <Link to="/my">마이페이지</Link>
               </li>
               <li>
-                <button onClick={onLogout}>로그아웃</button>
+                <button onClick={handleLogoutClick}>로그아웃</button>
               </li>
             </>
           )}

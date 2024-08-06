@@ -192,7 +192,7 @@ const ChallengeStatus = () => {
                 ))}
               </ul>
               <Link className="link" to={`/challenges/${challenge.id}`}>
-                챌린지 페이지 보러가기
+                내 챌린지 보러가기
               </Link>
             </div>
           );
