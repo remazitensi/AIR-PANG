@@ -13,6 +13,7 @@ function ChallengeCreate() {
   const [modalOpen, setModalOpen] = useState(false);
   const [titleError, setTitleError] = useState(''); // 제목 글자 수 초과 시 에러 메시지 상태
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const handleTaskChange = (index, value) => {
     const newTasks = [...modalTasks];
@@ -64,7 +65,7 @@ function ChallengeCreate() {
     };
 
     try {
-      const response = await axios.post('http://localhost:8080/challenges', newChallenge, {
+      const response = await axios.post(`${apiUrl}/challenges`, newChallenge, {
         headers: {
           'Content-Type': 'application/json',
         },

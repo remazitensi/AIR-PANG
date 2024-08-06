@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { getGrade, calculateScore } from '../../utils/aqi';
 import '../../styles/LocationPage.css';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function LocationPage() {
   const { search } = useLocation();
@@ -15,7 +16,7 @@ function LocationPage() {
   useEffect(() => {
     if (location) {
       setLoading(true);
-      fetch(`http://localhost:8080/locations/sub?location=${location}`)
+      fetch(`${apiUrl}/locations/sub?location=${location}`)
         .then(response => {
           if (!response.ok) {
             throw new Error('Network response was not ok');
