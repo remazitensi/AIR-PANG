@@ -27,7 +27,7 @@ const MapChart = () => {
   const [mapOptions, setMapOptions] = useState({
     chart: {
       map: null,
-      height: 600
+      height: 400
     }
   });
 
@@ -72,7 +72,7 @@ const MapChart = () => {
         setMapOptions({
           chart: {
             map: topology.default,  // .default를 사용하여 실제 데이터에 접근
-            height: 600
+            height: 650
           },
           title: {
             text: undefined
@@ -101,7 +101,7 @@ const MapChart = () => {
             showInLegend: false,  // 레전드에서 이 시리즈를 숨깁니다
             states: {
               hover: {
-                color: '#D1E5E1'
+                color: '#D1E5E1' 
 
               }
             },

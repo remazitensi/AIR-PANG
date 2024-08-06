@@ -13,4 +13,5 @@ body {
   padding: 20px;
   min-height: 100vh;
   overflow: auto;
+  text-align: center;
 }

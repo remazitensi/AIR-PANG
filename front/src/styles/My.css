@@ -16,7 +16,7 @@
   height: 100vh;
 }
 
-h2 {
+.my-page .myPageTitle {
   font-weight: 300;
   font-size: 40px;
   text-align: center;
@@ -83,27 +83,27 @@ h2 {
   max-width: 240px;
 }
 
-h2 {
+.my-favorite h2 {
   font-size: 36px;
   text-align: center;
   font-weight: 300;
 }
 
-h3 {
+.my-favorite h3 {
   font-weight: 300;
   font-size: 32px;
   text-align: center;
   margin-bottom: 30px;
 }
 
-h4 {
+.my-favorite h4 {
   font-weight: 300;
   font-size: 24px;
   text-align: center;
   margin-bottom: 10px;
 }
 
-p {
+.my-favorite p {
   text-align: center;
 }
 

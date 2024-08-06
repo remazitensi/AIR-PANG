@@ -70,7 +70,10 @@ function LocationPage() {
 
   return (
     <div className="location-page">
-      <h2>{location} 데이터</h2>
+      <h1>{location} 세부지역</h1>
+            <p style={{
+        marginBottom: '60px'
+      }}>세부지역을 선택해주세요!</p>
       <div className="button-container">
         {data && data.map((d, index) => (
           <Link
@@ -87,17 +90,12 @@ function LocationPage() {
           </Link>
         ))}
         {tooltip.show && (
-          <div
-            style={{
-              position: 'absolute',
-              top: tooltip.y + 45,
-              left: tooltip.x + 30,
-              backgroundColor: 'rgba(231, 246, 255, 0.70)',
-              color: 'white',
-              padding: '5px',
-              borderRadius: '5px',
-            }} // 버튼 모양 인라인 스타일링
-          >
+          <div className="location-tooltip"
+          style={{
+            top: tooltip.y + 40,
+            left: tooltip.x + 50,
+          }}
+        >
             <p>지역: {tooltip.location}</p>
             <p>Grade: {tooltip.grade}</p>
             <p>Score: {tooltip.score}</p>

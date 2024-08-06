@@ -23,7 +23,7 @@
   align-items: center;
 }
 
-input {
+.search-container input {
   width: 100%;
   padding: 20px 30px;
   border-radius: 50px;
@@ -31,7 +31,7 @@ input {
   font-size: 16px;
 }
 
-button {
+.search-container button {
   padding: 10px 20px;
   border: none;
   border-radius: 50px;
@@ -44,7 +44,7 @@ button {
   font-size: 15px;
 }
 
-button:hover {
+.search-container button:hover {
   background-color: #6ac9ff;
 }
 
