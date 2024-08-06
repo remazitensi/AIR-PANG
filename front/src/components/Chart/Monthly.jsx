@@ -11,6 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 // Chart.js 요소 등록
 ChartJS.register(
@@ -31,7 +32,7 @@ const MonthlyAqi = ({ locationName, subLocationName }) => {
     const fetchAqiData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8080/locations/detail",
+          `${apiUrl}/locations/detail`,
           {
             params: {
               location: locationName,

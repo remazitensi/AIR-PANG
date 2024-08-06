@@ -1,8 +1,9 @@
 import axios from "axios";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: `${apiUrl}`,
   headers: {
     "Content-Type": "application/json",
   },
