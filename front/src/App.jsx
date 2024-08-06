@@ -19,7 +19,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    fetch(`${apiUrl}/refresh-token`, {
+    fetch(`${apiUrl}/auth/refresh-token`, {
       method: 'POST',
       credentials: 'include',
     })
