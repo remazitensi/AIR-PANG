@@ -31,15 +31,12 @@ const WeatherPage = () => {
 
         // 즐겨찾기 없으면 기본지역으로 설정
         if (storedFavorites.length === 0) {
-          const defaultData = await axios.get(
-            `${apiUrl}/locations/detail`,
-            {
-              params: {
-                location: DEFAULT_LOCATION.locationName,
-                subLocation: DEFAULT_LOCATION.subLocationName,
-              },
-            }
-          );
+          const defaultData = await axios.get(`${apiUrl}/locations/detail`, {
+            params: {
+              location: DEFAULT_LOCATION.locationName,
+              subLocation: DEFAULT_LOCATION.subLocationName,
+            },
+          });
 
           const defaultFormattedData = {
             city: `${defaultData.data.locations.address_a_name}, ${defaultData.data.locations.address_b_name}`,

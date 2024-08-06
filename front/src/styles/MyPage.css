@@ -1,0 +1,27 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.my-page-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 20px;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+.my-page-container .my-page-title h2 {
+  font-size: 36px;
+  text-align: center;
+  font-weight: 300;
+  margin-bottom: 30px;
+}
+
+.my-page-container .my-page-content {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+}

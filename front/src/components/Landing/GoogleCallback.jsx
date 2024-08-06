@@ -8,7 +8,7 @@ const GoogleCallback = ({ onLogin }) => {
   useEffect(() => {
     const fetchToken = async () => {
       console.log('fetchToken');
-      debugger;
+      // debugger;
       try {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");

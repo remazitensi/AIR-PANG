@@ -10,7 +10,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: #f8f9fa;
+  background-color: #fff;
 }
 
 .logo img {
@@ -47,4 +47,5 @@
   font-size: 16px;
   background-color: lightgrey;
   margin-left: 10px;
+  border-radius: 50px;
 }
