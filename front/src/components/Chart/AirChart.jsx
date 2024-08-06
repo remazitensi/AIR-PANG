@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
-const apiUrl = process.env.REACT_APP_API_URL;
 
 const AirChart = ({ locationName, subLocationName }) => {
   const [weatherData, setWeatherData] = useState(null);
@@ -14,7 +13,7 @@ const AirChart = ({ locationName, subLocationName }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${apiUrl}/locations/detail`,
+          "http://localhost:8080/locations/detail",
           {
             params: {
               location: locationName,

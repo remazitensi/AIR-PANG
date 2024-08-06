@@ -3,25 +3,19 @@ import MapChart from "../components/Map/MapChart";
 
 function UriLocations() {
   return (
-    <div>
+    <div
+      style={{
+        textAlign: 'center'
+      }}
+    >
       <h1>우리동네 찾아보기</h1>
-      <p>여기가 우리동네 찾아보기 페이지입니다.</p>
+      <p>지도에서 원하시는 지역을 클릭해주세요!</p>
       <div
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          marginTop: '80px'
         }}
       >
         <MapChart />
-      </div>
-       <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
       </div>
     </div>
   );

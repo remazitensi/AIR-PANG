@@ -16,7 +16,7 @@ import LocationDetail from "./components/Location/LocationDetail";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const handleLogin = () => {
     console.log('얍얍 여러분 화이팅!!') //코치님의 응원메세지 출력

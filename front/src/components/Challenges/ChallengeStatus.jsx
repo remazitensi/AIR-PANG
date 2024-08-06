@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ProgressBar from "@ramonak/react-progress-bar";
 import '../../styles/ChallengeStatus.css';
-const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChallengeStatus = () => {
   const [challenges, setChallenges] = useState([]);
@@ -56,7 +55,7 @@ const ChallengeStatus = () => {
   // //Axios 사용
   const fetchChallenges = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/my`, {
+      const response = await axios.get(`http://localhost:8080/my`, {
         withCredentials: true
       });
       setChallenges(response.data.challenges);
@@ -125,7 +124,7 @@ const ChallengeStatus = () => {
     try {
       await Promise.all(updatedChallenge.tasks.map(async task => {
         console.log(task) 
-        await axios.patch(`${apiUrl}/tasks/${task.id}`, task, {
+        await axios.patch(`http://localhost:8080/tasks/${task.id}`, task, {
           headers: {
             'Content-Type': 'application/json'
           },

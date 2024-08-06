@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/ChallengeList.css';
-const apiUrl = process.env.REACT_APP_API_URL;
 
 function ChallengeList() {
   const [challenges, setChallenges] = useState([]);
@@ -13,7 +12,7 @@ function ChallengeList() {
 
   const fetchChallenges = async (searchQuery = '', page = 1) => {
     try {
-      const response = await axios.get(`${apiUrl}/challenges?search=${searchQuery}&page=${page}&limit=${itemsPerPage}`, {
+      const response = await axios.get(`http://localhost:8080/challenges?search=${searchQuery}&page=${page}&limit=${itemsPerPage}`, {
         withCredentials: true // credentials 설정
       });
       setChallenges(response.data.challenges);

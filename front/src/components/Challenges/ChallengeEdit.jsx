@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/ChallengeEdit.css';
-const apiUrl = process.env.REACT_APP_API_URL;
 
 function ChallengeEdit() {
   const { id } = useParams();
@@ -18,7 +17,7 @@ function ChallengeEdit() {
   useEffect(() => {
     const fetchChallenge = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/challenges/${id}`, {
+        const response = await axios.get(`http://localhost:8080/challenges/${id}`, {
           withCredentials: true
         });
         const data = response.data;
@@ -74,7 +73,7 @@ function ChallengeEdit() {
     };
 
     try {
-      const response = await axios.patch(`${apiUrl}/challenges/${id}`, updatedChallenge, {
+      const response = await axios.patch(`http://localhost:8080/challenges/${id}`, updatedChallenge, {
         headers: {
           'Content-Type': 'application/json'
         },
@@ -84,14 +83,14 @@ function ChallengeEdit() {
       if (response.status === 204) {
         await Promise.all(filteredTasks.map(async task => {
           if (task.id) {
-            await axios.patch(`${apiUrl}/tasks/${task.id}`, task, {
+            await axios.patch(`http://localhost:8080/tasks/${task.id}`, task, {
               headers: {
                 'Content-Type': 'application/json'
               },
               withCredentials: true
             });
           } else {
-            await axios.post(`${apiUrl}/tasks`, { challenge_id: id, description: task.description }, {
+            await axios.post(`http://localhost:8080/tasks`, { challenge_id: id, description: task.description }, {
               headers: {
                 'Content-Type': 'application/json'
               },
@@ -119,7 +118,7 @@ function ChallengeEdit() {
     setTasks(newTasks);
 
     if (taskToDelete.id) {
-      axios.delete(`${apiUrl}/tasks/${taskToDelete.id}`, {
+      axios.delete(`http://localhost:8080/tasks/${taskToDelete.id}`, {
         withCredentials: true
       }).catch(error => {
         console.error('Error deleting task:', error);

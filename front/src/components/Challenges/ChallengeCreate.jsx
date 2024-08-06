@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../../styles/ChallengeCreate.css';
-const apiUrl = process.env.REACT_APP_API_URL;
 
 function ChallengeCreate() {
   const [title, setTitle] = useState('');
@@ -65,7 +64,7 @@ function ChallengeCreate() {
     };
 
     try {
-      const response = await axios.post(`${apiUrl}/challenges`, newChallenge, {
+      const response = await axios.post('http://localhost:8080/challenges', newChallenge, {
         headers: {
           'Content-Type': 'application/json',
         },

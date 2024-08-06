@@ -39,7 +39,9 @@ export const googleAuthCallback = (req: Request, res: Response) => {
       res.cookie('jwt', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
       res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
 
-      res.redirect(process.env.CLIENT_URL || '/');
+      res.redirect(
+        `${process.env.CLIENT_URL}/auth/google/callback?token=${accessToken}`
+      ); 
     } catch (tokenError) {
       console.error('Error creating JWT:', tokenError);
       res.status(500).json({ message: '토큰 생성 실패' });

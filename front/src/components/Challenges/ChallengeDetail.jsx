@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import ProgressBar from "@ramonak/react-progress-bar";
 import axios from 'axios';
 import '../../styles/ChallengeDetail.css';
-const apiUrl = process.env.REACT_APP_API_URL;
+
 
 function ChallengeDetail() {
   const { id } = useParams();
@@ -15,7 +15,7 @@ function ChallengeDetail() {
   useEffect(() => {
     const fetchChallenge = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/challenges/${id}`, {
+        const response = await axios.get(`http://localhost:8080/challenges/${id}`, {
           withCredentials: true // credentials 설정
         });
         const data = response.data;
@@ -34,7 +34,7 @@ function ChallengeDetail() {
     const confirmDelete = window.confirm('챌린지를 삭제하시겠습니까?');
     if (confirmDelete) {
       try {
-        const response = await axios.delete(`${apiUrl}/challenges/${id}`, {
+        const response = await axios.delete(`http://localhost:8080/challenges/${id}`, {
           withCredentials: true
         });
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/Search.css";
-const apiUrl = process.env.REACT_APP_API_URL;
 
 const locationsList = [
   "서울",
@@ -50,7 +49,7 @@ const Search = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `${apiUrl}/locations/detail`,
+        "http://localhost:3000/locations/detail",
         {
           params: {
             location,

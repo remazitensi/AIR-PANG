@@ -1,59 +1,83 @@
 .ChallengeStatus {
-    padding: 16px;
-    height: 500px;
-    border-radius: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
+  padding: 16px;
+  
+  height: 500px;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
 
-    background-color: #FAFAFA;
+  background-color: #FAFAFA;
+
+  
 }
 
 .StatusLists {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 24px;
+
+  width: 800px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
+}
+
+.StatusLists::-webkit-scrollbar {
+  height: 12px; /* 스크롤 막대의 너비 */
+}
+
+.StatusLists::-webkit-scrollbar-thumb {
+  /* 스크롤바의 색상 */
+  background: #00a2ff7e;
+  border-radius: 10px;
+}
+
+.StatusLists::-webkit-scrollbar-track {
+  /*스크롤바 뒷 배경 색상*/
+  background: #EDEDED;
+  border-radius: 10px;
 }
 
 .StatusList {
-    width: 180px;
-    height: 340px;
-    border-radius: 8px;
-    padding-top: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 12px;
-    background-color: white;
+  flex: 0 0 180px;
+  height: 348px;
+  border-radius: 8px;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  background-color: white;
 }
 
 .StatusList span div {
-    width: 72px;
-    height: 20px;
-    border-radius: 4px;
-    background-color: #004AAD;
-    font-size: 10px;
-    color: white;
+  width: 72px;
+  height: 20px;
+  border-radius: 4px;
+  background-color: #004AAD;
+  font-size: 10px;
+  color: white;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .StatusList ul {
-    height: 200px;
+  height: 200px;
 }
 
 .StatusList li {
-    list-style-type: none;
-    margin-top: 12px;
+  list-style-type: none;
+  margin-top: 12px;
 }
 
 .link {
-    font-size: 10px;
-    text-decoration: underline;
+  font-size: 10px;
+  text-decoration: underline;
 }

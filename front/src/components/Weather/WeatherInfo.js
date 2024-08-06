@@ -4,7 +4,6 @@ import AirChart from "../Chart/AirChart";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../../styles/WeatherPage.css";
-const apiUrl = process.env.REACT_APP_API_URL;
 
 const DEFAULT_LOCATION = { locationName: "서울", subLocationName: "강남구" };
 
@@ -32,7 +31,7 @@ const WeatherPage = () => {
         // 즐겨찾기 없으면 기본지역으로 설정
         if (storedFavorites.length === 0) {
           const defaultData = await axios.get(
-            `${apiUrl}/locations/detail`,
+            "http://localhost:8080/locations/detail",
             {
               params: {
                 location: DEFAULT_LOCATION.locationName,
@@ -51,7 +50,7 @@ const WeatherPage = () => {
         } else {
           const data = await Promise.all(
             storedFavorites.map(({ address_a_name, address_b_name }) =>
-              axios.get(`${apiUrl}/locations/detail`, {
+              axios.get("http://localhost:8080/locations/detail", {
                 params: {
                   location: address_a_name,
                   subLocation: address_b_name,

@@ -3,7 +3,6 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
-const apiUrl = process.env.REACT_APP_API_URL;
 
 // Register Chart.js components
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
@@ -22,7 +21,7 @@ const MonthlyAqi = () => {
         const subLocation = params.get('subLocation');
 
         if (mainLocation && subLocation) {
-          const response = await axios.get(`${apiUrl}/locations/detail`, {
+          const response = await axios.get('http://localhost:8080/locations/detail', {
             params: {
               location: mainLocation,
               subLocation: subLocation,

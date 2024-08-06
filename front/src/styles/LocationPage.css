@@ -1,27 +1,43 @@
 .location-page {
-  padding: 20px;
+  padding: 0 20px;
+  margin: 0 2px;
+  text-align: center;
 }
 
 .button-container {
+  padding: 0 200px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
 }
 
 .location-button {
-  background-color: #0685cf;
+  background-color: #004AAD;
   border: none;
   color: white;
-  padding: 12px 12px;
+  padding: 12px 18px;
+  border-radius: 50px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 20px;
   margin: 4px 2px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .location-button:hover {
-  background-color: #69aed6;
+  background-color: #215caa;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.location-tooltip {
+  position: absolute;
+  background-color: rgba(231, 246, 255, 0.9);
+  color: black;
+  padding: 10px;
+  border-radius: 5px;
+  pointer-events: none;
+  z-index: 1000;
 }

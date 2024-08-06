@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-const apiUrl = process.env.REACT_APP_API_URL;
 
 function LocationDetail() {
   const { search } = useLocation();
@@ -11,7 +10,7 @@ function LocationDetail() {
 
   useEffect(() => {
     if (location && subLocation) {
-      fetch(`${apiUrl}/locations/sub?location=${location}&subLocation=${subLocation}`)
+      fetch(`http://localhost:8080/locations/sub?location=${location}&subLocation=${subLocation}`)
         .then(response => response.json())
         .then(data => setData(data))
         .catch(error => console.error('Error fetching data:', error));

@@ -5,7 +5,6 @@ import HighchartsReact from 'highcharts-react-official';
 import highchartsMap from 'highcharts/modules/map';
 import proj4 from 'proj4';
 import { useNavigate } from 'react-router-dom';
-const apiUrl = process.env.REACT_APP_API_URL;
 // 라이브러리 추가: npm install highcharts highcharts-react-official @types/highcharts proj4 axios
 
 // Highcharts 맵 모듈 초기화
@@ -28,7 +27,7 @@ const MapChart = () => {
   const [mapOptions, setMapOptions] = useState({
     chart: {
       map: null,
-      height: 600
+      height: 400
     }
   });
 
@@ -44,7 +43,7 @@ const MapChart = () => {
     const fetchTopology = async () => {
       try {
         const topology = await import('../../data/kr-all.topo.json');
-        const response = await axios.get(`${apiUrl}/locations`);
+        const response = await axios.get('http://localhost:8080/locations');
         const locationsData = response.data;
 
         const data = locationsData.map((location) => {
@@ -73,7 +72,7 @@ const MapChart = () => {
         setMapOptions({
           chart: {
             map: topology.default,  // .default를 사용하여 실제 데이터에 접근
-            height: 600
+            height: 650
           },
           title: {
             text: undefined
@@ -102,7 +101,7 @@ const MapChart = () => {
             showInLegend: false,  // 레전드에서 이 시리즈를 숨깁니다
             states: {
               hover: {
-                color: '#D1E5E1'
+                color: '#D1E5E1' 
 
               }
             },

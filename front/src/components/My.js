@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ChallengeStatus from './Challenges/ChallengeStatus';
 import "../styles/My.css";
 
 const MyPage = () => {
@@ -58,7 +59,8 @@ const MyPage = () => {
           관심지역 설정하기
         </a>
       </div>
-    </div>
+      <ChallengeStatus />
+      </div>
   );
 };
 
