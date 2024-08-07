@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import routes from '@_routes/index';
 import startCronJob from '@_scripts/updateData';
-import { deleteOldData, startCleanupJob } from '@_scripts/deleteOldData'
+import { startCleanupJob } from '@_scripts/deleteOldData'
 import '@_config/passport.config';
 
 dotenv.config();
