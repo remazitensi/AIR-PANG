@@ -19,6 +19,13 @@ function Header({ isLoggedIn, onLogout }) {
     navigate('/'); // 로그아웃 후 '/' 경로로 이동
   };
 
+  const handleChallengeClick = (event) => {
+    if (!isLoggedIn) {
+      event.preventDefault(); // 클릭 시 페이지 이동 방지
+      alert("로그인 후 환경챌린지를 이용하실 수 있습니다."); // 알림 표시
+    }
+  };
+
   return (
     <header className="header">
       <div className="logo">
@@ -39,15 +46,20 @@ function Header({ isLoggedIn, onLogout }) {
           <li>
             <Link to="/locations">우리동네 찾아보기</Link>
           </li>
+          <li>
+            <Link
+              to={isLoggedIn ? "/challenges" : "#"}
+              onClick={handleChallengeClick}
+            >
+              환경챌린지
+            </Link>
+          </li>
           {!isLoggedIn ? (
             <li>
               <Link to={authUrl}>로그인</Link>
             </li>
           ) : (
             <>
-              <li>
-                <Link to="/challenges">환경챌린지</Link>
-              </li>
               <li>
                 <Link to="/my">마이페이지</Link>
               </li>
