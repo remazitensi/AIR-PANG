@@ -111,7 +111,7 @@ const startCronJob = () => {
   // 24시간마다 실행
   cron.schedule('0 */24 * * *', fetchAndStoreData);
 
-  // 처음 시작할 때도 실행(테스트 할 땐 주석처리)
+  // 서버 시작할 때도 실행(테스트 할 땐 주석처리)
   // fetchAndStoreData();
 };
 

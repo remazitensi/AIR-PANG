@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import routes from '@_routes/index';
 import startCronJob from '@_scripts/updateData';
+import { deleteOldData, startCleanupJob } from '@_scripts/deleteOldData'
 import '@_config/passport.config';
 
 dotenv.config();
@@ -46,6 +47,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use('/api', routes);
 
 startCronJob();
+startCleanupJob();
 
 // 에러 핸들러 미들웨어
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
