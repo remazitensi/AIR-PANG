@@ -28,16 +28,35 @@
 }
 
 .location-button:hover {
-  background-color: #215caa;
+  background-color: #3266aa;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
-.location-tooltip {
-  position: absolute;
-  background-color: rgba(231, 246, 255, 0.9);
-  color: black;
-  padding: 10px;
-  border-radius: 5px;
-  pointer-events: none;
-  z-index: 1000;
+.info-card {
+  margin-top: 60px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 100px 15px;
+  
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  width: 600px;  /* 카드의 너비 설정 */
+  font-size: 48px;  /* 기본 글씨 크기 증가 */
+}
+
+.info-card h2 {
+  font-size: 60px;  /* 제목 글씨 크기 증가 */
+  margin-bottom: 20px;  /* 제목 아래 여백 추가 */
+}
+
+.info-card p {
+  margin: 15px 0;  /* 문단 사이 여백 조정 */
+}
+
+.location-button {
+  font-size: 20px;  /* 버튼 글씨 크기도 약간 증가 */
+  padding: 15px 25px;  /* 버튼 크기 증가 */
 }
