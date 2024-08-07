@@ -137,7 +137,11 @@ function ChallengeCreate() {
             required
           />
         </div>
-        <p>*최소 2개의 할 일을 만들어 주세요.</p>
+        {tasks.length >= 2 ? (
+          <p>*할 일 체크는 마이페이지에서만 가능합니다.</p>
+          ) : (
+          <p>*최소 2개의 할 일을 만들어 주세요.</p>
+        )}
         <div>
           <button className="add" type="button" onClick={handleOpenModal}>할 일 만들기</button>
           <ul>

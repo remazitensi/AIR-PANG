@@ -95,24 +95,22 @@ function ChallengeDetail() {
         }
       </span>
       <p>{formatDate(challenge.start_date)} ~ {formatDate(challenge.end_date)}</p>
-      <p className="desc">{challenge.description}</p>
-      
+      <div className="descBox">
+        <h5>상세내용</h5>
+        <p className="desc">{challenge.description}</p>
+      </div>
       <ul className="to-dos">
         {tasks.map((task, index) => (
           <li key={index}>
-            <input
-              type="checkbox"
-              checked={task.is_completed}
-              readOnly
-            /> {task.description}
+            {task.description}
           </li>
         ))}
       </ul>
 
       {isOwner && (
-        <div>
-          <button onClick={handleEdit}>수정하기</button>
-          <button onClick={handleDelete}>삭제하기</button>
+        <div className="but">
+          <button className="edi" onClick={handleEdit}>수정하기</button>
+          <button className="can" onClick={handleDelete}>삭제하기</button>
         </div>
       )}
       
