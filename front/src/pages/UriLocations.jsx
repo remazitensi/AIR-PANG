@@ -10,11 +10,7 @@ function UriLocations() {
     >
       <h1>우리동네 찾아보기</h1>
       <p>지도에서 원하시는 지역을 클릭해주세요!</p>
-      <div
-        style={{
-          marginTop: '80px'
-        }}
-      >
+      <div>
         <MapChart />
       </div>
     </div>

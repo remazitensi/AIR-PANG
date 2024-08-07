@@ -60,7 +60,7 @@ const MonthlyAqi = ({ data }) => {
         data: aqiValues,
         borderColor: "rgba(75, 192, 192, 1)",
         backgroundColor: "rgba(75, 192, 192, 0.2)",
-        tension: 0.12,
+        tension: 0.2,
         pointRadius: 5, // 점의 크기
       },
     ],

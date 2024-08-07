@@ -28,7 +28,7 @@ const MapChart = () => {
   const [mapOptions, setMapOptions] = useState({
     chart: {
       map: null,
-      height: 600
+      height: 400
     }
   });
 
@@ -73,7 +73,7 @@ const MapChart = () => {
         setMapOptions({
           chart: {
             map: topology.default,  // .default를 사용하여 실제 데이터에 접근
-            height: 800
+            height: 650
           },
           title: {
             text: undefined
@@ -88,11 +88,19 @@ const MapChart = () => {
             min: 0,
             max: 300,
             stops: [
-              [0 / 300, '#FFFFFF'],   
-              [25 / 300, '#CDEDFF'],  
-              [50 / 300, '#ABD9FF'],  
-              [60 / 300, '#637E94'],  
-              [300 / 300, '#242E36']  
+              [0 / 300, '#CDEDFF'],   // 0: 밝은 하늘색
+              [25 / 300, '#C7E6F7'],  // 25: 약간 어두운 하늘색
+              [40 / 300, '#B6D3E3'],  // 40: 조금 더 어두운 하늘색
+              [45 / 300, '#A8C2D1'],  // 45: 더 어두운 하늘색
+              [50 / 300, '#98AFBD'],  // 50: 중간 하늘색
+              [55 / 300, '#899FAB'],  // 55: 더 밝은 파랑
+              [60 / 300, '#6D7E87'],  // 60: 파랑
+              [70 / 300, '#5C6B73'],  // 70: 약간 어두운 파랑
+              [80 / 300, '#4C585E'],  // 80: 더 어두운 파랑
+              [100 / 300, '#3E474D'], // 100: 매우 어두운 파랑
+              [150 / 300, '#2D3438'], // 150: 어두운 회색
+              [200 / 300, '#212629'], // 200: 더 어두운 회색
+              [300 / 300, '#121517']  // 300: 다크모드 배경에 가까운 어두운 회색
             ]
           },
           series: [{ 
@@ -101,7 +109,7 @@ const MapChart = () => {
             showInLegend: false,  // 레전드에서 이 시리즈를 숨깁니다
             states: {
               hover: {
-                color: '#DCEFFF' 
+                color: '#D6E4ED' 
 
               }
             },
@@ -125,7 +133,7 @@ const MapChart = () => {
   }, []);
   
   return (
-    <div style={{ width: '600px', margin: '0 auto' }}>
+    <div>
       <HighchartsReact
         highcharts={Highcharts}
         options={mapOptions}

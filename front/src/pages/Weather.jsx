@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import AirQualityChart from "../components/Chart/AirQualityChart";
-// import TestCard from "../components/Chart/TestCard";
+import Message from "../components/Chart/Message"
 import MonthlyAqi from "../components/Chart/MonthlyAqi";
 import "../styles/WeatherPage.css";
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -44,9 +44,9 @@ function Weather() {
 
   return (
     <div className="weather-page">
-      <h1>우리동네 대기질 정보</h1>
       {locationData && (
         <>
+          <Message />
           <MonthlyAqi data={locationData} />
           <AirQualityChart data={locationData} />
           {/* <TestCard /> */}
