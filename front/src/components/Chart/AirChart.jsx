@@ -66,28 +66,65 @@ const AirChart = ({ locationName, subLocationName }) => {
       </div>
       <div className="weather-info-second-row">
         <div className="weather-info-data-item">
-          <h3>이산화황(SO2)</h3>
-          <p>{weatherData.airQuality.so2}</p>
+          <h3>
+            이산화황
+            <br />
+            (SO2)
+          </h3>
+          <p>
+            {weatherData.airQuality.so2}
+            <span className="unit">ppm</span>
+          </p>
         </div>
         <div className="weather-info-data-item">
-          <h3>일산화탄소(CO)</h3>
-          <p>{weatherData.airQuality.co}</p>
+          <h3>
+            일산화탄소 <br />
+            (CO)
+          </h3>
+          <p>
+            {weatherData.airQuality.co}
+            <span className="unit">ppm</span>
+          </p>
         </div>
         <div className="weather-info-data-item">
-          <h3>오존(O3)</h3>
-          <p>{weatherData.airQuality.o3}</p>
+          <h3>
+            오존 <br />
+            (O3)
+          </h3>
+          <p>
+            {weatherData.airQuality.o3}
+            <span className="unit">ppm</span>
+          </p>
         </div>
         <div className="weather-info-data-item">
-          <h3>이산화질소(NO2)</h3>
-          <p>{weatherData.airQuality.no2}</p>
+          <h3>
+            이산화질소 <br />
+            (NO2)
+          </h3>
+          <p>
+            {weatherData.airQuality.no2}
+            <span className="unit">ppm</span>
+          </p>
         </div>
         <div className="weather-info-data-item">
-          <h3>미세먼지(PM10)</h3>
-          <p>{weatherData.airQuality.pm10}</p>
+          <h3>
+            미세먼지 <br />
+            (PM10)
+          </h3>
+          <p>
+            {weatherData.airQuality.pm10}
+            <span className="unit">ppm</span>
+          </p>
         </div>
         <div className="weather-info-data-item">
-          <h3>초미세먼지(PM2.5)</h3>
-          <p>{weatherData.airQuality.pm25}</p>
+          <h3>
+            초미세먼지 <br />
+            (PM2.5)
+          </h3>
+          <p>
+            {weatherData.airQuality.pm25}
+            <span className="unit">ppm</span>
+          </p>
         </div>
       </div>
 
