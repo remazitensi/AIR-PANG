@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import "../../styles/Monthly.css";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,9 +12,9 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-const apiUrl = process.env.REACT_APP_API_URL;
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// Chart.js 요소 등록
+// Register Chart.js components and the data labels plugin
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -21,8 +22,11 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 const MonthlyAqi = ({ locationName, subLocationName }) => {
   const [monthlyAqi, setMonthlyAqi] = useState([]);
@@ -31,35 +35,28 @@ const MonthlyAqi = ({ locationName, subLocationName }) => {
   useEffect(() => {
     const fetchAqiData = async () => {
       try {
-        const response = await axios.get(
-          `${apiUrl}/locations/detail`,
-          {
-            params: {
-              location: locationName,
-              subLocation: subLocationName,
-            },
-          }
-        );
+        const response = await axios.get(`${apiUrl}/locations/detail`, {
+          params: {
+            location: locationName,
+            subLocation: subLocationName,
+          },
+        });
 
-        // 현재 연도 기준으로 작년의 1월부터 12월까지 데이터 필터링
         const currentYear = new Date().getFullYear();
-        const lastYear = currentYear - 1;
 
-        // 월별로 데이터를 그룹화하고 최근 데이터만 추출
         const monthlyData = response.data.monthly_aqi.reduce((acc, item) => {
           const month = parseInt(item.month.split("월")[0], 10);
           if (month >= 1 && month <= 12) {
-            acc[month] = item.aqi; // 월별로 마지막 데이터만 저장
+            acc[month] = item.aqi;
           }
           return acc;
         }, {});
 
-        // 월별 데이터 배열로 변환 및 정렬
         const sortedData = Array.from({ length: 12 }, (_, i) => {
-          const month = i + 1; // 1월부터 12월
+          const month = i + 1;
           return {
             month: `${month}월`,
-            aqi: monthlyData[month] || 0, // 데이터가 없을 경우 기본값 0
+            aqi: monthlyData[month] || 0,
           };
         });
 
@@ -79,15 +76,123 @@ const MonthlyAqi = ({ locationName, subLocationName }) => {
         label: "AQI",
         data: monthlyAqi.map((item) => item.aqi),
         fill: false,
-        borderColor: "rgba(75,192,192,1)",
+        borderColor: "#9FB2BD",
+        tension: 0,
+        pointRadius: 8,
+        pointHoverRadius: 10,
+        datalabels: {
+          color: "#000",
+          font: {
+            size: 20,
+          },
+          anchor: "end",
+          align: "top",
+          offset: 5,
+          formatter: (value) => value,
+        },
       },
     ],
+  };
+
+  const options = {
+    plugins: {
+      legend: {
+        display: true,
+        labels: {
+          font: {
+            size: 20,
+          },
+        },
+      },
+      tooltip: {
+        callbacks: {
+          label: function (context) {
+            return `${context.dataset.label}: ${context.raw}`;
+          },
+        },
+        bodyFont: {
+          size: 20,
+        },
+      },
+      datalabels: {
+        color: "#000",
+        font: {
+          size: 14,
+        },
+        formatter: (value) => value,
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: 20,
+      },
+    },
+    scales: {
+      x: {
+        grid: {
+          color: "rgba(255, 255, 255, 0)",
+        },
+        ticks: {
+          font: {
+            size: 18,
+          },
+        },
+      },
+      y: {
+        type: "linear",
+        position: "left",
+        grid: {
+          color: "rgba(0, 0, 0, 0.2)",
+          drawOnChartArea: true,
+        },
+        ticks: {
+          font: {
+            size: 18,
+          },
+          callback: (value) => {
+            if (value === 0) return "매우";
+            if (value === 50) return "나쁨";
+            if (value === 100) return "보통";
+            if (value === 250) return "좋음";
+            return "";
+          },
+        },
+        min: 0,
+        max: 250,
+      },
+      y2: {
+        type: "linear",
+        position: "right",
+        grid: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          font: {
+            size: 18,
+          },
+          callback: (value) => {
+            if (value === 0) return "0";
+            if (value === 50) return "51";
+            if (value === 101) return "101";
+            if (value === 251) return "251";
+            return "";
+          },
+        },
+        min: 0,
+        max: 300,
+      },
+    },
   };
 
   useEffect(() => {
     const chartInstance = chartRef.current;
 
-    // 컴포넌트가 언마운트될 때 차트 인스턴스를 파괴
+    // Clean up the chart instance on unmount
     return () => {
       if (chartInstance) {
         chartInstance.destroy();
@@ -96,10 +201,13 @@ const MonthlyAqi = ({ locationName, subLocationName }) => {
   }, []);
 
   return (
-    <div>
-      <h2>월별 AQI 지수</h2>
-      <div style={{ position: "relative", height: "400px", width: "600px" }}>
-        <Line ref={chartRef} data={data} />
+    <div className="monthly-chart-container">
+      <h2 className="monthly-chart-container-title">
+        월별 통합 AQI 변화 추이 (작년 기준)
+      </h2>
+      <div className="chart-wrapper">
+        <Line ref={chartRef} data={data} options={options} />
+        <div className="chart-background" />
       </div>
     </div>
   );

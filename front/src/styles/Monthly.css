@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.monthly-chart-container {
+  position: relative;
+  height: 600px;
+  width: 100%;
+  background: #fafafa;
+  padding: 50px;
+  padding-bottom: 100px;
+  border-radius: 20px;
+  margin-top: 80px;
+}
+
+.monthly-chart-container-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 36px;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.chart-wrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}

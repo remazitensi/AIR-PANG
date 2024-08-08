@@ -11,7 +11,7 @@ const BubbleCursor = () => {
     const createBubble = () => {
       const bubble = document.createElement("div");
       const size = Math.random() * 15 + 10; // Random size between 5px and 20px
-      bubble.style.position = "absolute";
+      bubble.style.position = "fixed";
       bubble.style.width = `${size}px`;
       bubble.style.height = `${size}px`;
       bubble.style.backgroundColor =

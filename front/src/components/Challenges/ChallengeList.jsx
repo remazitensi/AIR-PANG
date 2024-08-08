@@ -1,25 +1,29 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
-import '../../styles/ChallengeList.css';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import "../../styles/ChallengeList.css";
 const apiUrl = process.env.REACT_APP_API_URL;
+import pang from "../../assets/images/pang.png";
 
 function ChallengeList() {
   const [challenges, setChallenges] = useState([]);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const itemsPerPage = 4;
 
-  const fetchChallenges = async (searchQuery = '', page = 1) => {
+  const fetchChallenges = async (searchQuery = "", page = 1) => {
     try {
-      const response = await axios.get(`${apiUrl}/challenges?search=${searchQuery}&page=${page}&limit=${itemsPerPage}`, {
-        withCredentials: true // credentials 설정
-      });
+      const response = await axios.get(
+        `${apiUrl}/challenges?search=${searchQuery}&page=${page}&limit=${itemsPerPage}`,
+        {
+          withCredentials: true, // credentials 설정
+        }
+      );
       setChallenges(response.data.challenges);
       setTotalPages(Math.ceil(response.data.total / itemsPerPage));
     } catch (error) {
-      console.error('Error fetching challenges:', error);
+      console.error("Error fetching challenges:", error);
     }
   };
 
@@ -43,8 +47,8 @@ function ChallengeList() {
   };
 
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return new Date(dateString).toLocaleDateString('ko-KR', options);
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("ko-KR", options);
   };
 
   function calculateDaysLeft(start_date) {
@@ -70,7 +74,7 @@ function ChallengeList() {
       pageNumbers.push(
         <button
           key={i}
-          className={`pageButton ${i === currentPage ? 'active' : ''}`}
+          className={`pageButton ${i === currentPage ? "active" : ""}`}
           onClick={() => handlePageChange(i)}
         >
           {i}
@@ -83,39 +87,48 @@ function ChallengeList() {
 
   return (
     <div className="ChallengeList">
-      <h1>챌린지</h1>
-      <form className="search" onSubmit={handleSearchSubmit}>
-        <input
-          type="text"
-          placeholder="챌린지를 검색해보세요."
-          value={search}
-          onChange={handleSearchChange}
-        />
-        <button type="submit">찾기</button>
-      </form>
+      <div className="challenge-list-top">
+        <h1 className="challenge-list-title">챌린지</h1>
+        <form className="search" onSubmit={handleSearchSubmit}>
+          <input
+            type="text"
+            placeholder="챌린지를 검색해보세요."
+            value={search}
+            onChange={handleSearchChange}
+          />
+          <button type="submit">찾기</button>
+        </form>
+      </div>
+
       <button className="createChallenge">
         <Link to="/challenges/create">챌린지 만들기</Link>
       </button>
+
       <ul className="Challenges">
-        {challenges.map(challenge => (
+        {challenges.map((challenge) => (
           <li key={challenge.id}>
             <Link to={`/challenges/${challenge.id}`}>
               <span>
-                {
-                  calculateDaysLeft(challenge.start_date) >= 1
-                  ? <div>{calculateDaysLeft(challenge.start_date)}일 후 시작</div>
-                  : ( calculateDaysLeft(challenge.end_date) < 0
-                      ? <div>종료</div>
-                      : <div>진행중</div>
-                    )
-                }
+                {calculateDaysLeft(challenge.start_date) >= 1 ? (
+                  <div>{calculateDaysLeft(challenge.start_date)}일 후 시작</div>
+                ) : calculateDaysLeft(challenge.end_date) < 0 ? (
+                  <div>종료</div>
+                ) : (
+                  <div>진행중</div>
+                )}
               </span>
-              <h3>{challenge.user_name}님의 챌린지: {challenge.title}</h3>
-              <p>{formatDate(challenge.start_date)} ~ {formatDate(challenge.end_date)}</p>
+              <h3>
+                {challenge.user_name}님의 챌린지: {challenge.title}
+              </h3>
+              <p>
+                {formatDate(challenge.start_date)} ~{" "}
+                {formatDate(challenge.end_date)}
+              </p>
             </Link>
           </li>
         ))}
       </ul>
+
       <div className="pagination">
         <button
           className="pagination-button"
@@ -132,6 +145,9 @@ function ChallengeList() {
         >
           다음
         </button>
+      </div>
+      <div className="pang-on-challenge">
+        <img src={pang} alt="pang" />
       </div>
     </div>
   );

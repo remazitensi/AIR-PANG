@@ -49,7 +49,7 @@ const MyPage = () => {
               </li>
             ))
           ) : (
-            <li>즐겨찾기 항목이 없습니다.</li>
+            <li className="favorite-empty">즐겨찾기 항목이 없습니다.</li>
           )}
         </ul>
         <a href="/search" className="addFavorite">

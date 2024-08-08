@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/SearchCity.css";
@@ -29,49 +29,34 @@ const locationsList = [
 const Search = () => {
   const [location, setLocation] = useState("");
   const [subLocation, setSubLocation] = useState("");
-  const [subLocations, setSubLocations] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [alertDisplayed, setAlertDisplayed] = useState(false); // 플래그 상태 추가
   const navigate = useNavigate();
 
   const handleLocationChange = (e) => {
     setLocation(e.target.value);
     setSubLocation("");
-    setSubLocations([]);
   };
 
   const handleSubLocationChange = (e) => {
     setSubLocation(e.target.value);
-    if (location && e.target.value) {
-      fetchSubLocations(e.target.value);
-    } else {
-      setSubLocations([]);
-    }
   };
 
-  const fetchSubLocations = async (query) => {
+  const fetchSubLocationValidation = async (location, subLocation) => {
     try {
-      setLoading(true);
       const response = await axios.get(`${apiUrl}/locations/detail`, {
-        params: {
-          location,
-          subLocation: query,
-        },
+        params: { location, subLocation },
       });
 
-      const locations = response.data.locations
-        ? [response.data.locations]
-        : [];
-      setSubLocations(locations.map((loc) => loc.address_b_name));
+      // 데이터 유효성 검사 - 인풋값 잘못들어오면 알려주기 위한 세팅.
+      return (
+        response.data &&
+        response.data.locations &&
+        response.data.locations.address_b_name
+      );
     } catch (error) {
       console.error("Error fetching subLocations:", error);
-    } finally {
-      setLoading(false);
+      return false;
     }
-  };
-
-  const handleSelectSubLocation = (subLoc) => {
-    setSubLocation(subLoc);
-    setSubLocations([]);
   };
 
   const addFavorite = (location, subLocation) => {
@@ -98,16 +83,38 @@ const Search = () => {
     navigate("/my");
   };
 
+  const handleValidationAndAdd = async () => {
+    if (location && subLocation) {
+      if (!alertDisplayed) {
+        const isValid = await fetchSubLocationValidation(location, subLocation);
+        if (isValid) {
+          addFavorite(location, subLocation);
+        } else {
+          alert(
+            "지역명이 올바르지 않습니다. 양식에 맞게 입력해주세요.\n 예시) 강릉❌ 강릉시⭕️ // 옥천❌ 옥천군⭕️ // 강남❌ 강남구⭕️"
+          );
+          setAlertDisplayed(true); // 플래그 알림기록
+        }
+      }
+    } else {
+      if (!alertDisplayed) {
+        alert("지역과 세부지역을 입력해주세요");
+        setAlertDisplayed(true); // 플래그 알림기록
+      }
+    }
+
+    // 플래그 초기화 시켜서 여러번 안뜨게.
+    setTimeout(() => setAlertDisplayed(false), 500);
+  };
+
   const handleKeyDown = (e) => {
-    if (e.key === "Enter" && location && subLocation) {
-      addFavorite(location, subLocation);
+    if (e.key === "Enter") {
+      handleValidationAndAdd();
     }
   };
 
   const handleButtonClick = () => {
-    if (location && subLocation) {
-      addFavorite(location, subLocation);
-    }
+    handleValidationAndAdd();
   };
 
   return (
@@ -147,29 +154,15 @@ const Search = () => {
               onKeyDown={handleKeyDown}
               placeholder="시군구를 입력해주세요"
             />
-            {loading && <p>Loading...</p>}
-            {subLocations.length > 0 && (
-              <ul className="sub-location-list">
-                {subLocations.map((subLoc, index) => (
-                  <li
-                    key={index}
-                    onClick={() => handleSelectSubLocation(subLoc)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    {subLoc}
-                  </li>
-                ))}
-              </ul>
-            )}
           </div>
           <button onClick={handleButtonClick} className="search-city-button">
             추가하기
           </button>
         </div>
       </div>
-      <div className="mascot">
+      {/* <div className="mascot">
         <img src={pang} alt="pang" />
-      </div>
+      </div> */}
     </div>
   );
 };

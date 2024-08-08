@@ -1,54 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 import ProgressBar from "@ramonak/react-progress-bar";
-import '../../styles/ChallengeStatus.css';
+import "../../styles/ChallengeStatus.css";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChallengeStatus = () => {
   const [challenges, setChallenges] = useState([]);
 
   useEffect(() => {
-    if (!localStorage.getItem('challenges')) {
-      localStorage.setItem("challenges", JSON.stringify([{
-        "id": 1,
-        "challenge_id": 1,
-        "title": "친환경 생활 실천",
-        "description": "일주일 동안 플라스틱 사용 줄이기",
-        "start_date": "2024-07-01",
-        "end_date": "2024-08-01",
-        "tasks": [
+    if (!localStorage.getItem("challenges")) {
+      localStorage.setItem(
+        "challenges",
+        JSON.stringify([
           {
-            "description": "분리수거 하기",
-            "is_completed": true
+            id: 1,
+            challenge_id: 1,
+            title: "친환경 생활 실천",
+            description: "일주일 동안 플라스틱 사용 줄이기",
+            start_date: "2024-07-01",
+            end_date: "2024-08-01",
+            tasks: [
+              {
+                description: "분리수거 하기",
+                is_completed: true,
+              },
+              {
+                description: "포장하기",
+                is_completed: false,
+              },
+            ],
           },
           {
-            "description": "포장하기",
-            "is_completed": false
-          }
-        ]
-      }, {
-        "id": 2,
-        "challenge_id": 2,
-        "title": "대중교통 이용",
-        "description": "자가 대신 대중교통 이용하기",
-        "start_date": "2024-08-01",
-        "end_date": "2024-09-01",
-        "tasks": [
-          {
-            "description": "버스 타기",
-            "is_completed": true
+            id: 2,
+            challenge_id: 2,
+            title: "대중교통 이용",
+            description: "자가 대신 대중교통 이용하기",
+            start_date: "2024-08-01",
+            end_date: "2024-09-01",
+            tasks: [
+              {
+                description: "버스 타기",
+                is_completed: true,
+              },
+              {
+                description: "지하철 타기",
+                is_completed: false,
+              },
+              {
+                description: "자전거 타기",
+                is_completed: false,
+              },
+            ],
           },
-          {
-            "description": "지하철 타기",
-            "is_completed": false
-          },
-          {
-            "description": "자전거 타기",
-            "is_completed": false
-          }
-        ]
-      }]));
+        ])
+      );
     }
     fetchChallenges();
   }, []);
@@ -57,14 +63,13 @@ const ChallengeStatus = () => {
   const fetchChallenges = async () => {
     try {
       const response = await axios.get(`${apiUrl}/my`, {
-        withCredentials: true
+        withCredentials: true,
       });
       setChallenges(response.data.challenges);
-
     } catch (error) {
-      console.error('Error fetching challenges:', error);
+      console.error("Error fetching challenges:", error);
     }
-   };
+  };
 
   //로컬스토리지 사용
   // const fetchChallenges = async () => {
@@ -105,76 +110,81 @@ const ChallengeStatus = () => {
 
   //Axios 사용
   const handleTaskCompletionToggle = async (challengeId, taskId) => {
-    const updatedChallenges = challenges.map(challenge => {
-        if (challenge.id === challengeId) {
-            return {
-                ...challenge,
-                tasks: challenge.tasks.map(task =>
-                    task.id === taskId ? { ...task, is_completed: !task.is_completed } : task
-                )
-            };
-        }
-        return challenge;
+    const updatedChallenges = challenges.map((challenge) => {
+      if (challenge.id === challengeId) {
+        return {
+          ...challenge,
+          tasks: challenge.tasks.map((task) =>
+            task.id === taskId
+              ? { ...task, is_completed: !task.is_completed }
+              : task
+          ),
+        };
+      }
+      return challenge;
     });
 
     setChallenges(updatedChallenges);
-    
 
     // 서버에 PATCH 요청 보내기
-    const updatedChallenge = updatedChallenges.find(challenge => challenge.id === challengeId);
+    const updatedChallenge = updatedChallenges.find(
+      (challenge) => challenge.id === challengeId
+    );
     try {
-      await Promise.all(updatedChallenge.tasks.map(async task => {
-        console.log(task) 
-        await axios.patch(`${apiUrl}/tasks/${task.id}`, task, {
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          withCredentials: true
+      await Promise.all(
+        updatedChallenge.tasks.map(async (task) => {
+          console.log(task);
+          await axios.patch(`${apiUrl}/tasks/${task.id}`, task, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
           });
-             
-      }));
+        })
+      );
     } catch (error) {
-        console.error('Failed to update task status on server:', error);
+      console.error("Failed to update task status on server:", error);
     }
     console.log(updatedChallenges);
   };
 
   return (
-    <div className='ChallengeStatus'>
-      <h1>나의 챌린지 현황</h1>
-      <div className='StatusLists'>
-        {challenges.map(challenge => {
+    <div className="ChallengeStatus">
+      <h1 className="challenge-status-title">나의 챌린지 현황</h1>
+      <div className="StatusLists">
+        {challenges.map((challenge) => {
           let count = challenge.tasks.length;
-          let completedCount = challenge.tasks.filter(task => task.is_completed).length;
-          let label = Math.round(completedCount/count*100);
+          let completedCount = challenge.tasks.filter(
+            (task) => task.is_completed
+          ).length;
+          let label = Math.round((completedCount / count) * 100);
 
           if (completedCount === 0) {
-           completedCount = 1;
-           count = 8;
-           label = 0;
+            completedCount = 1;
+            count = 8;
+            label = 0;
           }
 
           return (
-            <div className='StatusList' key={challenge.id}>
+            <div className="StatusList" key={challenge.id}>
               <span>
-                {
-                  calculateDaysLeft(challenge.start_date) >= 1
-                  ? <div>{calculateDaysLeft(challenge.start_date)}일 후 시작</div>
-                  : ( calculateDaysLeft(challenge.end_date) < 0
-                      ? <div>종료</div>
-                      : <div>진행중</div>
-                    )
-                }
+                {calculateDaysLeft(challenge.start_date) >= 1 ? (
+                  <div>{calculateDaysLeft(challenge.start_date)}일 후 시작</div>
+                ) : calculateDaysLeft(challenge.end_date) < 0 ? (
+                  <div>종료</div>
+                ) : (
+                  <div>진행중</div>
+                )}
               </span>
-              <h3>{challenge.title}</h3>
+              <h3 className="my-page-challenge-title">{challenge.title}</h3>
               <ProgressBar
                 completed={completedCount}
                 maxCompleted={count}
                 customLabel={`${label}%`}
                 width="148px"
-                height='16px'
-                baseBgColor='#D9D9D9'
-                bgColor='linear-gradient(to right, #CDEDFF, #00A3FF)'
+                height="16px"
+                baseBgColor="#D9D9D9"
+                bgColor="linear-gradient(to right, #CDEDFF, #00A3FF)"
                 labelSize="10px"
                 labelAlignment="right"
               />
@@ -185,8 +195,11 @@ const ChallengeStatus = () => {
                       <input
                         type="checkbox"
                         checked={task.is_completed}
-                        onChange={() => handleTaskCompletionToggle(challenge.id, task.id)}
-                      /> {task.description}
+                        onChange={() =>
+                          handleTaskCompletionToggle(challenge.id, task.id)
+                        }
+                      />{" "}
+                      {task.description}
                     </label>
                   </li>
                 ))}
@@ -200,7 +213,6 @@ const ChallengeStatus = () => {
       </div>
     </div>
   );
-
 };
 
 export default ChallengeStatus;

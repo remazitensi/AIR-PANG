@@ -4,6 +4,7 @@ import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 const apiUrl = process.env.REACT_APP_API_URL;
+import Air from "../../styles/Air.css";
 
 const AirChart = ({ locationName, subLocationName }) => {
   const [weatherData, setWeatherData] = useState(null);
@@ -13,15 +14,12 @@ const AirChart = ({ locationName, subLocationName }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${apiUrl}/locations/detail`,
-          {
-            params: {
-              location: locationName,
-              subLocation: subLocationName,
-            },
-          }
-        );
+        const response = await axios.get(`${apiUrl}/locations/detail`, {
+          params: {
+            location: locationName,
+            subLocation: subLocationName,
+          },
+        });
 
         setWeatherData({
           city: `${response.data.locations.address_a_name}, ${response.data.locations.address_b_name}`,
@@ -50,45 +48,50 @@ const AirChart = ({ locationName, subLocationName }) => {
   if (error) return <div>{error}</div>;
 
   return (
-    <div className="weather-card">
-      <div className="top-section">
-        <h2>오늘의 공기정보</h2>
+    <div className="weather-info-air-quality-container">
+      <div className=" weather-info-air-quality-top">
+        <h2 weather-page-card-title>오늘의 공기정보</h2>
         <div className="location">
           <FontAwesomeIcon
             icon={faLocationDot}
-            style={{ color: "#2e2e2e70", marginRight: "12px" }}
+            style={{
+              color: "white",
+              marginRight: "12px",
+              fontSize: "32px",
+            }}
           />
+
           {weatherData.city}
         </div>
       </div>
-      <div className="second-row">
-        <div className="data-item">
+      <div className="weather-info-second-row">
+        <div className="weather-info-data-item">
           <h3>이산화황(SO2)</h3>
           <p>{weatherData.airQuality.so2}</p>
         </div>
-        <div className="data-item">
+        <div className="weather-info-data-item">
           <h3>일산화탄소(CO)</h3>
           <p>{weatherData.airQuality.co}</p>
         </div>
-        <div className="data-item">
+        <div className="weather-info-data-item">
           <h3>오존(O3)</h3>
           <p>{weatherData.airQuality.o3}</p>
         </div>
-      </div>
-      <div className="third-row">
-        <div className="data-item">
+        <div className="weather-info-data-item">
           <h3>이산화질소(NO2)</h3>
           <p>{weatherData.airQuality.no2}</p>
         </div>
-        <div className="data-item">
+        <div className="weather-info-data-item">
           <h3>미세먼지(PM10)</h3>
           <p>{weatherData.airQuality.pm10}</p>
         </div>
-        <div className="data-item">
+        <div className="weather-info-data-item">
           <h3>초미세먼지(PM2.5)</h3>
           <p>{weatherData.airQuality.pm25}</p>
         </div>
       </div>
+
+      {/*second row end*/}
     </div>
   );
 };
