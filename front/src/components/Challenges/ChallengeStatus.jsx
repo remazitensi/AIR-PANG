@@ -110,12 +110,18 @@ const ChallengeStatus = () => {
 
   //Axios 사용
   const handleTaskCompletionToggle = async (challengeId, taskId) => {
-    const updatedChallenges = challenges.map((challenge) => {
+    const shouldAlert = challenges.some((challenge) => {
       if (calculateDaysLeft(challenge.start_date) >= 1 || calculateDaysLeft(challenge.end_date) < 0) {
-        alert("챌린지가 진행중일 때만 체크가 가능합니다.");
-        return;
+        return true;
       }
+      return false;
+    });
 
+    if (shouldAlert) {
+      alert("챌린지가 진행중일 때만 체크가 가능합니다.");
+    }
+
+    const updatedChallenges = challenges.map((challenge) => {
       if (challenge.id === challengeId) {
         return {
           ...challenge,
