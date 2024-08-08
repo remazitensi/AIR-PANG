@@ -119,6 +119,7 @@ const ChallengeStatus = () => {
 
     if (shouldAlert) {
       alert("챌린지가 진행중일 때만 체크가 가능합니다.");
+      return;
     }
 
     const updatedChallenges = challenges.map((challenge) => {
