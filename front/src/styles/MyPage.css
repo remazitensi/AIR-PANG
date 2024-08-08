@@ -68,3 +68,7 @@
   text-decoration: underline;
   color: rgb(255, 255, 255);
 }
+
+.delete-account-button:hover {
+  color: red;
+}
