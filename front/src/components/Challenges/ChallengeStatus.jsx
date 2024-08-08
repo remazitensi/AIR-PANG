@@ -110,17 +110,17 @@ const ChallengeStatus = () => {
 
   //Axios 사용
   const handleTaskCompletionToggle = async (challengeId, taskId) => {
-    const shouldAlert = challenges.some((challenge) => {
-      if (calculateDaysLeft(challenge.start_date) >= 1 || calculateDaysLeft(challenge.end_date) < 0) {
-        return true;
-      }
-      return false;
-    });
+    //const shouldAlert = challenges.some((challenge) => {
+    //  if (calculateDaysLeft(challenge.start_date) >= 1 || calculateDaysLeft(challenge.end_date) < 0) {
+    //    return true;
+    //  }
+    //  return false;
+    //});
 
-    if (shouldAlert) {
-      alert("챌린지가 진행중일 때만 체크가 가능합니다.");
-      return;
-    }
+    //if (shouldAlert) {
+    //  alert("챌린지가 진행중일 때만 체크가 가능합니다.");
+    //  return;
+    //}
 
     const updatedChallenges = challenges.map((challenge) => {
       if (challenge.id === challengeId) {
