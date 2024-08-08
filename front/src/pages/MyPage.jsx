@@ -23,7 +23,7 @@ function MyPage() {
 
       if (response.ok) {
         alert("회원탈퇴가 완료되었습니다.");
-        navigate("/");
+        window.location.href = "/";
       } else {
         alert("계정 삭제 중 오류가 발생했습니다.");
       }

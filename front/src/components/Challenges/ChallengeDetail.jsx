@@ -58,10 +58,10 @@ function ChallengeDetail() {
     return new Date(dateString).toLocaleDateString("ko-KR", options);
   };
 
-  function calculateDaysLeft(start_date) {
+  function calculateDaysLeft(targetDate) {
     const today = new Date();
-    const startDate = new Date(start_date);
-    const timeDiff = startDate - today;
+    const target = new Date(targetDate);
+    const timeDiff = target - today;
     const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
     return daysLeft;
   }

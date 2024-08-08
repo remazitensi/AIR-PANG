@@ -82,10 +82,10 @@ const ChallengeStatus = () => {
   //   }
   // };
 
-  function calculateDaysLeft(start_date) {
+  function calculateDaysLeft(targetDate) {
     const today = new Date();
-    const startDate = new Date(start_date);
-    const timeDiff = startDate - today;
+    const target = new Date(targetDate);
+    const timeDiff = target - today;
     const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
     return daysLeft;
   }
@@ -111,6 +111,11 @@ const ChallengeStatus = () => {
   //Axios 사용
   const handleTaskCompletionToggle = async (challengeId, taskId) => {
     const updatedChallenges = challenges.map((challenge) => {
+      if (calculateDaysLeft(challenge.start_date) >= 1 || calculateDaysLeft(challenge.end_date) < 0) {
+        alert("챌린지가 진행중일 때만 체크가 가능합니다.");
+        return;
+      }
+
       if (challenge.id === challengeId) {
         return {
           ...challenge,
