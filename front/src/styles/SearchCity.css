@@ -6,7 +6,7 @@
 
 #search-city-container {
   width: 100%;
-  height: 100vh;
+  height: calc(100vh - 70px);
   position: relative;
   align-items: center;
   margin: 0 auto;
@@ -24,7 +24,7 @@
 .search-city-content {
   position: relative;
   z-index: 10;
-  margin-top: 5%;
+  margin-top: 8%;
 }
 
 h2.search-city-title {
@@ -32,6 +32,7 @@ h2.search-city-title {
   font-size: 32px;
   font-weight: 300;
   text-align: center;
+  margin-bottom: 40px;
 }
 
 .search-city-inputs {
@@ -157,6 +158,6 @@ button.search-city-button:hover {
 .mascot img {
   position: absolute;
   left: 10%;
-  bottom: 5%;
+  bottom: 0;
   z-index: 2000;
 }

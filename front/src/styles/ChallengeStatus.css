@@ -1,33 +1,50 @@
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
 .ChallengeStatus {
-  padding: 16px;
-  
+  padding: 30px;
   height: 500px;
-  border-radius: 20px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 24px;
+  background-color: white;
+}
 
-  background-color: #FAFAFA;
-
-  
+.ChallengeStatus .challenge-status-title {
+  font-size: 28px;
+  font-family: "HancomMalangMalang-Regular";
+  font-weight: 300;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 .StatusLists {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   gap: 24px;
-
   width: 800px;
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
+  padding-bottom: 20px;
+}
+
+.my-page-challenge-title {
+  font-family: "HancomMalangMalang-Regular";
+  margin-bottom: 5px;
 }
 
 .StatusLists::-webkit-scrollbar {
-  height: 12px; /* 스크롤 막대의 너비 */
+  display: 10px; /* 스크롤 막대의 너비 */
 }
 
 .StatusLists::-webkit-scrollbar-thumb {
@@ -38,29 +55,35 @@
 
 .StatusLists::-webkit-scrollbar-track {
   /*스크롤바 뒷 배경 색상*/
-  background: #EDEDED;
+  background: #cdedff;
   border-radius: 10px;
 }
 
 .StatusList {
-  flex: 0 0 180px;
-  height: 348px;
+  flex: 0 0 200px;
   border-radius: 8px;
   padding-top: 20px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   gap: 12px;
-  background-color: white;
+  background-color: #cdedff60;
+  height: auto;
+}
+
+.StatusList label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .StatusList span div {
   width: 72px;
-  height: 20px;
+  height: 24px;
   border-radius: 4px;
-  background-color: #004AAD;
-  font-size: 10px;
+  background-color: #004aad;
+  font-size: 11px;
   color: white;
 
   display: flex;
@@ -69,15 +92,31 @@
 }
 
 .StatusList ul {
-  height: 200px;
+  height: 150px;
 }
 
 .StatusList li {
   list-style-type: none;
-  margin-top: 12px;
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.StatusList input[type="checkbox"] {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid #6ac9ff;
+  cursor: pointer; /* Pointer cursor on hover */
+  position: relative;
+}
+
+.StatusList input[type="checkbox"]:checked {
+  background-color: #6ac9ff; /* Fill color when checked */
 }
 
 .link {
-  font-size: 10px;
+  font-size: 12px;
   text-decoration: underline;
+  margin-bottom: 20px;
+  color: #00a3ff;
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./Header.css";
+import pangLogo from "../../assets/images/pangLogo.png";
 
 function Header({ isLoggedIn, onLogout }) {
   const location = useLocation();
@@ -16,7 +17,7 @@ function Header({ isLoggedIn, onLogout }) {
 
   const handleLogoutClick = async () => {
     await onLogout();
-    navigate('/'); // 로그아웃 후 '/' 경로로 이동
+    navigate("/"); // 로그아웃 후 '/' 경로로 이동
   };
 
   const handleChallengeClick = (event) => {
@@ -29,20 +30,12 @@ function Header({ isLoggedIn, onLogout }) {
   return (
     <header className="header">
       <div className="logo">
-        <Link
-          to="/"
-          style={{
-            marginLeft: "20px",
-            textDecoration: "none",
-            fontSize: "28px",
-            fontWeight: "200",
-          }}
-        >
-          공기팡
+        <Link to="/">
+          <img src={pangLogo} alt="Logo" />
         </Link>
       </div>
       <nav className="nav">
-        <ul>
+        <ul className="nav-menu-items">
           <li>
             <Link to="/locations">우리동네 찾아보기</Link>
           </li>
@@ -56,7 +49,13 @@ function Header({ isLoggedIn, onLogout }) {
           </li>
           {!isLoggedIn ? (
             <li>
-              <Link to={authUrl}>로그인</Link>
+              <Link
+                to={authUrl}
+                className="login-menu-item"
+                style={{ color: "#fff" }}
+              >
+                로그인
+              </Link>
             </li>
           ) : (
             <>
@@ -64,7 +63,12 @@ function Header({ isLoggedIn, onLogout }) {
                 <Link to="/my">마이페이지</Link>
               </li>
               <li>
-                <button onClick={handleLogoutClick}>로그아웃</button>
+                <button
+                  onClick={handleLogoutClick}
+                  className="logout-menu-item"
+                >
+                  로그아웃
+                </button>
               </li>
             </>
           )}

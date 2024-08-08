@@ -1,1 +1,86 @@
-/*작성예정 지우지 말것 */
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.weather-info-air-quality-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: auto;
+  padding: 100px 50px;
+  width: 100%;
+  max-width: 1440px;
+  background: #fafafa;
+  border-radius: 30px;
+}
+
+.weather-info-air-quality-container h2 {
+  font-size: 36px;
+  font-weight: 300;
+  margin-bottom: 24px;
+  font-family: "HancomMalangMalang-Regular";
+  color: #2e2e2e;
+}
+
+.location {
+  font-size: 32px;
+  margin-bottom: 50px;
+  font-family: "HancomMalangMalang-Regular";
+  color: #2e2e2e;
+}
+
+.weather-info-second-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.weather-info-data-item {
+  background-color: #004aad;
+  padding: 30px;
+  width: 220px;
+  height: auto;
+  max-height: 242px;
+  border-radius: 10px;
+  line-height: 2;
+  text-align: left;
+}
+
+.weather-info-data-item h3 {
+  font-weight: 400;
+  font-size: 24px;
+  text-align: left;
+  color: white;
+}
+
+.weather-info-data-item p {
+  font-size: 28px;
+  text-align: left;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.weather-info-data-item p span.unit {
+  font-size: 20px;
+  font-weight: 300;
+  color: #2e2e2e;
+}
+
+.mascot {
+  max-width: 980px;
+}
+
+.mascot img {
+  position: absolute;
+  left: 10%;
+  bottom: 0;
+  z-index: 1000;
+}

@@ -6,31 +6,31 @@
   font-family: "Pretendard";
 }
 
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
 .my-favorite-container .my-favorite h3 {
   font-weight: 300;
   font-size: 28px;
   text-align: center;
   margin-bottom: 30px;
-}
-
-.bottom-section {
-  display: flex;
-  justify-content: center;
-  gap: 36px;
+  font-family: "HancomMalangMalang-Regular";
 }
 
 .my-favorite,
 .challenge-status {
-  background-color: #fafafa;
-  padding: 80px 100px;
+  background-color: white;
+  padding: 50px 100px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-}
-
-.my-favorite {
-  max-width: 560px;
+  min-height: 500px;
 }
 
 .my-favorite ul li {
@@ -52,6 +52,12 @@
   color: white;
 }
 
+.my-favorite ul li.favorite-empty {
+  cursor: pointer;
+  color: #2e2e2e;
+  background: none;
+}
+
 .delete-button {
   background: none;
   color: white;
@@ -65,7 +71,7 @@
   color: lightblue;
 }
 
-.my-favorite p {
+.my-favorite {
   text-align: center;
 }
 

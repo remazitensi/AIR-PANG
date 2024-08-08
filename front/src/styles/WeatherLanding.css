@@ -4,48 +4,82 @@
   box-sizing: border-box;
 }
 
-.weather-landing {
-  display: flex;
-  justify-content: center;
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.weather-landing-container {
+  width: 100%;
+  height: calc(100vh - 70px);
+  position: relative;
   align-items: center;
-  height: 100vh;
-  padding: 100px 50px;
-  background-image: url("https://images.unsplash.com/photo-1542349314-b0ceb4d90f2d?q=80&w=2938&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  margin: 0 auto;
   overflow: hidden;
 }
 
-.weather-landing h1 {
-  text-align: left;
-  font-size: 72px;
-  font-weight: 200;
+.weather-landing-container::-webkit-scrollbar {
+  display: none;
+}
+
+.weather-landing-video {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.weather-landing-content {
   display: flex;
+  justify-content: center;
   align-items: center;
-  margin-right: 50px;
+  padding-top: 150px;
+}
+
+.weather-landing-container .left .left-section-title {
+  font-family: "HancomMalangMalang-Regular";
+  color: white;
+  font-size: 84px;
+  margin-bottom: 30px;
 }
 
 .weather-card {
-  background: rgba(255, 255, 255, 0.4);
+  position: relative;
   padding: 60px 50px 50px;
   border-radius: 20px;
   text-align: center;
-  margin-left: 100px;
+  margin-left: 80px;
   height: auto;
   max-height: 800px;
+  z-index: 2000;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: brightness(1) blur(20px);
+  /*mix-blend-mode: overlay;*/
 }
 
-.top-section {
+.weather-card .top-section {
   position: relative;
-  color: #2e2e2e;
   padding: 0;
 }
 
-.weather-landing h2 {
-  font-size: 32px;
+.weather-card .top-section h2 {
+  font-size: 44px;
+  font-weight: 300;
+  margin-top: 10px;
+  margin-bottom: 24px;
+  font-family: "HancomMalangMalang-Regular";
+  color: #333;
 }
 
-.location {
+.weather-card .top-section .location {
   font-size: 32px;
   margin-bottom: 32px;
+  color: #333;
+  font-family: "HancomMalangMalang-Regular";
 }
 
 .temperature {
@@ -65,10 +99,11 @@
   justify-content: space-between;
 }
 
-.data-item {
-  background-color: rgba(255, 255, 255, 0.7);
+.second-row .data-item,
+.third-row .data-item {
+  background-color: #ffffff40;
   padding: 30px;
-  width: 280px;
+  width: 260px;
   height: auto;
   max-height: 242px;
   border-radius: 10px;
@@ -103,4 +138,5 @@
   position: absolute;
   left: 10%;
   bottom: 0;
+  z-index: 1000;
 }

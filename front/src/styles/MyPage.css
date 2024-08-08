@@ -4,24 +4,51 @@
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
 .my-page-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  padding-top: 150px;
   gap: 20px;
-  padding: 20px;
-  margin-top: 30px;
+  overflow: hidden;
+  height: calc(100vh - 70px);
+  position: relative;
+}
+
+.my-page-container::-webkit-scrollbar {
+  display: none;
+}
+
+.my-page-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
 }
 
 .my-page-container .my-page-title h2 {
-  font-size: 36px;
+  font-size: 48px;
   text-align: center;
   font-weight: 300;
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  font-family: "HancomMalangMalang-Regular";
+  color: white;
 }
 
 .my-page-container .my-page-content {
   display: flex;
   justify-content: center;
   gap: 32px;
+  position: relative; /* Ensure content is positioned correctly within container */
+  z-index: 1; /* Ensure content is above the video */
 }
