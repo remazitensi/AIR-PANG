@@ -12,7 +12,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  /* gap: 20px; */
   font-family: "HancomMalangMalang-Regular"; /* 폰트를 HancomMalangMalang-Regular로 설정 */
 }
 
@@ -47,8 +47,8 @@
 .uri-map-container {
   width: 80%;
   max-width: 800px;
-  margin-top: 20px;
-  background-color: white;
+  margin-top: -20px;
+  background-color: transparent;
   padding: 20px;
   border-radius: 80px;
   /* box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
@@ -56,8 +56,8 @@
 }
 
 .pang-on-location {
-  position: relative;
-  width: 100%;
+  position: fixed;
+  bottom: 0;
 }
 
 .pang-on-location img {
