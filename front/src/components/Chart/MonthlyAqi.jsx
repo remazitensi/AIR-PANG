@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Line } from "react-chartjs-2";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import "../../styles/Monthly.css";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,8 +11,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { Line } from "react-chartjs-2";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-// Register Chart.js components
+// Register Chart.js components and the data labels plugin
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -19,100 +22,190 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  ChartDataLabels
 );
 
-const monthOrder = {
-  "1월": 1,
-  "2월": 2,
-  "3월": 3,
-  "4월": 4,
-  "5월": 5,
-  "6월": 6,
-  "7월": 7,
-  "8월": 8,
-  "9월": 9,
-  "10월": 10,
-  "11월": 11,
-  "12월": 12,
-};
+const apiUrl = process.env.REACT_APP_API_URL;
 
-const MonthlyAqi = ({ data }) => {
-  if (!data) return <div>Loading...</div>;
+const MonthlyAqi = ({ locationName, subLocationName }) => {
+  const [monthlyAqi, setMonthlyAqi] = useState([]);
+  const chartRef = useRef(null);
 
-  const { monthly_aqi } = data;
-  if (!monthly_aqi) return <div>No data available</div>;
+  useEffect(() => {
+    const fetchAqiData = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/locations/detail`, {
+          params: {
+            location: locationName,
+            subLocation: subLocationName,
+          },
+        });
 
-  // 최신 12개월 데이터 슬라이싱
-  const latestData = monthly_aqi.slice(-12);
+        const monthlyData = response.data.monthly_aqi.reduce((acc, item) => {
+          const month = parseInt(item.month.split("월")[0], 10);
+          if (month >= 1 && month <= 12) {
+            acc[month] = item.aqi;
+          }
+          return acc;
+        }, {});
 
-  // 월을 숫자로 변환하여 정렬
-  latestData.sort((a, b) => monthOrder[a.month] - monthOrder[b.month]);
+        const sortedData = Array.from({ length: 12 }, (_, i) => {
+          const month = i + 1;
+          return {
+            month: `${month}월`,
+            aqi: monthlyData[month] || 0,
+          };
+        });
 
-  const months = latestData.map((aqi) => aqi.month);
-  const aqiValues = latestData.map((aqi) => aqi.aqi);
+        setMonthlyAqi(sortedData);
+      } catch (err) {
+        console.error("Error fetching AQI data:", err);
+      }
+    };
 
-  const chartData = {
-    labels: months,
+    fetchAqiData();
+  }, [locationName, subLocationName]);
+
+  const data = {
+    labels: monthlyAqi.map((item) => item.month),
     datasets: [
       {
-        label: "대기질 지수(AQI)",
-        data: aqiValues,
-        borderColor: "rgba(75, 192, 192, 1)",
-        backgroundColor: "rgba(75, 192, 192, 0.2)",
-        tension: 0.2,
-        pointRadius: 5, // 점의 크기
+        label: "AQI",
+        data: monthlyAqi.map((item) => item.aqi),
+        fill: false,
+        borderColor: "#9FB2BD",
+        tension: 0,
+        pointRadius: 8,
+        pointHoverRadius: 10,
+        datalabels: {
+          color: "#000",
+          font: {
+            size: 20,
+          },
+          anchor: "end",
+          align: "top",
+          offset: 5,
+          formatter: (value) => value,
+        },
       },
     ],
   };
 
-  const chartOptions = {
-    responsive: true,
+  const options = {
     plugins: {
       legend: {
-        display: false,
+        display: true,
+        labels: {
+          font: {
+            size: 20,
+          },
+        },
       },
       tooltip: {
         callbacks: {
-          label: (tooltipItem) => `AQI: ${tooltipItem.raw}`,
+          label: function (context) {
+            return `${context.dataset.label}: ${context.raw}`;
+          },
         },
+        bodyFont: {
+          size: 20,
+        },
+      },
+      datalabels: {
+        color: "#000",
+        font: {
+          size: 14,
+        },
+        formatter: (value) => value,
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        left: 20,
+        right: 20,
+        top: 20,
+        bottom: 20,
       },
     },
     scales: {
       x: {
-        title: {
-          display: true,
-          // text: "월",
-        },
         grid: {
-          display: false, // x축 그리드 없애기
+          color: "rgba(255, 255, 255, 0)",
+        },
+        ticks: {
+          font: {
+            size: 18,
+          },
         },
       },
       y: {
-        title: {
-          display: true,
-          text: "AQI",
-          // align: "end", // Y축 상단에 위치
-          // padding: { top: 10 }, // 위쪽 패딩 조정
-        },
+        type: "linear",
+        position: "left",
         grid: {
-          display: false, // y축 그리드 없애기
+          color: "rgba(0, 0, 0, 0.2)",
+          drawOnChartArea: true,
         },
-        beginAtZero: false, // y축 최소범위 설정, true=0
+        ticks: {
+          font: {
+            size: 18,
+          },
+          callback: (value) => {
+            if (value === 0) return "매우";
+            if (value === 50) return "나쁨";
+            if (value === 100) return "보통";
+            if (value === 250) return "좋음";
+            return "";
+          },
+        },
+        min: 0,
+        max: 250,
+      },
+      y2: {
+        type: "linear",
+        position: "right",
+        grid: {
+          drawOnChartArea: false,
+        },
+        ticks: {
+          font: {
+            size: 18,
+          },
+          callback: (value) => {
+            if (value === 0) return "0";
+            if (value === 50) return "51";
+            if (value === 101) return "101";
+            if (value === 251) return "251";
+            return "";
+          },
+        },
+        min: 0,
+        max: 300,
       },
     },
   };
 
+  useEffect(() => {
+    const chartInstance = chartRef.current;
+
+    // Clean up the chart instance on unmount
+    return () => {
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+    };
+  }, []);
+
   return (
-    <div>
-        <h2 style={{
-          marginBottom: '40px'
-        }}>
-          {`${data.locations.address_a_name || "Unknown Location"} ${data.locations.address_b_name || "Unknown Location"}`}
-        </h2>
-      <div>
-        <h2>최근 12개월 대기질 지수(AQI) 차트</h2>
-        <Line data={chartData} options={chartOptions} />
+    <div className="monthly-chart-container">
+      <h2 className="monthly-chart-container-title">
+        월별 통합 AQI 변화 추이 (작년 기준)
+      </h2>
+      <div className="chart-wrapper">
+        <Line ref={chartRef} data={data} options={options} />
+        <div className="chart-background" />
       </div>
     </div>
   );
