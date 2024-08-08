@@ -54,6 +54,11 @@ function ChallengeCreate() {
       return;
     }
 
+    if (new Date(endDate) < new Date()) {
+      alert("종료일은 현재 날짜보다 이전 날짜일 수 없습니다.");
+      return;
+    }
+
     const filteredTasks = tasks.filter((task) => task.trim() !== "");
 
     if (filteredTasks.length <= 1) {
