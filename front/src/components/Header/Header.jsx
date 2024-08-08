@@ -17,6 +17,7 @@ function Header({ isLoggedIn, onLogout }) {
 
   const handleLogoutClick = async () => {
     await onLogout();
+    alert("로그아웃 되었습니다."); // 알림 표시
     navigate("/"); // 로그아웃 후 '/' 경로로 이동
   };
 

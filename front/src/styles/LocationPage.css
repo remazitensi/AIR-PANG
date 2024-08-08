@@ -11,7 +11,7 @@
   background-size: cover;
   background-position: center;
   width: 100%;
-  height: 35vh;
+  height: 40vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,20 +24,24 @@
 }
 
 .button-container {
-  width: 800px;
+  width: 90%;
+  max-width: 980px;
   padding: 0 40px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin: 20px auto;
+  justify-content: center;
+  gap: 6px;
+  margin: 28px auto;
   position: relative; /* Position relative to enable negative margin */
   /* top: -30px; Adjust this value to control the overlap amount */
 }
 
 .location-button {
   background-color: #004aad;
-  font-size: 20px;
-  padding: 15px 25px;
+  font-size: 18px;
+  height: 52px;
+  width: 100px;
+  /* padding: 15px 25px; */
   margin: 4px 2px;
   border: none;
   color: white;
@@ -70,14 +74,14 @@
 }
 
 .info-card {
-  margin-top: 24px;
+  margin-top: 20px;
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
   background-color: rgba(205, 237, 255, 0.7);
-  border: 1px solid #ffffff;
+  /* border: 1px solid #ffffff; */
   border-radius: 12px;
-  padding: 15px;
+  padding: 30px 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   width: 280px; /* 카드의 너비 설정 */
   /* font-size: 48px; 기본 글씨 크기 증가 */
@@ -86,19 +90,21 @@
 
 .info-card h2 {
   font-size: 30px;
-  margin-bottom: 20px; /* 제목 아래 여백 추가 */
+  margin-bottom: 10px; /* 제목 아래 여백 추가 */
   font-family: "HancomMalangMalang-Regular";
+  color: #004aad;
 }
 
 .info-card p {
   font-size: 18px;
-  margin: 15px 0; /* 문단 사이 여백 조정 */
+  line-height: 1.6;
+  /* margin: 15px 0; 문단 사이 여백 조정 */
   font-family: "HancomMalangMalang-Regular";
 }
 
 .pang-on-location {
-  position: relative;
-  width: 100%;
+  position: fixed;
+  left: 5%;
   display: inline-block;
   pointer-events: none;
 }
