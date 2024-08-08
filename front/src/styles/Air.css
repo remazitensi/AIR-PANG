@@ -11,16 +11,21 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  flex-wrap: wrap;
   height: auto;
-  padding: 100px 50px;
+  padding: 100px 0px;
   width: 100%;
   max-width: 1440px;
   background: #fafafa;
   border-radius: 30px;
+  background-image: url("https://images.unsplash.com/photo-1616627023690-751ca98c43a3?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTc2fHxzZW91bHxlbnwwfDB8MHx8fDI%3D");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 
 .weather-info-air-quality-container h2 {
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 300;
   margin-bottom: 24px;
   font-family: "HancomMalangMalang-Regular";
@@ -44,28 +49,33 @@
 }
 
 .weather-info-data-item {
-  background-color: #004aad;
   padding: 30px;
-  width: 220px;
+  width: 100%;
+  max-width: 200px;
   height: auto;
   max-height: 242px;
   border-radius: 10px;
   line-height: 2;
   text-align: left;
+  background: #ffffff80;
+  backdrop-filter: brightness(1.1) blur(20px);
 }
 
 .weather-info-data-item h3 {
   font-weight: 400;
   font-size: 24px;
   text-align: left;
-  color: white;
+  color: #333;
+  line-height: 1.1;
+  font-family: "HancomMalangMalang-Regular";
+  line-height: 1.2;
 }
 
 .weather-info-data-item p {
   font-size: 28px;
   text-align: left;
   margin-bottom: 20px;
-  color: white;
+  color: #333;
 }
 
 .weather-info-data-item p span.unit {

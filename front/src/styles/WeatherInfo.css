@@ -31,7 +31,7 @@
   width: 100%;
   height: 45vw;
   max-height: 600px;
-  background-image: url("https://images.unsplash.com/photo-1504107435030-c7cd582601b8?q=80&w=3600&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-image: url("https://images.unsplash.com/photo-1651836170615-7f4c7573e697?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
   background-size: cover;
   background-position: center;
   z-index: -1; /* Behind the content */
@@ -54,7 +54,7 @@
   font-size: 60px;
   font-weight: 300;
   text-align: center;
-  color: white;
+  color: #585858;
   margin-bottom: 32px;
   z-index: 1;
   margin-top: 100px;
@@ -66,7 +66,7 @@
   font-weight: 300;
   margin-bottom: 30px;
   text-align: center;
-  color: white;
+  color: #585858;
   z-index: 1;
 }
 
@@ -130,17 +130,18 @@
 
 .city-background-image {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   object-fit: cover;
   position: absolute;
-  bottom: -30%;
+  bottom: 0;
   left: 0;
+  z-index: -1000;
 }
 
 .city-background h2.city-background-title {
   text-align: center;
   font-size: 60px;
-  margin-top: 15%;
+  margin-top: 200px;
   font-weight: 300;
   font-family: "HancomMalangMalang-Regular";
 }
