@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { getGrade, calculateScore } from "../../utils/aqi";
 import "../../styles/LocationPage.css";
+import pang from "../../assets/images/pang.png";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 export default function LocationPage() {
@@ -64,8 +65,10 @@ export default function LocationPage() {
 
   return (
     <div className="location-page">
-      <h1>{location} 세부지역</h1>
-      <p style={{ marginBottom: "60px" }}>세부지역을 선택해주세요!</p>
+      <div className="location-page-top">
+        <h1 className="location-page-title">{location} 세부지역</h1>
+        <p className="location-page-subtitle">세부지역을 선택해주세요!</p>
+      </div>
       <div className="button-container">
         {data &&
           data.map((d, index) => (
@@ -96,6 +99,9 @@ export default function LocationPage() {
           <p>대기질 등급: {hoveredLocation.grade}</p>
         </div>
       )}
+      <div className="pang-on-location">
+        <img src={pang} alt="pang" />
+      </div>
     </div>
   );
 }

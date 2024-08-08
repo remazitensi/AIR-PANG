@@ -56,8 +56,8 @@
 }
 
 .pang-on-location {
-  position: relative;
-  width: 100%;
+  position: pixed;
+  bottom: 0;  
 }
 
 .pang-on-location img {
