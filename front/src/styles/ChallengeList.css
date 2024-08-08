@@ -258,14 +258,13 @@ a {
 }
 
 .pang-on-challenge {
-  position: relative;
+  position: fixed;
+  bottom: 0;
+  left: 10%;
   width: 100%;
 }
 
 .pang-on-challenge img {
-  position: absolute;
-  bottom: 0;
-  left: 10%;
   height: auto;
   z-index: 1000;
 }

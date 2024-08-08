@@ -8,7 +8,7 @@
 
 .ChallengeStatus {
   padding: 30px;
-  height: 500px;
+  height: 540px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -23,7 +23,6 @@
   font-family: "HancomMalangMalang-Regular";
   font-weight: 300;
   color: #333;
-  margin-bottom: 10px;
 }
 
 .StatusLists {
@@ -35,7 +34,8 @@
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
-  padding-bottom: 20px;
+  padding: 30px 0;
+  margin-top: -20px;
 }
 
 .my-page-challenge-title {
@@ -44,32 +44,33 @@
 }
 
 .StatusLists::-webkit-scrollbar {
-  display: 10px; /* 스크롤 막대의 너비 */
+  display: 8px; /* 스크롤 막대의 너비 */
+  margin-top: 5px;
 }
 
 .StatusLists::-webkit-scrollbar-thumb {
   /* 스크롤바의 색상 */
-  background: #00a2ff7e;
+  background: #71cbff7e;
   border-radius: 10px;
 }
 
 .StatusLists::-webkit-scrollbar-track {
   /*스크롤바 뒷 배경 색상*/
-  background: #cdedff;
+  background: #d5f0ff;
   border-radius: 10px;
 }
 
 .StatusList {
   flex: 0 0 200px;
   border-radius: 8px;
-  padding-top: 20px;
+  padding: 28px 20px 10px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 12px;
   background-color: #cdedff60;
-  height: auto;
+  min-width: 260px;
 }
 
 .StatusList label {
@@ -98,7 +99,7 @@
 .StatusList li {
   list-style-type: none;
   margin-top: 8px;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .StatusList input[type="checkbox"] {

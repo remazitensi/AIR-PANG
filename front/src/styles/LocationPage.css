@@ -1,27 +1,45 @@
-.location-page {
-  padding: 0 20px;
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.location-page h1 {
+  padding: 20px 20px;
   margin: 0 2px;
+  font-family: "HancomMalangMalang-Regular", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.location-page p {
   text-align: center;
+  font-family: "HancomMalangMalang-Regular", sans-serif;
 }
 
 .button-container {
-  padding: 0 200px;
+  width: 800px;
+  padding: 0 40px;
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  margin: 0 auto; /* 좌우 마진을 자동으로 설정하여 중앙에 배치 */
 }
 
 .location-button {
-  background-color: #004AAD;
+  background-color: #004aad;
+  font-size: 20px; /* 버튼 글씨 크기도 약간 증가 */
+  padding: 15px 25px;
+  margin: 4px 2px;
   border: none;
   color: white;
-  padding: 12px 18px;
   border-radius: 50px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 20px;
-  margin: 4px 2px;
   cursor: pointer;
   transition: background-color 0.3s, box-shadow 0.3s;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -41,22 +59,17 @@
   border: 1px solid #ccc;
   border-radius: 12px;
   padding: 100px 15px;
-  
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  width: 600px;  /* 카드의 너비 설정 */
-  font-size: 48px;  /* 기본 글씨 크기 증가 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 600px; /* 카드의 너비 설정 */
+  font-size: 48px; /* 기본 글씨 크기 증가 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 
 .info-card h2 {
-  font-size: 60px;  /* 제목 글씨 크기 증가 */
-  margin-bottom: 20px;  /* 제목 아래 여백 추가 */
+  font-size: 60px; /* 제목 글씨 크기 증가 */
+  margin-bottom: 20px; /* 제목 아래 여백 추가 */
 }
 
 .info-card p {
-  margin: 15px 0;  /* 문단 사이 여백 조정 */
-}
-
-.location-button {
-  font-size: 20px;  /* 버튼 글씨 크기도 약간 증가 */
-  padding: 15px 25px;  /* 버튼 크기 증가 */
+  margin: 15px 0; /* 문단 사이 여백 조정 */
 }

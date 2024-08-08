@@ -1,7 +1,41 @@
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
 .ChallengeEdit {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  background-image: url("https://images.unsplash.com/photo-1710418512781-7899f2362f8a?q=80&w=3474&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: calc(100vh - 70px);
+  width: 100%;
+}
+
+.challenge-edit-title {
+  font-size: 40px;
+  font-family: "HancomMalangMalang-Regular";
+  margin-bottom: 24px;
+  color: white;
+}
+
+.challenge-edit-list li {
+  color: white;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.challenge-edit-list li a {
+  color: white;
+  font-size: 16px;
 }

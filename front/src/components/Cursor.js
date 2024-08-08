@@ -9,8 +9,8 @@ const Cursor = () => {
     document.body.appendChild(cursor);
 
     const handleMouseMove = (e) => {
-      cursor.style.left = `${e.pageX}px`;
-      cursor.style.top = `${e.pageY}px`;
+      cursor.style.left = `${e.clientX}px`;
+      cursor.style.top = `${e.clientY}px`;
     };
 
     document.addEventListener("mousemove", handleMouseMove);

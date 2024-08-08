@@ -21,8 +21,8 @@ function Weather() {
     const fetchData = async () => {
       try {
         const params = new URLSearchParams(window.location.search);
-        const mainLocation = params.get('location');
-        const subLocation = params.get('subLocation');
+        const mainLocation = params.get("location");
+        const subLocation = params.get("subLocation");
 
         if (!mainLocation || !subLocation) {
           throw new Error("Invalid location parameters");
@@ -40,8 +40,8 @@ function Weather() {
           airQuality: response.data.Realtime_Air_Quality,
         });
       } catch (error) {
-        console.error('Error fetching data:', error);
-        setError('Unable to fetch data.');
+        console.error("Error fetching data:", error);
+        setError("Unable to fetch data.");
       } finally {
         setLoading(false);
       }
@@ -68,11 +68,17 @@ function Weather() {
 
       <div className="monthly-info-containers">
         <div className="monthly-flex-container shared-width">
-          <MonthlyAqi locationName={locationData.city.split(", ")[0]} subLocationName={locationData.city.split(", ")[1]} />
+          <MonthlyAqi
+            locationName={locationData.city.split(", ")[0]}
+            subLocationName={locationData.city.split(", ")[1]}
+          />
           <AqiTable />
         </div>
         <div className="air-chart-container shared-width">
-          <AirQualityChart data={locationData.airQuality} city={locationData.city} />
+          <AirQualityChart
+            data={locationData.airQuality}
+            city={locationData.city}
+          />
         </div>
       </div>
 

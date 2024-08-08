@@ -6,4 +6,5 @@
   background: url("../assets/images/Patamon.webp") no-repeat center center; /* Update the path to your GIF */
   background-size: contain;
   z-index: 9999;
+  transform: translate(-20%, -20%);
 }
