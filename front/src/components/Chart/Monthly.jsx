@@ -155,10 +155,10 @@ const MonthlyAqi = ({ locationName, subLocationName }) => {
             size: 18,
           },
           callback: (value) => {
-            if (value === 0) return "매우";
-            if (value === 50) return "나쁨";
-            if (value === 100) return "보통";
-            if (value === 250) return "좋음";
+            if (value === 0) return "좋음";
+            if (value === 50) return "보통";
+            if (value === 100) return "나쁨";
+            if (value === 250) return "매우";
             return "";
           },
         },

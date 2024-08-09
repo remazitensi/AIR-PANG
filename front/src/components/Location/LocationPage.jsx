@@ -95,8 +95,14 @@ export default function LocationPage() {
           <h2>
             {location} {hoveredLocation.subLocation}
           </h2>
-          <p>대기질 점수: {hoveredLocation.score}</p>
-          <p>대기질 등급: {hoveredLocation.grade}</p>
+          <p>
+            대기질 점수: <br />
+            <span className="location-score">{hoveredLocation.score}</span>
+          </p>
+          <p>
+            대기질 등급: <br />
+            <span className="location-grade">{hoveredLocation.grade}</span>
+          </p>
         </div>
       )}
       <div className="pang-on-location">

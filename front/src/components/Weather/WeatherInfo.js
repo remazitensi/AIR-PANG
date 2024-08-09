@@ -72,7 +72,6 @@ const WeatherPage = () => {
           );
         }
       } catch (err) {
-        console.error("Error fetching weather data:", err);
         setError("Unable to fetch data.");
       } finally {
         setLoading(false);
@@ -156,7 +155,7 @@ const WeatherPage = () => {
         />
         <h2 className="city-background-title">
           환경을 위한 변화의 시작, <br />
-          지금 환경 챌린지에 참여하세요!{" "}
+          지금 환경 챌린지에 참여하세요!
         </h2>
         <button onClick={() => navigate("/challenges")}>챌린지 시작하기</button>
       </div>
