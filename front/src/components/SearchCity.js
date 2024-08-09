@@ -100,7 +100,7 @@ const Search = () => {
     }
 
     setAlertDisplayed(true); // 알림 표시
-    setTimeout(() => setAlertDisplayed(false), 500); // 알림 초기화
+    setTimeout(() => setAlertDisplayed(false), 10); // 알림 초기화
   };
 
   const handleKeyDown = (e) => {
