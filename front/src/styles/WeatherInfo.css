@@ -102,12 +102,12 @@
   width: 100%;
   max-width: 1440px;
   margin-bottom: 20px;
-  margin-top: 250px;
+  margin-top: 150px;
+  gap: 28px;
 }
 
 .monthly-flex-container > * {
   flex: 1;
-  margin: 0 10px;
 }
 
 .air-chart-container {
