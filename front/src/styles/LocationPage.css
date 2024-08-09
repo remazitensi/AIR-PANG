@@ -102,6 +102,16 @@
   font-family: "HancomMalangMalang-Regular";
 }
 
+.location-score {
+  font-family: "HancomMalangMalang-Regular";
+  font-size: 24px;
+}
+
+.location-grade {
+  font-family: "HancomMalangMalang-Regular";
+  font-size: 24px;
+}
+
 .pang-on-location {
   position: fixed;
   left: 5%;

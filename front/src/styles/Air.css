@@ -84,6 +84,43 @@
   color: #2e2e2e;
 }
 
+.weather-info-grade-n-score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  gap: 20px;
+}
+
+.weather-result {
+  background: linear-gradient(135deg, #ffffff95, #cdedff);
+  backdrop-filter: brightness(1.1) blur(20px);
+  padding: 50px;
+  border-radius: 8px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.weather-result h3 {
+  font-size: 24px;
+  font-family: "HancomMalangMalang-Regular";
+  margin-bottom: 10px;
+}
+
+.weather-result p {
+  font-size: 32px;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.weather-result p.grade-message {
+  font-size: 32px;
+  font-family: "HancomMalangMalang-Regular";
+}
+
 .mascot {
   max-width: 980px;
 }
