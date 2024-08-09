@@ -66,7 +66,7 @@ function App() {
           <Route path="/locations/detail" element={<LocationDetail />} />
 
           <>
-            <Route path="/detail" element={<Weather />} />
+            <Route path="/detail" element={<Weather isLoggedIn={isLoggedIn} />} />
             <Route path="/weather" element={<WeatherPage />} />
             <Route path="/challenges/*" element={<Challenges />} />
             <Route path="/my" element={<MyPage />} />

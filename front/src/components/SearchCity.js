@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../styles/SearchCity.css";
 import pangVideo from "../assets/videos/pangVideo.mp4";
 import pang from "../assets/images/pang.png";
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const locationsList = [
@@ -47,7 +48,6 @@ const Search = () => {
         params: { location, subLocation },
       });
 
-      // 데이터 유효성 검사 - 인풋값 잘못들어오면 알려주기 위한 세팅.
       return (
         response.data &&
         response.data.locations &&
@@ -84,27 +84,23 @@ const Search = () => {
   };
 
   const handleValidationAndAdd = async () => {
+    if (alertDisplayed) return; // 이미 알림이 표시 중이면 아무 것도 하지 않음
+
     if (location && subLocation) {
-      if (!alertDisplayed) {
-        const isValid = await fetchSubLocationValidation(location, subLocation);
-        if (isValid) {
-          addFavorite(location, subLocation);
-        } else {
-          alert(
-            "지역명이 올바르지 않습니다. 양식에 맞게 입력해주세요.\n 예시) 강릉❌ 강릉시⭕️ // 옥천❌ 옥천군⭕️ // 강남❌ 강남구⭕️"
-          );
-          setAlertDisplayed(true); // 플래그 알림기록
-        }
+      const isValid = await fetchSubLocationValidation(location, subLocation);
+      if (isValid) {
+        addFavorite(location, subLocation);
+      } else {
+        alert(
+          "지역명이 올바르지 않습니다. 양식에 맞게 입력해주세요.\n 예시) 강릉❌ 강릉시⭕️ // 옥천❌ 옥천군⭕️ // 강남❌ 강남구⭕️"
+        );
       }
     } else {
-      if (!alertDisplayed) {
-        alert("지역과 세부지역을 입력해주세요");
-        setAlertDisplayed(true); // 플래그 알림기록
-      }
+      alert("지역과 세부지역을 입력해주세요");
     }
 
-    // 플래그 초기화 시켜서 여러번 안뜨게.
-    setTimeout(() => setAlertDisplayed(false), 500);
+    setAlertDisplayed(true); // 알림 표시
+    setTimeout(() => setAlertDisplayed(false), 10); // 알림 초기화
   };
 
   const handleKeyDown = (e) => {

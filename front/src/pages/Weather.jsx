@@ -11,11 +11,22 @@ import cityBackground from "../assets/images/cityBackground.png";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
-function Weather() {
+function Weather({ isLoggedIn }) {
   const [locationData, setLocationData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  const handleChallengeClick = (event) => {
+    event.preventDefault(); // 클릭 시 페이지 이동 방지
+    console.log(isLoggedIn);
+    if (isLoggedIn) {
+      navigate("/challenges");
+      
+    } else {
+      alert("로그인 후 환경챌린지를 이용하실 수 있습니다.");
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -92,7 +103,9 @@ function Weather() {
           환경을 위한 변화의 시작, <br />
           지금 환경 챌린지에 참여하세요!
         </h2>
-        <button onClick={() => navigate("/challenges")}>챌린지 시작하기</button>
+        <button onClick={handleChallengeClick}>
+          챌린지 시작하기
+        </button>
       </div>
     </div>
   );

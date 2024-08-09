@@ -12,12 +12,21 @@ const apiUrl = process.env.REACT_APP_API_URL;
 
 export default function WeatherLanding({ isLoggedIn }) {
   const locationState = useLocation().state || {};
+
+  // 기본 위치 정보 가져오기 (MyPage에서 첫 번째 지역 설정)
+  const defaultLocation = JSON.parse(
+    localStorage.getItem("defaultLocation")
+  ) || {
+    address_a_name: "서울",
+    address_b_name: "강남구",
+  };
+
   const [weatherData, setWeatherData] = useState(null);
   const [locationError, setLocationError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [currentLocation, setCurrentLocation] = useState({
-    location: locationState.location || "서울",
-    subLocation: locationState.subLocation || "강남구",
+    location: locationState.location || defaultLocation.address_a_name,
+    subLocation: locationState.subLocation || defaultLocation.address_b_name,
   });
 
   useEffect(() => {
@@ -30,7 +39,6 @@ export default function WeatherLanding({ isLoggedIn }) {
           },
         });
 
-        // Log the entire response and data
         console.log("API Response:", response);
         console.log("Response Data:", response.data);
 

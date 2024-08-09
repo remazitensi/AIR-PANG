@@ -20,7 +20,7 @@ const AqiTable = () => {
             <th className="highlight">지수구분</th>
             <th className="good">좋음</th>
             <th className="moderate">보통</th>
-            <th className="sensitive">민감군영향</th>
+            <th className="sensitive">민감군<br/>영향</th>
             <th className="unhealthy">나쁨</th>
             <th className="very-unhealthy">매우나쁨</th>
             <th className="hazardous">위험</th>
@@ -50,7 +50,7 @@ const AqiTable = () => {
                 </li>
                 <li>
                   동일할 경우 50점을 부여하고, 연간 최대 AQI보다 실시간 AQI가
-                  낮으면 점수가 증가하며, 높으면 점수가 감소합니다.
+                  낮으면 점수가 증가하며,<br/> 높으면 점수가 감소합니다.
                 </li>
                 <li>
                   이를 통해 최대 100점까지 부여되며, 0점 이하로 내려가지
