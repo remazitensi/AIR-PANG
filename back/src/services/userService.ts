@@ -1,10 +1,10 @@
-import connection from '@_config/db.config';
+import pool from '@_config/db.config'; // connection 대신 pool 사용
 import { RowDataPacket } from 'mysql2/promise';
 
 export class UserService {
   // 사용자 마이페이지 정보 및 작성한 챌린지 목록 조회
   async getUserProfileAndChallenges(userId: number): Promise<{ challenges: any[] }> {
-    const [results] = await connection.promise().query<RowDataPacket[]>(
+    const [results] = await pool.query<RowDataPacket[]>(
       `SELECT 
          challenges.id, 
          challenges.title, 

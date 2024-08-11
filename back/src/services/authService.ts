@@ -1,5 +1,5 @@
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import connection from '@_config/db.config';
+import pool from '@_config/db.config'; // connection 대신 pool 사용
 import { User } from '@_types/user';
 
 export class UserService {
@@ -7,7 +7,7 @@ export class UserService {
 
   async findOrCreateUser(googleUser: any): Promise<User> {
     try {
-      const [existingUserRows] = await connection.promise().query<RowDataPacket[]>(
+      const [existingUserRows] = await pool.query<RowDataPacket[]>(
         'SELECT * FROM users WHERE googleId = ?',
         [googleUser.googleId]
       );
@@ -15,7 +15,7 @@ export class UserService {
       if (existingUserRows.length > 0) {
         return existingUserRows[0] as User;
       } else {
-        const [result] = await connection.promise().query<ResultSetHeader>(
+        const [result] = await pool.query<ResultSetHeader>(
           'INSERT INTO users (googleId, name, googleAccessToken, googleRefreshToken) VALUES (?, ?, ?, ?)',
           [googleUser.googleId, googleUser.name, googleUser.googleAccessToken, googleUser.googleRefreshToken]
         );
@@ -37,7 +37,7 @@ export class UserService {
 
   async findUserById(id: number): Promise<User | null> {
     try {
-      const [rows] = await connection.promise().query<RowDataPacket[]>(
+      const [rows] = await pool.query<RowDataPacket[]>(
         'SELECT * FROM users WHERE id = ? AND deleted_at IS NULL',
         [id]
       );
@@ -55,7 +55,7 @@ export class UserService {
 
   async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
     try {
-      await connection.promise().query(
+      await pool.query(
         'UPDATE users SET googleRefreshToken = ? WHERE id = ?',
         [refreshToken, userId]
       );
@@ -67,7 +67,7 @@ export class UserService {
 
   async deleteUser(userId: number): Promise<void> {
     try {
-      await connection.promise().query(
+      await pool.query(
         'UPDATE users SET deleted_at = NOW() WHERE id = ?',
         [userId]
       );

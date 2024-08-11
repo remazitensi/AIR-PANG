@@ -1,6 +1,6 @@
 import axios from 'axios';
 import cron from 'node-cron';
-import connection from '@_config/db.config';
+import pool from '@_config/db.config'; // connection 대신 pool을 사용
 import loadLocations from './loadLocations';
 import type { AirQualityItem } from '@_types/location';
 
@@ -16,17 +16,16 @@ function formatTimestamp(timestamp: string): string {
 }
 
 const fetchAndStoreData = async (): Promise<void> => {
-  const connectionPromise = connection.promise();
-
   try {
+    const connection = await pool.getConnection(); // 연결 풀에서 연결을 가져옴
     const locations = await loadLocations();
     const provinces = Array.from(new Set(locations.map(loc => loc.address_a_name))); 
 
-    for (const province of provinces) {
-      console.log(`${province} 실시간 데이터를 가져오는 중 입니다.`); // 도/광역시/자치시/자치도 이름 출력
-      const url = `http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst?sidoName=${encodeURIComponent(province)}&searchCondition=DAILY&pageNo=1&numOfRows=100&returnType=json&serviceKey=${API_KEY}`;
+    try {
+      for (const province of provinces) {
+        console.log(`${province} 실시간 데이터를 가져오는 중 입니다.`); // 도/광역시/자치시/자치도 이름 출력
+        const url = `http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst?sidoName=${encodeURIComponent(province)}&searchCondition=DAILY&pageNo=1&numOfRows=100&returnType=json&serviceKey=${API_KEY}`;
 
-      try {
         const response = await axios.get(url);
 
         if (!response.data || !response.data.response || !response.data.response.body || !response.data.response.body.items) {
@@ -37,7 +36,7 @@ const fetchAndStoreData = async (): Promise<void> => {
         const items = response.data.response.body.items || [];
 
         // 트랜잭션 시작
-        await connectionPromise.beginTransaction();
+        await connection.beginTransaction();
 
         for (const loc of locations.filter(loc => loc.address_a_name === province)) {
           const item = items.find((it: AirQualityItem) => it.cityName === loc.address_b_name) || {
@@ -75,7 +74,7 @@ const fetchAndStoreData = async (): Promise<void> => {
               timestamp = VALUES(timestamp)
           `;
 
-          await connectionPromise.query(query, [
+          await connection.query(query, [
             loc.id,
             pm10Value,
             pm25Value,
@@ -88,22 +87,20 @@ const fetchAndStoreData = async (): Promise<void> => {
         }
 
         // 트랜잭션 커밋(성공하면 db에 저장)
-        await connectionPromise.commit();
+        await connection.commit();
         console.log(`${province} 실시간 업데이트를 성공 했습니다.`);
-      } catch (error) {
-        // 트랜잭션 롤백(에러나면 이전 작업 취소)
-        await connectionPromise.rollback();
-        console.error(`${province} 실시간 업데이트를 실패 했습니다.:`, error);
       }
 
-      // 각 API 호출 간에 1초 대기
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('모든 지역 데이터를 불러왔습니다.'); // 전체 데이터가 성공적으로 가져와지고 저장되었을 때 메시지 출력
+    } catch (error) {
+      // 트랜잭션 롤백(에러나면 이전 작업 취소)
+      await connection.rollback();
+      console.error('데이터 처리 중 오류가 발생하여 트랜잭션이 롤백되었습니다:', error);
+    } finally {
+      connection.release(); // 연결 반환
     }
-    console.log('모든 지역 데이터를 불러왔습니다.'); // 전체 데이터가 성공적으로 가져와지고 저장되었을 때 메시지 출력
   } catch (error) {
     console.error('모든 지역 데이터를 불러오는데 실패 했습니다.:', error);
-  } finally {
-    await connectionPromise.end();
   }
 };
 

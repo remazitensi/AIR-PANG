@@ -1,5 +1,5 @@
 import { RowDataPacket } from 'mysql2';
-import connection from '@_config/db.config';
+import pool from '@_config/db.config';
 
 interface Location extends RowDataPacket {
   id: number;
@@ -7,17 +7,14 @@ interface Location extends RowDataPacket {
   address_b_name: string;
 }
 
-const loadLocations = (): Promise<Location[]> => {
-  return new Promise((resolve, reject) => {
-    const query = 'SELECT id, address_a_name, address_b_name FROM locations ORDER BY id ASC';
-    connection.query<Location[]>(query, (err, results) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(results);
-      }
-    });
-  });
+const loadLocations = async (): Promise<Location[]> => {
+  const query = 'SELECT id, address_a_name, address_b_name FROM locations ORDER BY id ASC';
+  try {
+    const [results] = await pool.query<Location[]>(query);
+    return results;
+  } catch (err) {
+    throw err;
+  }
 };
 
 export default loadLocations;
