@@ -26,8 +26,7 @@ export const getChallengeByIdController = async (req: Request, res: Response) =>
   const { id } = req.params;
   try {
     const { challenge, tasks } = await getChallengeById(id);
-    const user = req.user as User; // 현재 로그인된 사용자 정보
-    res.status(200).json({ challenge, tasks, user });
+    res.status(200).json({ challenge, tasks});
   } catch (error) {
     console.error(`${id} 아이디의 챌린지 데이터를 가져오는데 실패 했습니다.:`, error);
     res.status(500).send('서버 오류발생');
