@@ -1,10 +1,11 @@
 import { Router } from 'express';
-import { getSubLocationDataController, getMonthlyDataController, getMainLocationAQIController } from '@_controllers/locationController';
+import { LocationController } from '@_controllers/locationController';
 
 const router = Router();
+const locationController = new LocationController();
 
-router.get('/', getMainLocationAQIController);         // 주요 지역 AQI
-router.get('/sub', getSubLocationDataController);      // 세부 지역 AQI
-router.get('/detail', getMonthlyDataController);       // 세부 지역 월별 AQI
+router.get('/', locationController.getMainLocationAQIController);    // 주요 지역 AQI
+router.get('/sub', locationController.getSubLocationDataController); // 세부 지역 AQI
+router.get('/detail', locationController.getMonthlyDataController);  // 세부 지역 월별 AQI
 
 export default router;

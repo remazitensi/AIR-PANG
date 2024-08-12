@@ -1,39 +1,63 @@
 import { Request, Response } from 'express';
-import { createTask, updateTask, deleteTask } from '@_services/taskService';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
+import { TaskService } from '@_services/taskService';
+import { CreateTaskDto, UpdateTaskDto } from '@_dto/task.dto';
+import logger from '@_utils/logger';
 
-// 할 일 생성하기
-export const createTaskController = async (req: Request, res: Response) => {
-  const { challenge_id, description } = req.body;
-  try {
-    const newTask = await createTask({ challenge_id, description });
-    res.status(201).json(newTask);
-  } catch (error) {
-    console.error('할 일 데이터를 가져오는데 실패 했습니다.:', error);
-    res.status(500).send('서버 오류발생');
-  }
-};
+export class TaskController {
+  private taskService: TaskService;
 
-// 할 일 수정하기
-export const updateTaskController = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { description, is_completed } = req.body;
-  try {
-    const updatedTask = await updateTask(id, { description, is_completed });
-    res.status(204).json(updatedTask);
-  } catch (error) {
-    console.error(`${id} 아이디의 할 일을 수정을 실패 했습니다.:`, error);
-    res.status(500).send('서버 오류발생');
+  constructor() {
+    this.taskService = new TaskService();
   }
-};
 
-// 할 일 삭제하기
-export const deleteTaskController = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  try {
-    await deleteTask(id);
-    res.status(204).send();
-  } catch (error) {
-    console.error(`${id} 아이디의 할 일 삭제를 실패 했습니다.:`, error);
-    res.status(500).send('서버 오류발생');
-  }
-};
+  public createTask = async (req: Request, res: Response) => {
+    const input = plainToClass(CreateTaskDto, req.body);
+    const errors = await validate(input);
+
+    if (errors.length > 0) {
+      logger.warn('Validation failed for createTask:', { errors });
+      return res.status(400).json({ errors: errors.map(e => e.constraints) });
+    }
+
+    try {
+      const newTask = await this.taskService.createTask(input);
+      return res.status(201).json(newTask);
+    } catch (error) {
+      logger.error('Failed to create task:', { error });
+      return res.status(500).send('Server error occurred');
+    }
+  };
+
+  public updateTask = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const input = plainToClass(UpdateTaskDto, req.body);
+    const errors = await validate(input);
+
+    if (errors.length > 0) {
+      logger.warn('Validation failed for updateTask:', { errors });
+      return res.status(400).json({ errors: errors.map(e => e.constraints) });
+    }
+
+    try {
+      const updatedTask = await this.taskService.updateTask(id, input);
+      return res.status(200).json(updatedTask);
+    } catch (error) {
+      logger.error(`Failed to update task with id ${id}:`, { error });
+      return res.status(500).send('Server error occurred');
+    }
+  };
+
+  public deleteTask = async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    try {
+      await this.taskService.deleteTask(id);
+      return res.status(204).send();
+    } catch (error) {
+      logger.error(`Failed to delete task with id ${id}:`, { error });
+      return res.status(500).send('Server error occurred');
+    }
+  };
+}

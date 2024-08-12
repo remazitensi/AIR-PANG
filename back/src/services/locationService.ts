@@ -1,143 +1,53 @@
-import pool from '@_config/db.config'; // connection 대신 pool을 사용
-import type { AnnualData, RealtimeData, MonthlyData, CombinedAirQualityData, MainLocationRow } from '@_types/location';
+import { LocationRepository } from '@_repositories/locationRepository';
 import { getMaxAQI } from '@_utils/aqi';
 
-// 주요 지역 목록 가져오는 함수
-export const getMainLocations = async (): Promise<string[]> => {
-  const query = `
-    SELECT DISTINCT address_a_name
-    FROM locations
-  `;
+export class LocationService {
+  private locationRepository: LocationRepository;
 
-  try {
-    const [results] = await pool.query<MainLocationRow[]>(query); // pool.query 사용
-    return results.map((row) => row.address_a_name);
-  } catch (err) {
-    throw err;
+  constructor() {
+    this.locationRepository = new LocationRepository();
   }
-};
 
-// 지역 별 연평균 대기오염 물질 데이터 가져오는 함수
-export const getAnnualData = async (location: string): Promise<AnnualData[]> => {
-  const query = `
-    SELECT 
-      a.location_id,
-      a.pm10_avg AS pm10, 
-      a.pm25_avg AS pm25, 
-      a.o3_avg AS o3, 
-      a.no2_avg AS no2, 
-      a.co_avg AS co, 
-      a.so2_avg AS so2,
-      l.address_b_name
-    FROM 
-      air_quality a
-    JOIN 
-      locations l
-    ON 
-      a.location_id = l.id
-    WHERE 
-      l.address_a_name = ?
-  `;
+  public async fetchMainLocationAQI() {
+    try {
+      const mainLocations = await this.locationRepository.getMainLocations();
+      return await Promise.all(mainLocations.map(async (location) => {
+        const realtimeData = await this.locationRepository.getRealtimeData(location);
+        if (realtimeData.length === 0) return { location, averageAQI: null };
 
-  try {
-    const [results] = await pool.query<AnnualData[]>(query, [location]); // pool.query 사용
-    if (!results || results.length === 0) {
-      throw new Error('주어진 지역의 연평균 데이터가 없습니다.');
+        const avgAQI = realtimeData.reduce((acc, cur) => acc + getMaxAQI(cur), 0) / realtimeData.length;
+        return { location, averageAQI: Math.round(avgAQI) };
+      }));
+    } catch (error) {
+      throw new Error('Failed to calculate average AQI for main locations');
     }
-    return results;
-  } catch (err) {
-    throw err;
   }
-};
 
-// 지역 별 실시간 대기오염 물질 데이터 가져오는 함수
-export const getRealtimeData = async (location: string): Promise<RealtimeData[]> => {
-  const query = `
-    SELECT 
-      r.location_id,
-      r.pm10, 
-      r.pm25, 
-      r.o3, 
-      r.no2, 
-      r.co, 
-      r.so2,
-      l.address_b_name
-    FROM 
-      realtime_air_quality r
-    JOIN 
-      locations l
-    ON 
-      r.location_id = l.id
-    WHERE 
-      l.address_a_name = ?
-    ORDER BY 
-      r.timestamp DESC
-  `;
+  public async fetchSubLocationData(location: string) {
+    try {
+      const [annualData, realtimeData] = await Promise.all([
+        this.locationRepository.getAnnualData(location),
+        this.locationRepository.getRealtimeData(location),
+      ]);
 
-  try {
-    const [results] = await pool.query<RealtimeData[]>(query, [location]); // pool.query 사용
-    if (!results || results.length === 0) {
-      throw new Error('주어진 지역의 실시간 데이터가 없습니다.');
+      return annualData.map((annual) => {
+        const realtime = realtimeData.find(r => r.location_id === annual.location_id);
+        return {
+          location: annual.address_b_name,
+          annualMaxAQI: Math.round(getMaxAQI(annual)),
+          realtimeMaxAQI: realtime ? Math.round(getMaxAQI(realtime)) : 0,
+        };
+      });
+    } catch (error) {
+      throw new Error(`Failed to retrieve annual air quality data for ${location}`);
     }
-    return results;
-  } catch (err) {
-    throw err;
   }
-};
 
-// 지역별 월평균 대기오염 물질 데이터 가져오는 함수
-export const getMonthlyData = async (location: string, subLocation: string): Promise<MonthlyData> => {
-  const query = `
-    SELECT 
-      l.id AS location_id,
-      l.address_a_name,
-      l.address_b_name,
-      r.pm10, 
-      r.pm25, 
-      r.o3, 
-      r.no2, 
-      r.co, 
-      r.so2,
-      r.timestamp,
-      m.month,
-      m.aqi
-    FROM 
-      locations l
-    LEFT JOIN 
-      realtime_air_quality r ON l.id = r.location_id
-    LEFT JOIN 
-      monthly_aqi m ON l.id = m.location_id
-    WHERE 
-      l.address_a_name = ? AND l.address_b_name = ?
-    ORDER BY 
-      r.timestamp DESC, m.month ASC
-  `;
-
-  try {
-    const [results] = await pool.query<CombinedAirQualityData[]>(query, [location, subLocation]); // pool.query 사용
-    if (!results || results.length === 0) {
-      throw new Error('주어진 지역의 월평균 데이터가 없습니다.');
+  public async fetchMonthlyData(location: string, subLocation?: string) {
+    try {
+      return await this.locationRepository.getMonthlyData(location, subLocation ?? '');
+    } catch (error) {
+      throw new Error(`Failed to retrieve monthly air quality data for ${subLocation}`);
     }
-    const airQualityData = results[0];
-    const detailedData: MonthlyData = {
-      locations: {
-        id: airQualityData.location_id,
-        address_a_name: airQualityData.address_a_name,
-        address_b_name: airQualityData.address_b_name,
-      },
-      Realtime_Air_Quality: {
-        pm10: airQualityData.pm10,
-        pm25: airQualityData.pm25,
-        o3: airQualityData.o3,
-        no2: airQualityData.no2,
-        co: airQualityData.co,
-        so2: airQualityData.so2,
-        aqi: getMaxAQI(airQualityData),
-      },
-      monthly_aqi: results.map(r => ({ month: r.month, aqi: r.aqi })),
-    };
-    return detailedData;
-  } catch (err) {
-    throw err;
   }
-};
+}

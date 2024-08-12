@@ -1,18 +1,13 @@
 import { Router } from 'express';
-import {
-  getAllChallengesController,
-  getChallengeByIdController,
-  createChallengeController,
-  updateChallengeController,
-  deleteChallengeController,
-} from '@_controllers/challengeController';
+import { ChallengeController } from '@_controllers/challengeController';
 
 const router = Router();
+const challengeController = new ChallengeController();
 
-router.get('/', getAllChallengesController);
-router.get('/:id', getChallengeByIdController);
-router.post('/', createChallengeController);
-router.patch('/:id', updateChallengeController);
-router.delete('/:id', deleteChallengeController);
+router.get('/', challengeController.getAllChallengesController);
+router.get('/:id', challengeController.getChallengeByIdController);
+router.post('/', challengeController.createChallengeController);
+router.patch('/:id', challengeController.updateChallengeController);
+router.delete('/:id', challengeController.deleteChallengeController);
 
 export default router;

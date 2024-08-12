@@ -9,7 +9,7 @@ function ChallengeDetail() {
   const { id } = useParams();
   const [challenge, setChallenge] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ function ChallengeDetail() {
         const data = response.data;
         setChallenge(data.challenge);
         setTasks(data.tasks);
-        setCurrentUser(data.user);
+        setUserId(data.userId);
       } catch (error) {
         console.error("Error fetching challenge:", error);
       }
@@ -80,7 +80,7 @@ function ChallengeDetail() {
     label = 0;
   }
 
-  const isOwner = currentUser && challenge.user_id === currentUser.id;
+  const isOwner = userId && challenge.user_id === userId;
 
   return (
     <div className="detail">

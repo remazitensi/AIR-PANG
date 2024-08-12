@@ -1,90 +1,50 @@
-import pool from '@_config/db.config';
-import { Task, Challenge, CreateChallengeInput, UpdateChallengeInput} from '@_types/challenge';
-import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { ChallengeRepository } from '@_repositories/challengeRepository';
+import { CreateChallengeDto, UpdateChallengeDto } from '@_dto/challenge.dto';
 
-// 모든 챌린지 가져오기
-export const getAllChallenges = async (searchQuery: string, page: number, limit: number): Promise<{ challenges: Challenge[], total: number }> => {
-  const offset = (page - 1) * limit;
-  const query = `
-    SELECT SQL_CALC_FOUND_ROWS c.*, u.name AS user_name
-    FROM challenges c
-    JOIN users u ON c.user_id = u.id
-    WHERE c.title LIKE ?
-    LIMIT ?, ?
-  `;
-  const [rows] = await pool.query<Challenge[] & RowDataPacket[]>(query, [`%${searchQuery}%`, offset, limit]);
+export class ChallengeService {
+  private challengeRepository: ChallengeRepository;
 
-  const [totalRows] = await pool.query<RowDataPacket[]>(`SELECT FOUND_ROWS() as total`);
-  const total = totalRows[0].total as number;
-
-  return { challenges: rows, total };
-};
-
-// 특정 챌린지 가져오기
-export const getChallengeById = async (id: string): Promise<{ challenge: Challenge, tasks: Task[] }> => {
-  const query = `
-    SELECT c.*, u.name AS user_name 
-    FROM challenges c 
-    JOIN users u ON c.user_id = u.id 
-    WHERE c.id = ?`;
-  const [challengeRows] = await pool.query<Challenge[]>(query, [id]);
-
-  if (challengeRows.length === 0) {
-    throw new Error('챌린지가 없습니다.');
+  constructor() {
+    this.challengeRepository = new ChallengeRepository();
   }
 
-  const challenge = challengeRows[0];
+  public async getAllChallenges(searchQuery: string, page: number, limit: number) {
+    try {
+      return await this.challengeRepository.getAllChallenges(searchQuery, page, limit);
+    } catch (error) {
+      throw new Error('챌린지 목록을 가져오는 중 오류가 발생했습니다.');
+    }
+  }
 
-  const [taskRows] = await pool.query<Task[]>(
-    `SELECT * FROM tasks WHERE challenge_id = ?`,
-    [id]
-  );
+  public async getChallengeById(id: string) {
+    try {
+      return await this.challengeRepository.getChallengeById(id);
+    } catch (error) {
+      throw new Error(`${id} 아이디의 챌린지 데이터를 가져오는 중 오류가 발생했습니다.`);
+    }
+  }
 
-  return { challenge, tasks: taskRows };
-};
+  public async createChallenge(userId: number, input: CreateChallengeDto) {
+    try {
+      return await this.challengeRepository.createChallenge(userId, input);
+    } catch (error) {
+      throw new Error('챌린지 생성 중 오류가 발생했습니다.');
+    }
+  }
 
-// 챌린지 생성하기
-export const createChallenge = async (userId: number, { title, description, start_date, end_date, tasks }: CreateChallengeInput): Promise<{ challenge: Challenge, tasks: Task[] }> => {
-  const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO challenges (user_id, title, description, start_date, end_date, goal, progress) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [userId, title, description, start_date, end_date, tasks.length, 0]
-  );
-  const challengeId = result.insertId;
+  public async updateChallenge(id: string, input: UpdateChallengeDto) {
+    try {
+      return await this.challengeRepository.updateChallenge(id, input);
+    } catch (error) {
+      throw new Error(`${id} 아이디의 챌린지 수정 중 오류가 발생했습니다.`);
+    }
+  }
 
-  const taskQueries = tasks.map(task =>
-    pool.query<Task[]>(
-      `INSERT INTO tasks (challenge_id, description, is_completed) VALUES (?, ?, ?)`,
-      [challengeId, task.description, task.is_completed]
-    )
-  );
-  await Promise.all(taskQueries);
-
-  const [createdChallengeRows] = await pool.query<Challenge[]>(`SELECT * FROM challenges WHERE id = ?`, [challengeId]);
-  const createdChallenge = createdChallengeRows[0];
-
-  const [createdTaskRows] = await pool.query<Task[]>(`SELECT * FROM tasks WHERE challenge_id = ?`, [challengeId]);
-
-  return { challenge: createdChallenge, tasks: createdTaskRows };
-};
-
-// 챌린지 수정하기
-export const updateChallenge = async (id: string, { title, description, start_date, end_date }: UpdateChallengeInput): Promise<Challenge> => {
-  await pool.query(
-    `UPDATE challenges SET title = ?, description = ?, start_date = ?, end_date = ? WHERE id = ?`,
-    [title, description, start_date, end_date, id]
-  );
-
-  const [updatedChallengeRows] = await pool.query<Challenge[]>(`SELECT * FROM challenges WHERE id = ?`, [id]);
-  const updatedChallenge = updatedChallengeRows[0];
-
-  return updatedChallenge;
-};
-
-// 챌린지 삭제하기
-export const deleteChallenge = async (id: string): Promise<void> => {
-  // 먼저 관련된 모든 할 일 삭제
-  await pool.query(`DELETE FROM tasks WHERE challenge_id = ?`, [id]);
-
-  // 챌린지 삭제
-  await pool.query(`DELETE FROM challenges WHERE id = ?`, [id]);
-};
+  public async deleteChallenge(id: string) {
+    try {
+      await this.challengeRepository.deleteChallenge(id);
+    } catch (error) {
+      throw new Error(`${id} 아이디의 챌린지 삭제 중 오류가 발생했습니다.`);
+    }
+  }
+}

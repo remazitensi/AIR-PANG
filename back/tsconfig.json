@@ -20,8 +20,12 @@
       "@_services/*": ["services/*"],
       "@_types/*": ["types/*"],
       "@_utils/*": ["utils/*"],
-      "@_models/*": ["models/*"]
-    }
+      "@_models/*": ["models/*"],
+      "@_dto/*": ["dto/*"],
+      "@_repositories/*": ["repositories/*"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

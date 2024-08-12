@@ -42,7 +42,14 @@ function ChallengeEdit() {
   };
 
   const handleSaveTasks = () => {
-    setTasks(modalTasks.filter((task) => task.description.trim() !== ""));
+    const updatedTasks = modalTasks
+      .filter((task) => task.description.trim() !== "")
+      .map((task) => ({
+        ...task,
+        is_completed: !!task.is_completed, // is_completed 값을 boolean으로 변환
+      }));
+  
+    setTasks(updatedTasks);
     setModalOpen(false);
   };
 
@@ -63,79 +70,82 @@ function ChallengeEdit() {
     setModalOpen(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (new Date(endDate) < new Date(startDate)) {
-      alert("종료일은 시작일보다 이전 날짜일 수 없습니다.");
-      return;
-    }
+  if (new Date(endDate) < new Date(startDate)) {
+    alert("종료일은 시작일보다 이전 날짜일 수 없습니다.");
+    return;
+  }
 
-    if (new Date(endDate) < new Date()) {
-      alert("종료일은 현재 날짜보다 이전 날짜일 수 없습니다.");
-      return;
-    }
+  if (new Date(endDate) < new Date()) {
+    alert("종료일은 현재 날짜보다 이전 날짜일 수 없습니다.");
+    return;
+  }
 
-    const filteredTasks = tasks.filter(
-      (task) => task.description.trim() !== ""
+  const filteredTasks = tasks.filter(
+    (task) => task.description.trim() !== ""
+  ).map((task) => ({
+    ...task,
+    is_completed: !!task.is_completed, // is_completed 값을 boolean으로 변환
+  }));
+
+  if (filteredTasks.length === 0) {
+    alert("최소 1개의 할 일을 추가해야 합니다.");
+    return;
+  }
+
+  const updatedChallenge = {
+    title,
+    description,
+    start_date: startDate,
+    end_date: endDate,
+  };
+
+  try {
+    const response = await axios.patch(
+      `${apiUrl}/challenges/${id}`,
+      updatedChallenge,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      }
     );
 
-    if (filteredTasks.length === 0) {
-      alert("최소 1개의 할 일을 추가해야 합니다.");
-      return;
-    }
-
-    const updatedChallenge = {
-      title,
-      description,
-      start_date: startDate,
-      end_date: endDate,
-    };
-
-    try {
-      const response = await axios.patch(
-        `${apiUrl}/challenges/${id}`,
-        updatedChallenge,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-
-      if (response.status === 204) {
-        await Promise.all(
-          filteredTasks.map(async (task) => {
-            if (task.id) {
-              await axios.patch(`${apiUrl}/tasks/${task.id}`, task, {
+    if (response.status === 204) {
+      await Promise.all(
+        filteredTasks.map(async (task) => {
+          if (task.id) {
+            await axios.patch(`${apiUrl}/tasks/${task.id}`, task, {
+              headers: {
+                "Content-Type": "application/json",
+              },
+              withCredentials: true,
+            });
+          } else {
+            await axios.post(
+              `${apiUrl}/tasks`,
+              { challenge_id: id, description: task.description },
+              {
                 headers: {
                   "Content-Type": "application/json",
                 },
                 withCredentials: true,
-              });
-            } else {
-              await axios.post(
-                `${apiUrl}/tasks`,
-                { challenge_id: id, description: task.description },
-                {
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  withCredentials: true,
-                }
-              );
-            }
-          })
-        );
-        navigate(`/challenges/${id}`);
-      } else {
-        console.error("Error updating challenge");
-      }
-    } catch (error) {
-      console.error("Error updating challenge:", error);
+              }
+            );
+          }
+        })
+      );
+      navigate(`/challenges/${id}`);
+    } else {
+      console.error("Error updating challenge");
     }
-  };
+  } catch (error) {
+    console.error("Error updating challenge:", error);
+  }
+};
 
   const handleCancel = () => {
     navigate(-1);

@@ -1,71 +1,60 @@
 import { Request, Response } from 'express';
-import { getMainLocations, getAnnualData, getRealtimeData, getMonthlyData } from '@_services/locationService';
-import type { MonthlyData } from '@_types/location';
-import { getMaxAQI } from '@_utils/aqi';
+import { plainToClass } from 'class-transformer';
+import { validate } from 'class-validator';
+import logger from '@_utils/logger';
+import { LocationService } from '@_services/locationService';
+import { GetSubLocationDataDto, GetMonthlyDataDto } from '@_dto/location.dto';
 
-// 주요 지역 평균 AQI 계산기
-export const getMainLocationAQIController = async (req: Request, res: Response) => {
-  try {
-    const mainLocations = await getMainLocations();  // 주요 지역 목록을 동적으로 가져옴
+export class LocationController {
+  private locationService: LocationService;
 
-    const results = await Promise.all(mainLocations.map(async (location) => {
-      const realtimeData = await getRealtimeData(location);
-
-      if (realtimeData.length === 0) {
-        return { location, averageAQI: null };
-      }
-
-      const avgAQI = realtimeData.reduce((acc, cur) => acc + getMaxAQI(cur), 0) / realtimeData.length;
-      return { location, averageAQI: Math.round(avgAQI) };
-    }));
-
-    res.status(200).json(results);
-  } catch (error) {
-    console.error(`주요 지역들의 평균 AQI를 계산하는 데 실패했습니다:`, error);
-    res.status(500).send('서버 오류발생');
+  constructor() {
+    this.locationService = new LocationService();
   }
-};
 
-// 세부 지역 AQI 계산기
-export const getSubLocationDataController = async (req: Request, res: Response) => {
-  const location = req.query.location as string;
+  public getMainLocationAQIController = async (req: Request, res: Response) => {
+    try {
+      const results = await this.locationService.fetchMainLocationAQI();
+      return res.status(200).json(results);
+    } catch (error) {
+      logger.error('Failed to calculate average AQI for main locations:', { error });
+      return res.status(500).send('Server error occurred');
+    }
+  };
 
-  try {
-    const [annualData, realtimeData] = await Promise.all([
-      getAnnualData(location),
-      getRealtimeData(location),
-    ]);
+  public getSubLocationDataController = async (req: Request, res: Response) => {
+    const input = plainToClass(GetSubLocationDataDto, req.query);
+    const errors = await validate(input);
 
-    const result = annualData.map((annual) => {
-      const realtime = realtimeData.find((r) => r.location_id === annual.location_id);
+    if (errors.length > 0) {
+      logger.warn('Validation error:', { errors });
+      return res.status(400).json({ errors: errors.map(e => e.constraints) });
+    }
 
-      const annualMaxAQI = Math.round(getMaxAQI(annual));
-      const realtimeMaxAQI = realtime ? Math.round(getMaxAQI(realtime)) : 0;
+    try {
+      const result = await this.locationService.fetchSubLocationData(input.location);
+      return res.status(200).json(result);
+    } catch (error) {
+      logger.error(`Failed to retrieve annual air quality data for ${input.location}:`, { error });
+      return res.status(500).send('Server error occurred');
+    }
+  };
 
-      return {
-        location: annual.address_b_name,
-        annualMaxAQI,
-        realtimeMaxAQI,
-      };
-    });
+  public getMonthlyDataController = async (req: Request, res: Response) => {
+    const input = plainToClass(GetMonthlyDataDto, req.query);
+    const errors = await validate(input);
 
-    res.status(200).json(result); 
-  } catch (error) {
-    console.error(`${location} 연평균 대기오염 물질 데이터를 가져오는데 실패 했습니다:`, error);
-    res.status(500).send('서버 오류발생');
-  }
-};
+    if (errors.length > 0) {
+      logger.warn('Validation error:', { errors });
+      return res.status(400).json({ errors: errors.map(e => e.constraints) });
+    }
 
-export const getMonthlyDataController = async (req: Request, res: Response) => {
-  const location = req.query.location as string;
-  const subLocation = req.query.subLocation as string;
-
-  try {
-    const detailedData: MonthlyData = await getMonthlyData(location, subLocation);
-
-    res.status(200).json(detailedData); 
-  } catch (error) {
-    console.error(`${subLocation} 월평균 대기오염 물질 데이터를 가져오는데 실패 했습니다:`, error);
-    res.status(500).send('서버 오류발생'); 
-  }
-};
+    try {
+      const detailedData = await this.locationService.fetchMonthlyData(input.location, input.subLocation);
+      return res.status(200).json(detailedData);
+    } catch (error) {
+      logger.error(`Failed to retrieve monthly air quality data for ${input.subLocation}:`, { error });
+      return res.status(500).send('Server error occurred');
+    }
+  };
+}

@@ -110,43 +110,34 @@ const ChallengeStatus = () => {
 
   //Axios 사용
   const handleTaskCompletionToggle = async (challengeId, taskId) => {
-    //const shouldAlert = challenges.some((challenge) => {
-    //  if (calculateDaysLeft(challenge.start_date) >= 1 || calculateDaysLeft(challenge.end_date) < 0) {
-    //    return true;
-    //  }
-    //  return false;
-    //});
-
-    //if (shouldAlert) {
-    //  alert("챌린지가 진행중일 때만 체크가 가능합니다.");
-    //  return;
-    //}
-
     const updatedChallenges = challenges.map((challenge) => {
       if (challenge.id === challengeId) {
         return {
           ...challenge,
           tasks: challenge.tasks.map((task) =>
             task.id === taskId
-              ? { ...task, is_completed: !task.is_completed }
+              ? { ...task, is_completed: !task.is_completed } // Boolean으로 변환
               : task
           ),
         };
       }
       return challenge;
     });
-
+  
     setChallenges(updatedChallenges);
-
-    // 서버에 PATCH 요청 보내기
+  
     const updatedChallenge = updatedChallenges.find(
       (challenge) => challenge.id === challengeId
     );
+  
     try {
       await Promise.all(
         updatedChallenge.tasks.map(async (task) => {
-          console.log(task);
-          await axios.patch(`${apiUrl}/tasks/${task.id}`, task, {
+          const taskData = {
+            ...task,
+            is_completed: !!task.is_completed, // 명확하게 Boolean으로 변환
+          };
+          await axios.patch(`${apiUrl}/tasks/${task.id}`, taskData, {
             headers: {
               "Content-Type": "application/json",
             },
@@ -157,7 +148,6 @@ const ChallengeStatus = () => {
     } catch (error) {
       console.error("Failed to update task status on server:", error);
     }
-    console.log(updatedChallenges);
   };
 
   return (

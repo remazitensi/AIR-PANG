@@ -1,37 +1,34 @@
-import pool from '@_config/db.config';
-import { ResultSetHeader } from 'mysql2';
-import { Task, CreateTaskInput, UpdateTaskInput } from '@_types/task';
+import { TaskRepository } from '@_repositories/taskRepository';
+import { CreateTaskDto, UpdateTaskDto } from '@_dto/task.dto';
 
-export const createTask = async ({ challenge_id, description }: CreateTaskInput): Promise<Task> => {
-  const [result] = await pool.query<ResultSetHeader>(
-    `INSERT INTO tasks (challenge_id, description, is_completed) VALUES (?, ?, ?)`,
-    [challenge_id, description, false]
-  );
-  const taskId = result.insertId;
-  
-  const [createdTaskRows] = await pool.query<Task[]>(
-    `SELECT * FROM tasks WHERE id = ?`,
-    [taskId]
-  );
-  return createdTaskRows[0];
-};
+export class TaskService {
+  private taskRepository: TaskRepository;
 
-export const updateTask = async (id: string, { description, is_completed }: UpdateTaskInput): Promise<Task> => {
-  await pool.query(
-    `UPDATE tasks SET description = ?, is_completed = ? WHERE id = ?`,
-    [description, is_completed, id]
-  );
+  constructor() {
+    this.taskRepository = new TaskRepository();
+  }
 
-  const [updatedTaskRows] = await pool.query<Task[]>(
-    `SELECT * FROM tasks WHERE id = ?`,
-    [id]
-  );
-  return updatedTaskRows[0];
-};
+  public async createTask(input: CreateTaskDto) {
+    try {
+      return await this.taskRepository.createTask(input);
+    } catch (error) {
+      throw new Error('Failed to create task');
+    }
+  }
 
-export const deleteTask = async (id: string): Promise<void> => {
-  await pool.query(
-    `DELETE FROM tasks WHERE id = ?`,
-    [id]
-  );
-};
+  public async updateTask(id: string, input: UpdateTaskDto) {
+    try {
+      return await this.taskRepository.updateTask(id, input);
+    } catch (error) {
+      throw new Error(`Failed to update task with id: ${id}`);
+    }
+  }
+
+  public async deleteTask(id: string) {
+    try {
+      await this.taskRepository.deleteTask(id);
+    } catch (error) {
+      throw new Error(`Failed to delete task with id: ${id}`);
+    }
+  }
+}
