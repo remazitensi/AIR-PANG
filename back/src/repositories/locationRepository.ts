@@ -1,9 +1,7 @@
 import pool from '@_config/db.config';
-import type { AnnualData, RealtimeData, MonthlyData, CombinedAirQualityData, MainLocationRow } from '@_types/location';
-import { getMaxAQI } from '@_utils/aqi';
+import type { AnnualData, RealtimeData, MonthlyData, CombinedAirQualityData, MainLocationRow, Location } from '@_types/location';
 
 export class LocationRepository {
-
   // 주요 지역 목록 가져오기
   public async getMainLocations(): Promise<string[]> {
     const query = `
@@ -15,6 +13,17 @@ export class LocationRepository {
       return results.map((row) => row.address_a_name);
     } catch (error) {
       throw new Error('주요 지역 목록을 가져오는 중 오류가 발생했습니다.');
+    }
+  }
+
+  // 모든 위치 데이터 가져오기
+  public async getAllLocations(): Promise<Location[]> {
+    const query = 'SELECT id, address_a_name, address_b_name FROM locations ORDER BY id ASC';
+    try {
+      const [results] = await pool.query<Location[]>(query);
+      return results;
+    } catch (err) {
+      throw new Error('위치 데이터를 가져오는 중 오류가 발생했습니다.');
     }
   }
 
@@ -130,7 +139,7 @@ export class LocationRepository {
           no2: airQualityData.no2,
           co: airQualityData.co,
           so2: airQualityData.so2,
-          aqi: getMaxAQI(airQualityData),
+          aqi: airQualityData.aqi,
         },
         monthly_aqi: results.map(r => ({ month: r.month, aqi: r.aqi })),
       };

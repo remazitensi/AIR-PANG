@@ -1,5 +1,6 @@
 import { LocationRepository } from '@_repositories/locationRepository';
 import { getMaxAQI } from '@_utils/aqi';
+import type { Location } from '@_types/location';
 
 export class LocationService {
   private locationRepository: LocationRepository;
@@ -49,5 +50,10 @@ export class LocationService {
     } catch (error) {
       throw new Error(`Failed to retrieve monthly air quality data for ${subLocation}`);
     }
+  }
+
+  // 모든 위치 데이터 로드
+  public async loadAllLocations(): Promise<Location[]> {
+    return await this.locationRepository.getAllLocations();
   }
 }

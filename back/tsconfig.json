@@ -16,7 +16,6 @@
       "@_controllers/*": ["controllers/*"],
       "@_middlewares/*": ["middlewares/*"],
       "@_routes/*": ["routes/*"],
-      "@_scripts/*": ["scripts/*"],
       "@_services/*": ["services/*"],
       "@_types/*": ["types/*"],
       "@_utils/*": ["utils/*"],

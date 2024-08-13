@@ -6,8 +6,8 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import passport from 'passport';
 import routes from '@_routes/index';
-import startCronJob from '@_scripts/updateData';
-import { startCleanupJob } from '@_scripts/deleteOldData'
+import { UpdateDataCron } from '@_controllers/updateDataCron';
+import { DeleteOldDataCron } from '@_controllers/deleteOldDataCron';
 import '@_config/passport.config';
 
 dotenv.config();
@@ -37,18 +37,18 @@ app.use(passport.session());
 
 // 기본적인 로깅 미들웨어
 app.use((req: Request, res: Response, next: NextFunction) => {
-  // console.log('Cookies:', req.cookies);
-  // console.log(`Request URL: ${req.url}`);
-  // console.log(`Request Method: ${req.method}`);
   next();
 });
-
 
 // 인증된 API 라우트
 app.use('/api', routes);
 
-startCronJob();
-startCleanupJob();
+// 크론 작업 시작
+const updateDataCron = new UpdateDataCron();
+updateDataCron.startCronJob();
+
+const deleteOldDataCron = new DeleteOldDataCron();
+deleteOldDataCron.startCleanupJob();
 
 // 에러 핸들러 미들웨어
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

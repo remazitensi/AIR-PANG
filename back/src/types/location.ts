@@ -1,5 +1,11 @@
 import { RowDataPacket } from 'mysql2';
 
+export interface Location extends RowDataPacket {
+  id: number;
+  address_a_name: string;
+  address_b_name: string;
+}
+
 export interface AnnualData extends RowDataPacket {
   location_id: number;
   pm10_avg: number;
