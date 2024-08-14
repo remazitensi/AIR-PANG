@@ -15,7 +15,7 @@ export class UpdateDataRepository {
         so2 = VALUES(so2),
         timestamp = VALUES(timestamp)
     `;
-
+    // 값이 하나라도 undefined 혹은 null 일 경우 기본값 0으로 설정
     await pool.query(query, [
       locationId,
       item.pm10Value || 0,

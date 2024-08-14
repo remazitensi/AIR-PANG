@@ -1,4 +1,5 @@
 import pool from '@_config/db.config';
+import logger from '@_utils/logger';  // winston 로거 가져오기
 
 export class DeleteOldDataRepository {
   public async deleteOldRealtimeData(): Promise<void> {
@@ -9,9 +10,9 @@ export class DeleteOldDataRepository {
 
     try {
       await pool.query(query);
-      console.log('오래된 데이터가 삭제되었습니다.');
+      logger.info('Old real-time data has been deleted successfully.');
     } catch (err) {
-      console.error('오래된 데이터 삭제 에러발생:', err);
+      logger.error('Error occurred while deleting old real-time data:', err);
       throw err;
     }
   }
