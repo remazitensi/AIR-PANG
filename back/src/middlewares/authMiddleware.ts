@@ -37,9 +37,9 @@ export const authenticateJWT = async (req: Request, res: Response, next: NextFun
       const decoded = await verifyToken(token, config.JWT_SECRET);
 
       if (decoded) {
-        // 사용자 조회
+        // 사용자 조회 (수정된 부분)
         try {
-          const user = await authService.findUser(decoded.id.toString());
+          const user = await authService.findUserById(decoded.id);
 
           if (user) {
             req.user = user;
@@ -70,6 +70,6 @@ export const authenticateJWT = async (req: Request, res: Response, next: NextFun
     }
   } else {
     logger.warn('No token found in cookies');
-    return res.sendStatus(401); // Unauthorized
+    return res.sendStatus(401); 
   }
 };

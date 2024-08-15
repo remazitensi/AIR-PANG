@@ -23,13 +23,18 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// 세션 설정
+//세션 설정
 app.use(session({
   secret: process.env.SESSION_SECRET || '',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // 개발 환경에서는 secure: false
+  cookie: {
+    secure: process.env.NODE_ENV === '', 
+    httpOnly: true, 
+    maxAge: 24 * 60 * 60 * 1000, 
+  }
 }));
+
 
 // Passport 초기화
 app.use(passport.initialize());

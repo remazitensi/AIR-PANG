@@ -22,7 +22,6 @@ passport.use(new GoogleStrategy({
   profile: Profile,
   done: VerifyCallback
 ) => {
-  console.log('Google profile:', profile); 
   try {
     const googleId = profile.id;
     const name = profile.displayName || '';
