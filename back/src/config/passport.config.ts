@@ -1,8 +1,13 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy, Profile, VerifyCallback } from 'passport-google-oauth20';
 import { config } from '@_config/env.config';
-import { UserService } from '@_services/authService';
-import { User } from '@_types/user'; // 사용자 정의 User 타입 import
+import { AuthRepository } from '@_repositories/authRepository';
+import { AuthService } from '@_services/authService';
+import { User } from '@_types/user';
+import logger from '@_utils/logger';
+
+const authRepository = new AuthRepository();
+const authService = new AuthService(authRepository);
 
 // GoogleStrategy 설정
 passport.use(new GoogleStrategy({
@@ -17,39 +22,41 @@ passport.use(new GoogleStrategy({
   profile: Profile,
   done: VerifyCallback
 ) => {
-  const userService = new UserService();
+  console.log('Google profile:', profile); 
   try {
     const googleId = profile.id;
     const name = profile.displayName || '';
 
-    // 사용자 생성 또는 검색
-    const user = await userService.findOrCreateUser({
-      googleId,
-      name,
-      googleAccessToken: accessToken,
-      googleRefreshToken: refreshToken,
-    });
+    // 사용자 조회
+    let user = await authService.findUser(googleId);
+
+    // 사용자가 없으면 새로 생성
+    if (!user) {
+      user = await authService.createUser({
+        googleId,
+        name,
+        googleAccessToken: accessToken,
+        googleRefreshToken: refreshToken,
+      });
+    }
 
     done(null, user);
   } catch (error) {
-    done(error as Error);
+    logger.error('Error during Google authentication:', error);
+    done(error);
   }
 }));
 
-// 사용자 세션 직렬화
-passport.serializeUser((user: Express.User, done) => {
-  const typedUser = user as User; // 사용자 정의 User로 타입 단언
-  done(null, typedUser.id);
+passport.serializeUser((user: User, done) => {
+  done(null, user?.id || null);
 });
 
-// 사용자 세션 역직렬화
 passport.deserializeUser(async (id: number, done) => {
   try {
-    const user = await new UserService().findUserById(id) as User; // User로 타입 단언
-    done(null, user);
+    const user = await authService.findUserById(id);
+    done(null, user || null);
   } catch (error) {
-    done(error as Error);
+    logger.error('Error deserializing user:', error);
+    done(error);
   }
 });
-
-export default passport;

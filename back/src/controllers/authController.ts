@@ -1,104 +1,78 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { AuthService } from '@_services/authService';
+import { AuthRepository } from '@_repositories/authRepository';
+import logger from '@_utils/logger';
 import { config } from '@_config/env.config';
-import passport from 'passport';
 import { User } from '@_types/user';
-import { UserService } from '@_services/authService';
 
-const userService = new UserService();
+const authRepository = new AuthRepository();
+const authService = new AuthService(authRepository);
 
-export const googleAuth = passport.authenticate('google', { 
-  scope: [
-    'profile', 
-    'email', 
-    'openid', 
-    'https://www.googleapis.com/auth/userinfo.profile', 
-    'https://www.googleapis.com/auth/userinfo.email'
-  ] 
-});
-
-export const googleAuthCallback = (req: Request, res: Response) => {
-  passport.authenticate('google', { session: false }, async (err, user, info) => {
-    if (err) {
-      console.error('인증 오류:', err);
-      return res.status(500).json({ message: '내부 서버 오류' });
-    }
-
+// Google OAuth 콜백 처리
+export const googleAuthCallback = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    console.log('User in request:', req.user);
+    const user = req.user as User;
     if (!user) {
-      console.error('사용자가 인증되지 않음');
-      return res.status(401).json({ message: '인증 실패' });
+      logger.error('No user found in request');
+      return res.status(401).json({ message: 'Authentication failed' });
     }
 
-    const userObj = user as User;
-    try {
-      const accessToken = jwt.sign({ id: userObj.id }, config.JWT_SECRET, { expiresIn: '24h' });
-      const refreshToken = jwt.sign({ id: userObj.id }, config.JWT_REFRESH_SECRET, { expiresIn: '7d' });
+    // 액세스 토큰과 리프레시 토큰 생성
+    const accessToken = jwt.sign({ id: user.id }, config.JWT_SECRET, { expiresIn: '24h' });
+    const refreshToken = jwt.sign({ id: user.id }, config.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
-      await userService.saveRefreshToken(userObj.id, refreshToken);
+    // 리프레시 토큰을 데이터베이스에 저장
+    await authService.saveRefreshToken(user.id, refreshToken);
 
-      res.cookie('jwt', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    // 쿠키에 액세스 토큰과 리프레시 토큰 저장
+    res.cookie('jwt', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
 
-      res.redirect(
-        `${process.env.CLIENT_URL}/auth/google/callback?token=${accessToken}`
-      ); 
-    } catch (tokenError) {
-      console.error('Error creating JWT:', tokenError);
-      res.status(500).json({ message: '토큰 생성 실패' });
-    }
-  })(req, res);
+    // 클라이언트로 리디렉션
+    res.redirect(`${process.env.CLIENT_URL}/auth/google/callback?token=${accessToken}`);
+  } catch (error) {
+    logger.error('Error in googleAuthCallback:', error);
+    res.status(500).json({ message: 'Failed to create token' });
+  }
 };
 
+// 리프레시 토큰을 이용한 액세스 토큰 갱신
 export const refreshToken = async (req: Request, res: Response) => {
-  const refreshToken = req.cookies.refreshToken;
+  const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    return res.status(401).json({ message: '리프레시 토큰이 제공되지 않음' });
+    logger.error('Refresh token not provided');
+    return res.status(401).json({ message: 'Refresh token not provided' });
   }
 
   try {
+    // 리프레시 토큰 검증 및 디코딩
     const decoded = jwt.verify(refreshToken, config.JWT_REFRESH_SECRET) as { id: number };
-    const user = await userService.findUserById(decoded.id);
-
+    
+    // 디코딩된 ID로 사용자 조회
+    const user = await authService.findUserById(decoded.id);  // 여기서 `findUserById`를 사용
+    
     if (!user) {
-      return res.status(401).json({ message: '유효하지 않은 리프레시 토큰' });
+      logger.error('User not found');
+      return res.status(401).json({ message: 'User not found' });
     }
 
-    const accessToken = jwt.sign({ id: user.id }, config.JWT_SECRET, { expiresIn: '15m' });
-    res.cookie('jwt', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    // 새 액세스 토큰 생성
+    const newAccessToken = jwt.sign({ id: user.id }, config.JWT_SECRET, { expiresIn: '24h' });
 
-    res.json({ accessToken });
-  } catch (err) {
-    console.error('리프레시 토큰 검증 실패:', err);
-    res.status(403).json({ message: '유효하지 않은 리프레시 토큰' });
-  }
-};
+    // 쿠키에 새 액세스 토큰 저장
+    res.cookie('jwt', newAccessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
 
-export const logout = (req: Request, res: Response) => {
-  res.clearCookie('jwt');
-  res.clearCookie('refreshToken');
-  req.logout((err) => {
-    if (err) {
-      console.error('Logout error:', err);
-      return res.status(500).json({ message: '로그아웃 실패' });
+    res.status(200).json({ token: newAccessToken });
+  } catch (error) {
+    if (error instanceof jwt.JsonWebTokenError) {
+      logger.error('Invalid refresh token:', error);
+      return res.status(403).json({ message: 'Invalid refresh token' });
+    } else {
+      logger.error('Error in refreshToken:', error);
+      return res.status(500).json({ message: 'Internal server error' });
     }
-    res.status(200).json({ message: '로그아웃 성공' });
-  });
-};
-
-export const deleteUser = async (req: Request, res: Response) => {
-  if (req.user) {
-    const user = req.user as User;
-    try {
-      await userService.deleteUser(user.id);
-      res.clearCookie('jwt');
-      res.clearCookie('refreshToken');
-      res.status(200).json({ message: '계정 탈퇴 완료' });
-    } catch (deleteError) {
-      console.error('Error deleting user:', deleteError);
-      res.status(500).json({ message: '계정 탈퇴 실패' });
-    }
-  } else {
-    res.status(401).json({ message: 'Unauthorized' });
   }
 };

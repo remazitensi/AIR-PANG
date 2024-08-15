@@ -1,10 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { AuthService } from '@_services/authService';
+import { AuthRepository } from '@_repositories/authRepository';
+import logger from '@_utils/logger';
 import { config } from '@_config/env.config';
-import { UserService } from '@_services/authService';
+import { User } from '@_types/user';
 
-const userService = new UserService();
-const jwtSecret = config.JWT_SECRET;
+const authRepository = new AuthRepository();
+const authService = new AuthService(authRepository);
 
 interface JwtPayload {
   id: number;
@@ -27,51 +30,46 @@ const verifyToken = (token: string, secret: string): Promise<JwtPayload> => {
 
 export const authenticateJWT = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
-  
-  // console.log('Incoming request:', req.method, req.originalUrl);
-  // console.log('Cookies:', req.cookies);
-  
+
   if (token) {
-    // console.log('Token found in cookies:', token);
     try {
-      const decoded = await verifyToken(token, jwtSecret);
-      // console.log('Token verified, decoded payload:', decoded);
+      // 토큰 검증
+      const decoded = await verifyToken(token, config.JWT_SECRET);
 
       if (decoded) {
+        // 사용자 조회
         try {
-          const user = await userService.findUserById(decoded.id);
-          // console.log('User retrieved from database:', user);
+          const user = await authService.findUser(decoded.id.toString());
 
           if (user) {
             req.user = user;
-            next();
+            return next();
           } else {
-            console.error('User not found for ID:', decoded.id);
-            res.sendStatus(403); // Forbidden
+            logger.error(`User not found for ID: ${decoded.id}`);
+            return res.sendStatus(403); 
           }
         } catch (error) {
-          console.error('User Retrieval Error:', error);
-          res.sendStatus(403); // Forbidden
+          logger.error('User Retrieval Error:', error);
+          return res.sendStatus(403); 
         }
       } else {
-        console.error('Token payload is invalid or missing ID');
-        res.sendStatus(403); // Forbidden
+        logger.error('Token payload is invalid or missing ID');
+        return res.sendStatus(403); 
       }
     } catch (err) {
-      // 타입 가드 사용
-      if (err instanceof Error) {
-        if (err.name === 'TokenExpiredError') {
-          console.error('TokenExpiredError:', err.message);
-          return res.status(401).json({ message: 'TokenExpiredError: jwt expired' });
-        }
-        console.error('JWT Verification Error:', err.message);
+      if (err instanceof jwt.TokenExpiredError) {
+        logger.error('TokenExpiredError:', err.message);
+        return res.status(401).json({ message: 'TokenExpiredError: jwt expired' });
+      } else if (err instanceof jwt.JsonWebTokenError) {
+        logger.error('JWT Verification Error:', err.message);
+        return res.status(403).json({ message: 'Invalid token' });
       } else {
-        console.error('Unknown Error:', err);
+        logger.error('Unknown Error:', err);
+        return res.status(500).json({ message: 'Internal Server Error' });
       }
-      res.sendStatus(403); 
     }
   } else {
-    console.log('No token found in cookies');
-    res.sendStatus(401); 
+    logger.warn('No token found in cookies');
+    return res.sendStatus(401); // Unauthorized
   }
 };

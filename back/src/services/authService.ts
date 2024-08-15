@@ -1,79 +1,59 @@
-import { RowDataPacket, ResultSetHeader } from 'mysql2';
-import pool from '@_config/db.config'; // connection 대신 pool 사용
+import { AuthRepository } from '@_repositories/authRepository';
 import { User } from '@_types/user';
+import logger from '@_utils/logger';
 
-export class UserService {
-  // 기존 메서드들...
+export class AuthService {
+  private authRepository: AuthRepository;
 
-  async findOrCreateUser(googleUser: any): Promise<User> {
+  constructor(authRepository: AuthRepository) {
+    this.authRepository = authRepository;
+  }
+
+  // 구글 ID로 사용자 조회
+  async findUser(googleId: string): Promise<User | null> {
     try {
-      const [existingUserRows] = await pool.query<RowDataPacket[]>(
-        'SELECT * FROM users WHERE googleId = ?',
-        [googleUser.googleId]
-      );
-
-      if (existingUserRows.length > 0) {
-        return existingUserRows[0] as User;
-      } else {
-        const [result] = await pool.query<ResultSetHeader>(
-          'INSERT INTO users (googleId, name, googleAccessToken, googleRefreshToken) VALUES (?, ?, ?, ?)',
-          [googleUser.googleId, googleUser.name, googleUser.googleAccessToken, googleUser.googleRefreshToken]
-        );
-
-        const insertId = result.insertId;
-        return {
-          id: insertId,
-          googleId: googleUser.googleId,
-          name: googleUser.name,
-          googleAccessToken: googleUser.googleAccessToken,
-          googleRefreshToken: googleUser.googleRefreshToken,
-        } as User;
-      }
+      const user = await this.authRepository.findUserByGoogleId(googleId);
+      return user;
     } catch (error) {
-      console.error('Error in findOrCreateUser:', error);
-      throw error;
+      logger.error('Error in findUser:', error);
+      throw new Error('Error occurred while retrieving user.');
     }
   }
 
+  // 사용자 ID로 사용자 조회
   async findUserById(id: number): Promise<User | null> {
     try {
-      const [rows] = await pool.query<RowDataPacket[]>(
-        'SELECT * FROM users WHERE id = ? AND deleted_at IS NULL',
-        [id]
-      );
-
-      if (rows.length > 0) {
-        return rows[0] as User;
-      } else {
-        return null;
-      }
+      const user = await this.authRepository.findUserById(id);
+      return user;
     } catch (error) {
-      console.error('Error in findUserById:', error);
-      throw error;
+      logger.error('Error in findUserById:', error);
+      throw new Error('Error occurred while retrieving user by ID.');
     }
   }
 
+  // 구글 사용자 생성
+  async createUser(googleUser: {
+    googleId: string;
+    name: string;
+    googleAccessToken: string;
+    googleRefreshToken: string;
+  }): Promise<User> {
+    try {
+      const user = await this.authRepository.createUser(googleUser);
+      return user;
+    } catch (error) {
+      logger.error('Error in createUser:', error);
+      throw new Error('Error occurred while creating user.');
+    }
+  }
+
+  // 사용자 리프레시 토큰 저장
   async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
     try {
-      await pool.query(
-        'UPDATE users SET googleRefreshToken = ? WHERE id = ?',
-        [refreshToken, userId]
-      );
+      await this.authRepository.saveRefreshToken(userId, refreshToken);
     } catch (error) {
-      console.error('Error in saveRefreshToken:', error);
-      throw error;
-    }
-  }
-
-  async deleteUser(userId: number): Promise<void> {
-    try {
-      await pool.query(
-        'UPDATE users SET deleted_at = NOW() WHERE id = ?',
-        [userId]
-      );
-    } catch (error) {
-      console.error('Error in deleteUser:', error);
-      throw error;
+      logger.error('Error in saveRefreshToken:', error);
+      throw new Error('Error occurred while saving refresh token.');
     }
   }
 }
