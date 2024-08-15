@@ -9,7 +9,7 @@ const pool = mysql.createPool({
   waitForConnections: true,
   connectionLimit: 10,        // 최대 연결 수
   queueLimit: 0,              // 대기열 제한 (0이면 무제한)
-  connectTimeout: 10000,      // 연결 타임아웃
+  connectTimeout: 50000,      // 연결 타임아웃
   enableKeepAlive: true,      // keep-alive 활성화
   keepAliveInitialDelay: 10000 // 초기 keep-alive 패킷 전송 딜레이 (밀리초)
 });

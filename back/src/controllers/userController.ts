@@ -13,7 +13,6 @@ export const getUserInfo = async (req: Request, res: Response) => {
   const userId = req.user.id;
 
   try {
-    console.log(`Fetching profile and challenges for user ID: ${userId}`);
     const { challenges } = await userService.getUserProfileAndChallenges(userId);
     res.json({ challenges });
   } catch (error) {
