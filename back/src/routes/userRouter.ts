@@ -1,12 +1,15 @@
-import { Router } from 'express';
-import { getUserInfo } from '@_controllers/userController';
-import { authenticateJWT } from '@_middlewares/authMiddleware';
-//import { logout, deleteUser } from '@_controllers/authController';
+import express from 'express';
+import { getUserInfo, logout, deleteUser } from '@_controllers/userController';
 
-const userRouter = Router();
+const router = express.Router();
 
-userRouter.get('/', authenticateJWT, getUserInfo); //유저정보
-//userRouter.post('/logout', authenticateJWT, logout); //로그아웃
-//userRouter.delete('/', authenticateJWT, deleteUser); //탈퇴
+// 사용자 마이페이지 정보 및 작성한 챌린지 목록 조회
+router.get('/', getUserInfo);
 
-export default userRouter;
+// 로그아웃
+router.post('/logout', logout);
+
+// 계정 탈퇴 (사용자 삭제)
+router.delete('/', deleteUser);
+
+export default router;
