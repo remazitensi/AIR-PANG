@@ -7,7 +7,6 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import routes from '@_routes/index';
 import { UpdateDataCron } from '@_controllers/updateDataCron';
-import { DeleteOldDataCron } from '@_controllers/deleteOldDataCron';
 import '@_config/passport.config';
 
 dotenv.config();
@@ -51,9 +50,6 @@ app.use('/api', routes);
 // 크론 작업 시작
 const updateDataCron = new UpdateDataCron();
 updateDataCron.startCronJob();
-
-const deleteOldDataCron = new DeleteOldDataCron();
-deleteOldDataCron.startCleanupJob();
 
 // 에러 핸들러 미들웨어
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
