@@ -51,12 +51,12 @@ export interface MonthlyData {
 
 export interface AirQualityItem {
   cityName: string;
-  pm10Value: number | null;
-  pm25Value: number | null;
-  o3Value: number | null;
-  no2Value: number | null;
-  coValue: number | null;
-  so2Value: number | null;
+  pm10Value: number;
+  pm25Value: number;
+  o3Value: number;
+  no2Value: number;
+  coValue: number;
+  so2Value: number;
   dataTime: string;
 }
 
