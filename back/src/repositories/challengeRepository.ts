@@ -43,6 +43,8 @@ export class ChallengeRepository {
   }
 
   public async createChallenge(userId: number, input: CreateChallengeDto): Promise<{ challenge: Challenge, tasks: Task[] }> {
+    const initialProgress = 0; // 초기 진행률
+    
     const insertChallengeQuery = `
       INSERT INTO challenges (user_id, title, description, start_date, end_date, goal, progress) 
       VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -54,7 +56,7 @@ export class ChallengeRepository {
       input.start_date, 
       input.end_date, 
       input.tasks.length, 
-      0
+      initialProgress
     ]);
     const challengeId = result.insertId;
 
