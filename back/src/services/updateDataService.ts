@@ -22,10 +22,6 @@ export class UpdateDataService {
     this.locationService = new LocationService();
   }
 
-  private formatTimestamp(timestamp: string): string {
-    return dayjs(timestamp).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
-  }  
-
   public async fetchAndStoreData(): Promise<void> {
     logger.info('Fetching and storing data process started.');
   
@@ -58,10 +54,10 @@ export class UpdateDataService {
               so2Value: 0,
               dataTime: new Date().toISOString(),
             };
+            
+            item.dataTime = dayjs(item.dataTime).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
 
-            const formattedDataTime = this.formatTimestamp(item.dataTime);
-  
-            await this.updateDataRepository.insertOrUpdateAirQualityData(loc.id, item, formattedDataTime); // 데이터 삽입
+            await this.updateDataRepository.insertOrUpdateAirQualityData(loc.id, item); // 데이터 삽입
           }
         }
   
