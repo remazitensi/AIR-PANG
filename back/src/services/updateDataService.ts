@@ -4,6 +4,12 @@ import { LocationService } from '@_services/locationService';
 import type { AirQualityItem } from '@_types/location';
 import pool from '@_config/db.config';
 import logger from '@_utils/logger';  // winston 로거 가져오기
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const API_KEY = encodeURIComponent(process.env.LOCATION_API_KEY || '');
 
@@ -16,10 +22,8 @@ export class UpdateDataService {
     this.locationService = new LocationService();
   }
 
-  private formatTimestamp(timestamp: string): string {   // 타임스탬프 YYYY-MM-DD HH:MM:SS 로 변환
-    const date = new Date(timestamp);
-    const koreaTime = new Date(date.getTime() + 9 * 60 * 60 * 1000);  // 한국 시간으로 변환 (UTC + 9시간)
-    return koreaTime.toISOString().slice(0, 19).replace('T', ' ');
+  private formatTimestamp(timestamp: string): string {
+    return dayjs(timestamp).tz('Asia/Seoul').format('YYYY-MM-DD HH:mm:ss');
   }  
 
   public async fetchAndStoreData(): Promise<void> {
