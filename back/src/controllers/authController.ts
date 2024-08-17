@@ -12,29 +12,32 @@ const authService = new AuthService(authRepository);
 // Google OAuth 콜백 처리
 export const googleAuthCallback = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('User in request:', req.user);
     const user = req.user as User;
+    
     if (!user) {
-      logger.error('No user found in request');
+      logger.error(`[googleAuthCallback] No user found in request at ${new Date().toISOString()}`);
       return res.status(401).json({ message: 'Authentication failed' });
     }
 
-    // 액세스 토큰과 리프레시 토큰 생성
     const accessToken = jwt.sign({ id: user.id }, config.JWT_SECRET, { expiresIn: '24h' });
     const refreshToken = jwt.sign({ id: user.id }, config.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
-    // 리프레시 토큰을 데이터베이스에 저장
     await authService.saveRefreshToken(user.id, refreshToken);
 
-    // 쿠키에 액세스 토큰과 리프레시 토큰 저장
     res.cookie('jwt', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
 
-    // 클라이언트로 리디렉션
+    logger.info(`[googleAuthCallback] User ${user.id} authenticated and tokens issued at ${new Date().toISOString()}`);
+
     res.redirect(`${process.env.CLIENT_URL}/auth/google/callback?token=${accessToken}`);
   } catch (error) {
-    logger.error('Error in googleAuthCallback:', error);
-    res.status(500).json({ message: 'Failed to create token' });
+    if (error instanceof Error) {
+      logger.error(`[googleAuthCallback] Error processing Google callback for user ${req.user?.id || 'unknown'} at ${new Date().toISOString()}: ${error.message}`, { error });
+      res.status(500).json({ message: 'Failed to create token' });
+    } else {
+      logger.error(`[googleAuthCallback] Unknown error type at ${new Date().toISOString()}`, { error });
+      res.status(500).json({ message: 'An unknown error occurred' });
+    }
   }
 };
 
@@ -43,36 +46,35 @@ export const refreshToken = async (req: Request, res: Response) => {
   const { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    logger.error('Refresh token not provided');
+    logger.error(`[refreshToken] Refresh token not provided at ${new Date().toISOString()}`);
     return res.status(401).json({ message: 'Refresh token not provided' });
   }
 
   try {
-    // 리프레시 토큰 검증 및 디코딩
     const decoded = jwt.verify(refreshToken, config.JWT_REFRESH_SECRET) as { id: number };
-    
-    // 디코딩된 ID로 사용자 조회
-    const user = await authService.findUserById(decoded.id);  // 여기서 `findUserById`를 사용
-    
+    const user = await authService.findUserById(decoded.id);
+
     if (!user) {
-      logger.error('User not found');
+      logger.error(`[refreshToken] User with ID ${decoded.id} not found at ${new Date().toISOString()}`);
       return res.status(401).json({ message: 'User not found' });
     }
 
-    // 새 액세스 토큰 생성
     const newAccessToken = jwt.sign({ id: user.id }, config.JWT_SECRET, { expiresIn: '24h' });
-
-    // 쿠키에 새 액세스 토큰 저장
     res.cookie('jwt', newAccessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
 
+    logger.info(`[refreshToken] New access token issued for user ${user.id} at ${new Date().toISOString()}`);
+    
     res.status(200).json({ token: newAccessToken });
   } catch (error) {
     if (error instanceof jwt.JsonWebTokenError) {
-      logger.error('Invalid refresh token:', error);
-      return res.status(403).json({ message: 'Invalid refresh token' });
+      logger.error(`[refreshToken] Invalid refresh token for user ${req.user?.id || 'unknown'} at ${new Date().toISOString()}: ${error.message}`);
+      res.status(403).json({ message: 'Invalid refresh token' });
+    } else if (error instanceof Error) {
+      logger.error(`[refreshToken] Error processing refresh token for user ${req.user?.id || 'unknown'} at ${new Date().toISOString()}: ${error.message}`, { error });
+      res.status(500).json({ message: 'Internal server error' });
     } else {
-      logger.error('Error in refreshToken:', error);
-      return res.status(500).json({ message: 'Internal server error' });
+      logger.error(`[refreshToken] Unknown error type at ${new Date().toISOString()}`, { error });
+      res.status(500).json({ message: 'An unknown error occurred' });
     }
   }
 };

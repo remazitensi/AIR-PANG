@@ -27,17 +27,15 @@ passport.use(new GoogleStrategy({
     const name = profile.displayName || '';
 
     // 사용자 조회
-    let user = await authService.findUser(googleId);
+    const existingUser = await authService.findUser(googleId);
 
     // 사용자가 없으면 새로 생성
-    if (!user) {
-      user = await authService.createUser({
-        googleId,
-        name,
-        googleAccessToken: accessToken,
-        googleRefreshToken: refreshToken,
-      });
-    }
+    const user = existingUser ?? await authService.createUser({
+      googleId,
+      name,
+      googleAccessToken: accessToken,
+      googleRefreshToken: refreshToken,
+    });
 
     done(null, user);
   } catch (error) {

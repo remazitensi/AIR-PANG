@@ -1,6 +1,7 @@
 import { RowDataPacket, ResultSetHeader } from 'mysql2';
 import pool from '@_config/db.config';
 import { User } from '@_types/user';
+import logger from '@_utils/logger';
 
 // 쿼리 반환 타입 정의
 type QueryResult = RowDataPacket[] | ResultSetHeader;
@@ -20,7 +21,7 @@ export class AuthRepository {
       const [rows] = await pool.query<T>(query, params);
       return rows;
     } catch (error) {
-      console.error('Database query error:', error);
+      logger.error(`Database query error: ${error}`);
       throw error;
     }
   }
@@ -29,9 +30,9 @@ export class AuthRepository {
   async findUserByGoogleId(googleId: string): Promise<User | null> {
     try {
       const rows = await this.executeQuery<RowDataPacket[]>(SQL_QUERIES.findUserByGoogleId, [googleId]);
-      return rows.length > 0 ? rows[0] as User : null;
+      return rows.length > 0 ? (rows[0] as User) : null;
     } catch (error) {
-      console.error('Error in findUserByGoogleId:', error);
+      logger.error(`Error in findUserByGoogleId (Google ID: ${googleId}): ${error}`);
       throw error;
     }
   }
@@ -52,6 +53,7 @@ export class AuthRepository {
       ]);
 
       const insertId = result.insertId;
+      logger.info(`User created with ID: ${insertId}`);
       return {
         id: insertId,
         googleId: googleUser.googleId,
@@ -60,7 +62,7 @@ export class AuthRepository {
         googleRefreshToken: ''
       } as User;
     } catch (error) {
-      console.error('Error in createUser:', error);
+      logger.error(`Error in createUser (Google ID: ${googleUser.googleId}): ${error}`);
       throw error;
     }
   }
@@ -69,8 +71,9 @@ export class AuthRepository {
   async saveRefreshToken(userId: number, refreshToken: string): Promise<void> {
     try {
       await this.executeQuery<ResultSetHeader>(SQL_QUERIES.updateRefreshToken, [refreshToken, userId]);
+      logger.info(`Refresh token updated for user ID: ${userId}`);
     } catch (error) {
-      console.error('Error in saveRefreshToken:', error);
+      logger.error(`Error in saveRefreshToken (User ID: ${userId}): ${error}`);
       throw error;
     }
   }
@@ -79,9 +82,9 @@ export class AuthRepository {
   async findUserById(id: number): Promise<User | null> {
     try {
       const rows = await this.executeQuery<RowDataPacket[]>(SQL_QUERIES.findUserById, [id]);
-      return rows.length > 0 ? rows[0] as User : null;
+      return rows.length > 0 ? (rows[0] as User) : null;
     } catch (error) {
-      console.error('Error in findUserById:', error);
+      logger.error(`Error in findUserById (User ID: ${id}): ${error}`);
       throw error;
     }
   }
@@ -90,8 +93,9 @@ export class AuthRepository {
   async deleteUser(userId: number): Promise<void> {
     try {
       await this.executeQuery<ResultSetHeader>(SQL_QUERIES.deleteUser, [userId]);
+      logger.info(`User with ID ${userId} marked as deleted`);
     } catch (error) {
-      console.error('Error in deleteUser:', error);
+      logger.error(`Error in deleteUser (User ID: ${userId}): ${error}`);
       throw error;
     }
   }
