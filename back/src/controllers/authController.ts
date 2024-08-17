@@ -9,7 +9,7 @@ import { User } from '@_types/user';
 const authRepository = new AuthRepository();
 const authService = new AuthService(authRepository);
 
-// Google OAuth 콜백 처리
+// 구글 OAuth 콜백 처리 및 쿠키 설정
 export const googleAuthCallback = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = req.user as User;
@@ -24,12 +24,13 @@ export const googleAuthCallback = async (req: Request, res: Response, next: Next
 
     await authService.saveRefreshToken(user.id, refreshToken);
 
-    res.cookie('jwt', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    // 쿠키 설정
+    res.cookie('jwt', accessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
 
     logger.info(`[googleAuthCallback] User ${user.id} authenticated and tokens issued at ${new Date().toISOString()}`);
 
-    res.redirect(`${process.env.CLIENT_URL}/auth/google/callback?token=${accessToken}`);
+    res.redirect(`${process.env.CLIENT_URL}`);
   } catch (error) {
     if (error instanceof Error) {
       logger.error(`[googleAuthCallback] Error processing Google callback for user ${req.user?.id || 'unknown'} at ${new Date().toISOString()}: ${error.message}`, { error });
@@ -60,7 +61,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     }
 
     const newAccessToken = jwt.sign({ id: user.id }, config.JWT_SECRET, { expiresIn: '24h' });
-    res.cookie('jwt', newAccessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production' });
+    res.cookie('jwt', newAccessToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'strict' });
 
     logger.info(`[refreshToken] New access token issued for user ${user.id} at ${new Date().toISOString()}`);
     
