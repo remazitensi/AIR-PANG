@@ -2,7 +2,7 @@ import pool from '@_config/db.config';
 import type { AirQualityItem } from '@_types/location';
 
 export class UpdateDataRepository {
-  public async insertOrUpdateAirQualityData(locationId: number, item: AirQualityItem, formattedDataTime: string): Promise<void> {
+  public async insertOrUpdateAirQualityData(locationId: number, item: AirQualityItem): Promise<void> {
     const query = `
       INSERT INTO realtime_air_quality (location_id, pm10, pm25, o3, no2, co, so2, timestamp)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -24,7 +24,7 @@ export class UpdateDataRepository {
       item.no2Value || 0,
       item.coValue || 0,
       item.so2Value || 0,
-      formattedDataTime
+      item.dataTime
     ]);
   }
 }
