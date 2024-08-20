@@ -2,6 +2,7 @@ import pool from '@_config/db.config';
 import { CreateChallengeDto, UpdateChallengeDto } from '@_dto/challenge.dto';
 import { Challenge, Task } from '@_types/challenge';
 import { ResultSetHeader, RowDataPacket } from 'mysql2';
+import { NotFoundError } from '@_utils/customError';
 
 export class ChallengeRepository {
   public async getAllChallenges(searchQuery: string, page: number, limit: number): Promise<{ challenges: Challenge[], total: number }> {
@@ -30,8 +31,9 @@ export class ChallengeRepository {
     `;
     const [challengeRows] = await pool.query<Challenge[]>(challengeQuery, [id]);
 
+    // CustomError로 처리
     if (challengeRows.length === 0) {
-      throw new Error('챌린지가 없습니다.');
+      throw new NotFoundError('Challenge', id);
     }
 
     const challenge = challengeRows[0];

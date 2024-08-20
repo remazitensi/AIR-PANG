@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
+import { validateDto } from '@_middlewares/validateDto';
 import { TaskService } from '@_services/taskService';
 import { CreateTaskDto, UpdateTaskDto } from '@_dto/task.dto';
 import logger from '@_utils/logger';
@@ -12,44 +12,38 @@ export class TaskController {
     this.taskService = new TaskService();
   }
 
-  public createTask = async (req: Request, res: Response) => {
-    const input = plainToClass(CreateTaskDto, req.body);
-    const errors = await validate(input);
-
-    if (errors.length > 0) {
-      logger.warn('Validation failed for createTask:', { errors });
-      return res.status(400).json({ errors: errors.map(e => e.constraints) });
-    }
-
+  // Task 생성
+  public createTask = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const newTask = await this.taskService.createTask(input);
+      const createTaskDto = plainToClass(CreateTaskDto, req.body);
+      await validateDto(CreateTaskDto, createTaskDto);
+
+      const newTask = await this.taskService.createTask(createTaskDto);
       return res.status(201).json(newTask);
     } catch (error) {
       logger.error('Failed to create task:', { error });
-      return res.status(500).send('Server error occurred');
+      next(error);
     }
   };
 
-  public updateTask = async (req: Request, res: Response) => {
+  // Task 업데이트
+  public updateTask = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const input = plainToClass(UpdateTaskDto, req.body);
-    const errors = await validate(input);
-
-    if (errors.length > 0) {
-      logger.warn('Validation failed for updateTask:', { errors });
-      return res.status(400).json({ errors: errors.map(e => e.constraints) });
-    }
 
     try {
-      const updatedTask = await this.taskService.updateTask(id, input);
+      const updateTaskDto = plainToClass(UpdateTaskDto, req.body);
+      await validateDto(UpdateTaskDto, updateTaskDto);
+
+      const updatedTask = await this.taskService.updateTask(id, updateTaskDto);
       return res.status(200).json(updatedTask);
     } catch (error) {
       logger.error(`Failed to update task with id ${id}:`, { error });
-      return res.status(500).send('Server error occurred');
+      next(error);
     }
   };
 
-  public deleteTask = async (req: Request, res: Response) => {
+  // Task 삭제
+  public deleteTask = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
     try {
@@ -57,7 +51,7 @@ export class TaskController {
       return res.status(204).send();
     } catch (error) {
       logger.error(`Failed to delete task with id ${id}:`, { error });
-      return res.status(500).send('Server error occurred');
+      next(error);
     }
   };
 }

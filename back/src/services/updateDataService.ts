@@ -31,6 +31,8 @@ export class UpdateDataService {
     try {
       const connection = await pool.getConnection(); // 데이터베이스 연결
       try {
+        await connection.beginTransaction();
+        
         for (const province of provinces) {
           logger.info(`Fetching real-time data for ${province}.`);
           const url = `http://apis.data.go.kr/B552584/ArpltnStatsSvc/getCtprvnMesureSidoLIst?sidoName=${encodeURIComponent(province)}&searchCondition=DAILY&pageNo=1&numOfRows=100&returnType=json&serviceKey=${API_KEY}`;
@@ -41,8 +43,6 @@ export class UpdateDataService {
           }
   
           const items = response.data.response.body.items || [];
-          
-          await connection.beginTransaction();
 
           for (const loc of locations.filter(loc => loc.address_a_name === province)) {
             const item = items.find((it: AirQualityItem) => it.cityName === loc.address_b_name) || {

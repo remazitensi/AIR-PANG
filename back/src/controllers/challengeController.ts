@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { plainToClass } from 'class-transformer';
-import { validate } from 'class-validator';
 import { ChallengeService } from '@_services/challengeService';
-import { CreateChallengeDto, UpdateChallengeDto } from '@_dto/challenge.dto';
-import { User } from '@_types/user'
+import { GetAllChallengesDto, GetChallengeByIdDto, CreateChallengeDto, UpdateChallengeDto } from '@_dto/challenge.dto';
+import { User } from '@_types/user';
+import { validateDto } from '@_middlewares/validateDto';
+import { NotFoundError, AuthorizationError, AuthenticationError } from '@_utils/customError';
 import logger from '@_utils/logger';
 
 export class ChallengeController {
@@ -13,95 +14,98 @@ export class ChallengeController {
     this.challengeService = new ChallengeService();
   }
 
-  public getAllChallengesController = async (req: Request, res: Response) => {
-    const searchQuery = req.query.search ? req.query.search.toString() : '';
-    const page = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 4;
-
+  // 모든 챌린지 가져오기
+  public getAllChallengesController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { challenges, total } = await this.challengeService.getAllChallenges(searchQuery, page, limit);
+      const getAllChallengesDto = plainToClass(GetAllChallengesDto, req.query);
+      await validateDto(GetAllChallengesDto, getAllChallengesDto);
+
+      const { search, page = 1, limit = 4 } = getAllChallengesDto;
+
+      const { challenges, total } = await this.challengeService.getAllChallenges(search, page, limit);
       return res.status(200).json({ challenges, total });
     } catch (error) {
-      logger.error('챌린지 데이터를 가져오는데 실패 했습니다.', { error });
-      return res.status(500);
+      logger.error('Failed to retrieve challenges.', { error });
+      next(error);
     }
   };
 
-  public getChallengeByIdController = async (req: Request, res: Response) => {
+  // ID로 챌린지 가져오기
+  public getChallengeByIdController = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
     try {
+      const getChallengeByIdDto = plainToClass(GetChallengeByIdDto, req.params);
+      await validateDto(GetChallengeByIdDto, getChallengeByIdDto);
+
       const { challenge, tasks } = await this.challengeService.getChallengeById(id);
+      if (!challenge) throw new NotFoundError('Challenge', id);
+
       const user = req.user as User;
-      const userId = user.id;
-      return res.status(200).json({ challenge, tasks, userId }); 
+      return res.status(200).json({ challenge, tasks, userId: user.id });
     } catch (error) {
-      logger.error(`${id} 아이디의 챌린지 데이터를 가져오는데 실패 했습니다.`, { error });
-      return res.status(500);
+      logger.error(`Failed to retrieve challenge for user ${id}.`, { error });
+      next(error);
     }
   };
 
-  public createChallengeController = async (req: Request, res: Response) => {
-    const input = plainToClass(CreateChallengeDto, req.body);
-    const errors = await validate(input);
-
-    if (errors.length > 0) {
-      logger.warn('유효성 검사 실패:', { errors });
-      return res.status(400).json({ errors: errors.map(e => e.constraints) });
-    }
-
+  // 챌린지 생성
+  public createChallengeController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const userId = (req.user as User).id;
-      if (!userId) {
-        return res.status(401);
-      }
+      const createChallengeDto = plainToClass(CreateChallengeDto, req.body);
+      await validateDto(CreateChallengeDto, createChallengeDto);
 
-      const newChallenge = await this.challengeService.createChallenge(userId, input);
+      const user = req.user as User;
+      if (!user.id) throw new AuthenticationError();
+
+      const newChallenge = await this.challengeService.createChallenge(user.id, createChallengeDto);
       return res.status(201).json(newChallenge);
     } catch (error) {
-      logger.error('챌린지 생성을 실패 했습니다.', { error });
-      return res.status(500);
+      logger.error('Failed to create challenge.', { error });
+      next(error);
     }
   };
 
-  public updateChallengeController = async (req: Request, res: Response) => {
+  // 챌린지 업데이트
+  public updateChallengeController = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const input = plainToClass(UpdateChallengeDto, req.body);
-    const errors = await validate(input);
-
-    if (errors.length > 0) {
-      logger.warn('유효성 검사 실패:', { errors });
-      return res.status(400).json({ errors: errors.map(e => e.constraints) });
-    }
 
     try {
+      const updateChallengeDto = plainToClass(UpdateChallengeDto, req.body);
+      await validateDto(UpdateChallengeDto, updateChallengeDto);
+
       const { challenge } = await this.challengeService.getChallengeById(id);
+      if (!challenge) throw new NotFoundError('Challenge', id);
+
       if (challenge.user_id !== (req.user as User).id) {
-        return res.status(403);
+        throw new AuthorizationError();
       }
 
-      const updatedChallenge = await this.challengeService.updateChallenge(id, input);
+      const updatedChallenge = await this.challengeService.updateChallenge(id, updateChallengeDto);
       return res.status(204).json(updatedChallenge);
     } catch (error) {
-      logger.error(`${id} 아이디의 챌린지 수정을 실패 했습니다.`, { error });
-      return res.status(500);
+      logger.error(`Failed to update challenge ${id}.`, { error });
+      next(error);
     }
   };
 
-  public deleteChallengeController = async (req: Request, res: Response) => {
+  // 챌린지 삭제
+  public deleteChallengeController = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
 
     try {
       const { challenge } = await this.challengeService.getChallengeById(id);
+      if (!challenge) throw new NotFoundError('Challenge', id);
+
       if (challenge.user_id !== (req.user as User).id) {
-        return res.status(403);
+        throw new AuthorizationError();
       }
 
       await this.challengeService.deleteChallenge(id);
       return res.status(204).send();
     } catch (error) {
-      logger.error(`${id} 아이디의 챌린지 삭제를 실패 했습니다.`, { error });
-      return res.status(500);
+      logger.error(`Failed to delete challenge ${id}.`, { error });
+      next(error);
     }
   };
 }
