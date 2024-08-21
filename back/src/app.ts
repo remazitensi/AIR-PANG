@@ -3,7 +3,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import dotenv from 'dotenv';
+import { config } from '@_config/env.config'; // config 모듈 가져오기
 import passport from 'passport';
 import routes from '@_routes/index';
 import { UpdateDataCron } from '@_controllers/updateDataCron';
@@ -11,13 +11,12 @@ import '@_config/passport.config';
 import { CustomError } from '@_utils/customError';
 import logger from '@_utils/logger';
 
-dotenv.config();
-
+// Express 앱 생성
 const app = express();
 
 // CORS 설정
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: config.CLIENT_URL,
   credentials: true,
 }));
 
@@ -26,11 +25,11 @@ app.use(cookieParser());
 
 // 세션 설정
 app.use(session({
-  secret: process.env.SESSION_SECRET || '',
+  secret: config.SESSION_SECRET || '', 
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.NODE_ENV === 'production', 
+    secure: config.SECURE_COOKIES, 
     httpOnly: true,
     maxAge: 24 * 60 * 60 * 1000,
   }
@@ -40,25 +39,23 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// 인증된 API 라우트
+
 app.use('/api', routes);
 
-// 크론 작업 시작
+
 const updateDataCron = new UpdateDataCron();
 updateDataCron.startCronJob();
 
-// 확장된 에러 핸들러 미들웨어
+
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  
   const { statusCode, message, validationErrors } = CustomError.handleError(err);
 
-  // 에러 수준에 맞게 경로와 함께 로깅
   logger[statusCode >= 500 ? 'error' : 'warn'](`Error: ${message} - Status: ${statusCode}`, {
     error: err,
     path: req.path,
   });
 
-  // 클라이언트에 최종 응답
+ 
   res.status(statusCode).json({
     status: statusCode,
     message: message,
