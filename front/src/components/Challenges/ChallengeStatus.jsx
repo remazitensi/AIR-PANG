@@ -3,63 +3,16 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ProgressBar from "@ramonak/react-progress-bar";
 import "../../styles/ChallengeStatus.css";
+
 const apiUrl = process.env.REACT_APP_API_URL;
 
 const ChallengeStatus = () => {
   const [challenges, setChallenges] = useState([]);
 
   useEffect(() => {
-    if (!localStorage.getItem("challenges")) {
-      localStorage.setItem(
-        "challenges",
-        JSON.stringify([
-          {
-            id: 1,
-            challenge_id: 1,
-            title: "친환경 생활 실천",
-            description: "일주일 동안 플라스틱 사용 줄이기",
-            start_date: "2024-07-01",
-            end_date: "2024-08-01",
-            tasks: [
-              {
-                description: "분리수거 하기",
-                is_completed: true,
-              },
-              {
-                description: "포장하기",
-                is_completed: false,
-              },
-            ],
-          },
-          {
-            id: 2,
-            challenge_id: 2,
-            title: "대중교통 이용",
-            description: "자가 대신 대중교통 이용하기",
-            start_date: "2024-08-01",
-            end_date: "2024-09-01",
-            tasks: [
-              {
-                description: "버스 타기",
-                is_completed: true,
-              },
-              {
-                description: "지하철 타기",
-                is_completed: false,
-              },
-              {
-                description: "자전거 타기",
-                is_completed: false,
-              },
-            ],
-          },
-        ])
-      );
-    }
     fetchChallenges();
   }, []);
 
-  // //Axios 사용
   const fetchChallenges = async () => {
     try {
       const response = await axios.get(`${apiUrl}/my`, {
@@ -71,84 +24,45 @@ const ChallengeStatus = () => {
     }
   };
 
-  //로컬스토리지 사용
-  // const fetchChallenges = async () => {
-  //   try {
-  //     // 로컬 스토리지에서 데이터 가져오기
-  //     const cachedData = JSON.parse(localStorage.getItem('challenges'));
-  //     setChallenges(cachedData);
-  //   } catch (error) {
-  //     console.error('Error fetching challenges:', error);
-  //   }
-  // };
+  const handleTaskCompletionToggle = async (challengeId, taskId) => {
+    try {
+      const updatedChallenges = challenges.map((challenge) => {
+        if (challenge.id === challengeId) {
+          return {
+            ...challenge,
+            tasks: challenge.tasks.map((task) =>
+              task.id === taskId
+                ? { ...task, is_completed: !task.is_completed }
+                : task
+            ),
+          };
+        }
+        return challenge;
+      });
+
+      setChallenges(updatedChallenges);
+
+      const updatedTask = updatedChallenges
+        .find((challenge) => challenge.id === challengeId)
+        .tasks.find((task) => task.id === taskId);
+
+      await axios.patch(`${apiUrl}/tasks/${taskId}`, updatedTask, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+    } catch (error) {
+      console.error("Failed to update task status on server:", error);
+    }
+  };
 
   function calculateDaysLeft(targetDate) {
     const today = new Date();
     const target = new Date(targetDate);
     const timeDiff = target - today;
-    const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-    return daysLeft;
+    return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
   }
-
-  //로컬스토리지 사용
-  // const handleTaskCompletionToggle = (challengeId, taskIndex) => {
-  //   const updatedChallenges = challenges.map(challenge => {
-  //     if (challenge.id === challengeId) {
-  //       const updatedTasks = challenge.tasks.map((task, index) => {
-  //         if (index === taskIndex) {
-  //           return { ...task, is_completed: !task.is_completed };
-  //         }
-  //         return task;
-  //       });
-  //       return { ...challenge, tasks: updatedTasks };
-  //     }
-  //     return challenge;
-  //   });
-  //   setChallenges(updatedChallenges);
-  //   localStorage.setItem('challenges', JSON.stringify(updatedChallenges));
-  // };
-
-  //Axios 사용
-  const handleTaskCompletionToggle = async (challengeId, taskId) => {
-    const updatedChallenges = challenges.map((challenge) => {
-      if (challenge.id === challengeId) {
-        return {
-          ...challenge,
-          tasks: challenge.tasks.map((task) =>
-            task.id === taskId
-              ? { ...task, is_completed: !task.is_completed } // Boolean으로 변환
-              : task
-          ),
-        };
-      }
-      return challenge;
-    });
-  
-    setChallenges(updatedChallenges);
-  
-    const updatedChallenge = updatedChallenges.find(
-      (challenge) => challenge.id === challengeId
-    );
-  
-    try {
-      await Promise.all(
-        updatedChallenge.tasks.map(async (task) => {
-          const taskData = {
-            ...task,
-            is_completed: !!task.is_completed, // 명확하게 Boolean으로 변환
-          };
-          await axios.patch(`${apiUrl}/tasks/${task.id}`, taskData, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          });
-        })
-      );
-    } catch (error) {
-      console.error("Failed to update task status on server:", error);
-    }
-  };
 
   return (
     <div className="ChallengeStatus">
@@ -191,8 +105,8 @@ const ChallengeStatus = () => {
                 labelAlignment="right"
               />
               <ul>
-                {challenge.tasks.map((task, index) => (
-                  <li key={index}>
+                {challenge.tasks.map((task) => (
+                  <li key={task.id}>
                     <label>
                       <input
                         type="checkbox"

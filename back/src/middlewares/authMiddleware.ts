@@ -48,6 +48,7 @@ export const authenticateJWT = async (req: Request, res: Response, next: NextFun
     req.user = user;
     next();
   } catch (err) {
+    logger.error('JWT authentication error:', err);
     if (err instanceof jwt.TokenExpiredError) {
       return next(new AuthenticationError('Token expired'));
     } else if (err instanceof jwt.JsonWebTokenError) {
