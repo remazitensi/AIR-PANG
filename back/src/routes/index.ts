@@ -9,7 +9,7 @@ import { authenticateJWT } from '@_middlewares/authMiddleware';
 const router = Router();
 
 router.use('/auth', authRouter);
-router.use('/my', userRouter);
+router.use('/my',authenticateJWT, userRouter);
 router.use('/locations', locationRouter);
 router.use('/challenges', authenticateJWT, challengeRouter); // 인증 필요
 router.use('/tasks', authenticateJWT, taskRouter); // 인증 필요
