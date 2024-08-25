@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { validateDto } from '@_middlewares/validateDto';
 import { TaskService } from '@_services/taskService';
 import { CreateTaskDto, UpdateTaskDto } from '@_dto/task.dto';
@@ -15,7 +15,7 @@ export class TaskController {
   // Task 생성
   public createTask = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const createTaskDto = plainToClass(CreateTaskDto, req.body);
+      const createTaskDto = plainToInstance(CreateTaskDto, req.body);
       await validateDto(CreateTaskDto, createTaskDto);
 
       const newTask = await this.taskService.createTask(createTaskDto);
@@ -31,7 +31,7 @@ export class TaskController {
     const { id } = req.params;
 
     try {
-      const updateTaskDto = plainToClass(UpdateTaskDto, req.body);
+      const updateTaskDto = plainToInstance(UpdateTaskDto, req.body);
       await validateDto(UpdateTaskDto, updateTaskDto);
 
       const updatedTask = await this.taskService.updateTask(id, updateTaskDto);

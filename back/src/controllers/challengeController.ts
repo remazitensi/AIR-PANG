@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { ChallengeService } from '@_services/challengeService';
 import { GetAllChallengesDto, GetChallengeByIdDto, CreateChallengeDto, UpdateChallengeDto } from '@_dto/challenge.dto';
-import { User } from '@_types/user';
 import { validateDto } from '@_middlewares/validateDto';
-import { NotFoundError, AuthorizationError, AuthenticationError } from '@_utils/customError';
+import { NotFoundError, AuthorizationError } from '@_utils/customError';
 import logger from '@_utils/logger';
 
 export class ChallengeController {
@@ -17,10 +16,12 @@ export class ChallengeController {
   // 모든 챌린지 가져오기
   public getAllChallengesController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const getAllChallengesDto = plainToClass(GetAllChallengesDto, req.query);
+      const getAllChallengesDto = plainToInstance(GetAllChallengesDto, req.query);
       await validateDto(GetAllChallengesDto, getAllChallengesDto);
 
-      const { search, page = 1, limit = 4 } = getAllChallengesDto;
+      const search = getAllChallengesDto.search || '';
+      const page = getAllChallengesDto.page ?? 1;  
+      const limit = getAllChallengesDto.limit ?? 4;  
 
       const { challenges, total } = await this.challengeService.getAllChallenges(search, page, limit);
       return res.status(200).json({ challenges, total });
@@ -32,19 +33,17 @@ export class ChallengeController {
 
   // ID로 챌린지 가져오기
   public getChallengeByIdController = async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params;
-
     try {
-      const getChallengeByIdDto = plainToClass(GetChallengeByIdDto, req.params);
+      const getChallengeByIdDto = plainToInstance(GetChallengeByIdDto, req.params);
       await validateDto(GetChallengeByIdDto, getChallengeByIdDto);
-
+  
+      const { id } = getChallengeByIdDto;
       const { challenge, tasks } = await this.challengeService.getChallengeById(id);
       if (!challenge) throw new NotFoundError('Challenge', id);
-
-      const user = req.user as User;
-      return res.status(200).json({ challenge, tasks, userId: user.id });
+      
+      return res.status(200).json({ challenge, tasks, userId: req.user!.id });
     } catch (error) {
-      logger.error(`Failed to retrieve challenge for user ${id}.`, { error });
+      logger.error(`Failed to retrieve challenge for user ${req.params.id}.`, { error });
       next(error);
     }
   };
@@ -52,13 +51,10 @@ export class ChallengeController {
   // 챌린지 생성
   public createChallengeController = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const createChallengeDto = plainToClass(CreateChallengeDto, req.body);
+      const createChallengeDto = plainToInstance(CreateChallengeDto, req.body);
       await validateDto(CreateChallengeDto, createChallengeDto);
 
-      const user = req.user as User;
-      if (!user.id) throw new AuthenticationError();
-
-      const newChallenge = await this.challengeService.createChallenge(user.id, createChallengeDto);
+      const newChallenge = await this.challengeService.createChallenge(req.user!.id, createChallengeDto);
       return res.status(201).json(newChallenge);
     } catch (error) {
       logger.error('Failed to create challenge.', { error });
@@ -71,18 +67,18 @@ export class ChallengeController {
     const { id } = req.params;
 
     try {
-      const updateChallengeDto = plainToClass(UpdateChallengeDto, req.body);
+      const updateChallengeDto = plainToInstance(UpdateChallengeDto, req.body);
       await validateDto(UpdateChallengeDto, updateChallengeDto);
 
       const { challenge } = await this.challengeService.getChallengeById(id);
       if (!challenge) throw new NotFoundError('Challenge', id);
 
-      if (challenge.user_id !== (req.user as User).id) {
-        throw new AuthorizationError();
+      if (challenge.user_id !== req.user!.id) {
+        throw new AuthorizationError('You do not have permission to update this challenge');
       }
 
       const updatedChallenge = await this.challengeService.updateChallenge(id, updateChallengeDto);
-      return res.status(204).json(updatedChallenge);
+      return res.status(200).json(updatedChallenge);
     } catch (error) {
       logger.error(`Failed to update challenge ${id}.`, { error });
       next(error);
@@ -97,8 +93,8 @@ export class ChallengeController {
       const { challenge } = await this.challengeService.getChallengeById(id);
       if (!challenge) throw new NotFoundError('Challenge', id);
 
-      if (challenge.user_id !== (req.user as User).id) {
-        throw new AuthorizationError();
+      if (challenge.user_id !== req.user!.id) {
+        throw new AuthorizationError('You do not have permission to delete this challenge');
       }
 
       await this.challengeService.deleteChallenge(id);

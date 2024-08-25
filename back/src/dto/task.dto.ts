@@ -1,4 +1,4 @@
-import { IsString, IsBoolean, IsNumber } from 'class-validator';
+import { IsString, IsOptional,IsBoolean, IsNumber } from 'class-validator';
 import { Expose } from 'class-transformer';
 
 export class CreateTaskDto {
@@ -12,9 +12,10 @@ export class CreateTaskDto {
 }
 
 export class UpdateTaskDto {
+  @IsOptional()
   @IsString()
   @Expose()
-  description!: string;
+  description?: string;
 
   @IsBoolean()
   @Expose()

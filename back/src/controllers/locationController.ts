@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { plainToClass } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import logger from '@_utils/logger';
 import { LocationService } from '@_services/locationService';
@@ -23,7 +23,7 @@ export class LocationController {
   };
 
   public getSubLocationDataController = async (req: Request, res: Response) => {
-    const input = plainToClass(GetSubLocationDataDto, req.query);
+    const input = plainToInstance(GetSubLocationDataDto, req.query);
     const errors = await validate(input);
 
     if (errors.length > 0) {
@@ -41,7 +41,7 @@ export class LocationController {
   };
 
   public getMonthlyDataController = async (req: Request, res: Response) => {
-    const input = plainToClass(GetMonthlyDataDto, req.query);
+    const input = plainToInstance(GetMonthlyDataDto, req.query);
     const errors = await validate(input);
 
     if (errors.length > 0) {

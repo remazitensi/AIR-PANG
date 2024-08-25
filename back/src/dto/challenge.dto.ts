@@ -5,19 +5,19 @@ export class GetAllChallengesDto {
   @IsOptional()  
   @IsString()
   @Expose()
-  search!: string;
+  search?: string;
 
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
   @Expose()
-  page!: number;
+  page?: number;
 
   @IsOptional()
   @IsNumber()
   @Type(() => Number)
   @Expose()
-  limit!: number;
+  limit?: number;
 }
 
 export class GetChallengeByIdDto {
@@ -61,19 +61,23 @@ export class CreateChallengeDto {
 }
 
 export class UpdateChallengeDto {
+  @IsOptional()
   @IsString()
   @Expose()
-  title!: string;
+  title?: string;
 
+  @IsOptional()
   @IsString()
   @Expose()
-  description!: string;
+  description?: string;
 
+  @IsOptional()
   @IsDateString()
   @Expose()
-  start_date!: string;
+  start_date?: string;
 
+  @IsOptional()
   @IsDateString()
   @Expose()
-  end_date!: string;
+  end_date?: string;
 }
