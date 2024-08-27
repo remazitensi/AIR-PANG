@@ -1,0 +1,84 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Pretendard";
+}
+
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.my-favorite-container .my-favorite h3 {
+  font-weight: 300;
+  font-size: 28px;
+  text-align: center;
+  margin-bottom: 30px;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.my-favorite,
+.challenge-status {
+  background-color: white;
+  padding: 50px 100px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 540px;
+}
+
+.my-favorite ul li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px 10px 20px;
+  margin-bottom: 10px;
+  border-radius: 50px;
+  background-color: #004aad;
+}
+
+.my-favorite ul li:hover {
+  background-color: #00a3ff;
+}
+
+.my-favorite ul li.favorite-item .location-name {
+  cursor: pointer;
+  color: white;
+}
+
+.my-favorite ul li.favorite-empty {
+  cursor: pointer;
+  color: #2e2e2e;
+  background: none;
+}
+
+.delete-button {
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  margin-right: 10px;
+}
+
+.delete-button:hover {
+  color: lightblue;
+}
+
+.my-favorite {
+  text-align: center;
+}
+
+.addFavorite {
+  text-decoration: underline;
+  color: #00a3ff;
+  line-height: 2.5;
+  display: block;
+  text-align: center;
+}

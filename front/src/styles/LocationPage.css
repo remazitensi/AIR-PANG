@@ -1,0 +1,128 @@
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.location-page-top {
+  background-image: url("https://images.unsplash.com/photo-1542305392-73fda512f360?q=80&w=2142&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 40vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative; /* Ensure the container is the positioning reference */
+}
+
+.button-container {
+  width: 90%;
+  max-width: 980px;
+  padding: 0 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: 28px auto;
+  position: relative; /* Position relative to enable negative margin */
+  /* top: -30px; Adjust this value to control the overlap amount */
+}
+
+.location-button {
+  background-color: #004aad;
+  font-size: 18px;
+  height: 52px;
+  width: 100px;
+  /* padding: 15px 25px; */
+  margin: 4px 2px;
+  border: none;
+  color: white;
+  border-radius: 50px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  transition: background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.location-button:hover {
+  background-color: #3266aa;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.location-page-title {
+  font-size: 40px;
+  font-weight: 400;
+  margin-bottom: 30px;
+  color: white;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.location-page-subtitle {
+  font-size: 18px;
+  color: white;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.info-card {
+  margin-top: 20px;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(205, 237, 255, 0.7);
+  /* border: 1px solid #ffffff; */
+  border-radius: 12px;
+  padding: 30px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 280px; /* 카드의 너비 설정 */
+  /* font-size: 48px; 기본 글씨 크기 증가 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+ }
+
+.info-card h2 {
+  font-size: 30px;
+  margin-bottom: 10px; /* 제목 아래 여백 추가 */
+  font-family: "HancomMalangMalang-Regular";
+  color: #004aad;
+}
+
+.info-card p {
+  font-size: 18px;
+  line-height: 1.6;
+  /* margin: 15px 0; 문단 사이 여백 조정 */
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.location-score {
+  font-family: "HancomMalangMalang-Regular";
+  font-size: 24px;
+}
+
+.location-grade {
+  font-family: "HancomMalangMalang-Regular";
+  font-size: 24px;
+}
+
+.pang-on-location {
+  position: fixed;
+  left: 5%;
+  display: inline-block;
+  pointer-events: none;
+}
+
+.pang-on-location img {
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  height: auto;
+  z-index: 1000;
+}

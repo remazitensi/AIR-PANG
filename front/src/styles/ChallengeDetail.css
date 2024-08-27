@@ -1,0 +1,138 @@
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.detail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+}
+
+.challenge-detail-top {
+  background-image: url("https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?q=80&w=2560&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 45vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.challenge-detail-title {
+  color: white;
+  font-size: 60px;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.detail .but {
+  display: flex;
+  justify-content: space-between;
+  width: 128px;
+  gap: 6px;
+}
+
+.detail .edi {
+  width: 64px;
+  height: 28px;
+  border-radius: 4px;
+  background-color: #004aad;
+  color: white;
+  border: none;
+}
+
+.detail .can {
+  width: 64px;
+  height: 28px;
+  border-radius: 4px;
+  background-color: gray;
+  color: white;
+  border: none;
+}
+
+.detail .can:hover {
+  background-color: #ad1a00;
+}
+
+.detail span div {
+  width: 92px;
+  height: 28px;
+  border-radius: 4px;
+  background-color: #004aad;
+  color: white;
+  margin-top: 16px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.challenge-detail-dates {
+  font-size: 36px;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.descBox {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.description-box-title {
+  font-size: 24px;
+  font-family: "HancomMalangMalang-Regular";
+  margin-top: 10px;
+  margin-bottom: 16px;
+}
+
+.descBox .desc {
+  width: 440px;
+  height: 60px;
+  text-align: center;
+  line-height: 1.6;
+}
+
+.to-dos {
+  width: 400px;
+  border-radius: 8px;
+  background-color: rgba(205, 237, 255, 0.7);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+}
+
+.to-dos li {
+  list-style-type: none;
+  line-height: 1.8;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+
+  width: 560px;
+  height: 120px;
+  border: 1px solid #d9d9d9;
+  border-radius: 20px;
+  margin-bottom: 100px;
+  margin-top: 20px;
+}
+
+.progress-bar-title {
+  font-size: 20px;
+  font-family: "HancomMalangMalang-Regular";
+}

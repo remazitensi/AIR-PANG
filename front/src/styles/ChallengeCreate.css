@@ -1,0 +1,259 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.ChallengeCreate {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  position: relative;
+  background-image: url("https://images.unsplash.com/photo-1600426354703-64a1a314d99e?q=80&w=3388&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  object-fit: cover;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: calc(100vh - 70px);
+  width: 100%;
+}
+
+.ChallengeCreate .create-challenge-form-title {
+  font-family: "HancomMalangMalang-Regular";
+  font-size: 36px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 50px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: brightness(1.1) blur(20px);
+  border-radius: 20px;
+}
+
+.form p {
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.form ul {
+  padding-left: 12px;
+  margin-top: 16px;
+}
+
+.form ul li {
+  list-style-type: none;
+  line-height: 1.8;
+  color: white;
+}
+
+.form ul li a {
+  color: white;
+}
+
+.title {
+  width: 400px;
+  height: 56px;
+  border: none;
+  border-radius: 50px;
+  outline: none;
+  text-align: center;
+  text-align: center;
+  background-color: #ffffff70;
+  font-size: 16px;
+  color: #333;
+}
+
+.title::placeholder {
+  font-size: 16px;
+  color: #333;
+}
+
+.description {
+  resize: none;
+  width: 400px;
+  height: 164px;
+  border: none;
+  border-radius: 20px;
+  outline: none;
+  padding: 20px;
+  font-size: 16px;
+  background: #ffffff70;
+  color: #333;
+}
+
+.description::placeholder {
+  text-align: center;
+  font-size: 16px;
+  color: #333;
+}
+
+.inputs {
+  width: 400px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.date {
+  width: 194px;
+  height: 56px;
+  border-radius: 50px;
+  outline: none;
+  text-align: center;
+  border: none;
+  background: #ffffff70;
+  color: #333;
+  padding: 0 8px;
+  text-align: center;
+  margin-top: -6px;
+}
+
+.add {
+  width: 400px;
+  height: 56px;
+  border-radius: 50px;
+  outline: none;
+  text-align: center;
+  border: none;
+  background: #ffffff70;
+  color: #333;
+  font-size: 16px;
+}
+
+.buttons {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: -3px;
+}
+
+.cancel {
+  width: 194px;
+  height: 56px;
+  border-radius: 50px;
+  outline: none;
+  text-align: center;
+  background-color: #69747b;
+  color: white;
+  border: 0;
+  font-size: 16px;
+}
+
+.create {
+  width: 194px;
+  height: px;
+  border-radius: 50px;
+  outline: none;
+  text-align: center;
+  background-color: #004aad;
+  color: white;
+  border: 0;
+  font-size: 16px;
+}
+
+input[type="date"]::before {
+  content: attr(data-placeholder);
+  width: 100%;
+}
+
+input[type="date"]:focus::before,
+input[type="date"]:valid::before {
+  display: none;
+}
+
+input[type="date"]::-ms-calendar-picker-indicator {
+  opacity: 1;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.modal {
+  position: fixed;
+  top: 100px;
+  left: 400px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 280px; /* 너비 설정 */
+  height: 400px;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  font-size: 20px;
+  font-weight: 300;
+}
+
+.modal-content p {
+  color: red;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.modal-content button {
+  width: 100%;
+  margin-right: 10px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  border-radius: 20px;
+}
+
+.modal-content button:last-child {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+  background-color: white;
+  color: black;
+}

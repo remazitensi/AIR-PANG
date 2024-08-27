@@ -1,0 +1,117 @@
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.aqi-table-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0; /* Remove padding if it is causing width issues */
+  width: 100%; /* Ensure the container takes full width */
+  max-width: 1440px; /* Match desired max width */
+}
+
+.aqi-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.aqi-table-title {
+  text-align: center;
+  font-size: 32px;
+  font-family: "HancomMalangMalang-Regular";
+  margin-bottom: 20px;
+}
+
+.aqi-table-summary {
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.8;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.aqi-table th,
+.aqi-table td {
+  font-size: 16px;
+  padding: 16px;
+  border: 1px solid #ddd;
+  text-align: center;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.aqi-table th {
+  color: #2e2e2e;
+  font-size: 18px;
+}
+
+.aqi-table td:first-child,
+.aqi-table th:first-child {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.aqi-table th:first-child {
+  border-top-left-radius: 20px;
+}
+
+.aqi-table th:last-child {
+  border-top-right-radius: 20px;
+}
+
+.aqi-table tr:last-child td:first-child {
+  border-bottom-left-radius: 20px;
+}
+
+.aqi-table tr:last-child td:last-child {
+  border-bottom-right-radius: 20px;
+}
+
+.highlight {
+  font-weight: bold;
+}
+
+.good {
+  background-color: #e6edf8;
+}
+
+.moderate {
+  background-color: #cddbf1;
+}
+
+.sensitive {
+  background-color: #b4c9ea;
+}
+
+.unhealthy {
+  background-color: #9cb7e2;
+}
+
+.very-unhealthy {
+  background-color: #84a5da;
+}
+
+.hazardous {
+  background-color: #6c94d1;
+}
+
+.additional-info ul {
+  padding: 10px;
+  margin: 0;
+  list-style-type: none;
+}
+
+.additional-info ul li {
+  font-size: 16px;
+  line-height: 1.8;
+  font-weight: 400;
+  color: grey;
+}

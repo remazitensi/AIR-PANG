@@ -1,0 +1,101 @@
+* {
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
+  color: #333;
+}
+
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 40px 0 24px;
+  background-color: #fff;
+  height: 70px;
+  position: relative;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+.header .logo {
+  position: absolute;
+  left: 30px;
+}
+
+.logo img {
+  height: 50px;
+  margin-top: 5px;
+}
+
+.header .nav {
+  margin-left: auto;
+}
+
+.nav ul.nav-menu-items {
+  display: flex;
+  align-items: center;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav ul.nav-menu-items li {
+  margin-left: 1rem;
+}
+
+.nav ul.nav-menu-items li a {
+  font-family: "HancomMalangMalang-Regular";
+  color: #2e2e2e;
+}
+
+.nav ul.nav-menu-items li a:hover {
+  color: #6ac9ff;
+}
+
+.nav ul li:last-child {
+  margin-left: 1rem; /* 로그아웃 버튼을 조금 더 떨어뜨립니다 */
+}
+
+.nav a,
+.nav button {
+  font-weight: 400;
+  font-size: 18px;
+}
+
+.nav .login-menu-item {
+  font-family: "HancomMalangMalang-Regular";
+  background-color: #6ac9ff;
+  color: white;
+  padding: 8px 14px;
+  text-decoration: none;
+  border-radius: 50px;
+  font-size: 16px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.button-link:hover {
+  background-color: #0056b3; /* Darker blue background on hover */
+}
+
+.nav button.logout-menu-item {
+  font-family: "HancomMalangMalang-Regular";
+
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  background-color: #6ac9ff;
+  color: white;
+  margin-left: 10px;
+  border-radius: 50px;
+}

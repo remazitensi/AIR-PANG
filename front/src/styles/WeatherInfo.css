@@ -1,0 +1,178 @@
+@font-face {
+  font-family: "HancomMalangMalang-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2406-1@1.0/HancomMalangMalang-Regular.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.weather-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  position: relative;
+}
+
+.weather-page-top-container {
+  position: relative;
+  width: 100%;
+  margin: 0 auto;
+  padding: 20px;
+  z-index: 1;
+}
+
+.weather-page-top-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45vw;
+  max-height: 600px;
+  background-image: url("https://images.unsplash.com/photo-1651836170615-7f4c7573e697?q=80&w=3540&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-size: cover;
+  background-position: center;
+  z-index: -1; /* Behind the content */
+}
+
+.weather-page-top-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 45vw;
+  max-height: 600px;
+  background-color: #00000010;
+  z-index: -1;
+}
+
+.weather-page-title {
+  font-family: "HancomMalangMalang-Regular";
+  font-size: 60px;
+  font-weight: 300;
+  text-align: center;
+  color: #585858;
+  margin-bottom: 32px;
+  z-index: 1;
+  margin-top: 100px;
+}
+
+.weather-page-sub-title {
+  font-family: "HancomMalangMalang-Regular";
+  font-size: 28px;
+  font-weight: 300;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #585858;
+  z-index: 1;
+}
+
+.favorite-location-selector {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.favorite-location-selector select {
+  padding: 10px 40px 10px 20px;
+  width: 300px;
+  border: 1px solid #004aad20;
+  border-radius: 50px;
+  background-color: white;
+  height: 60px;
+  min-width: 140px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 20px;
+  color: grey;
+}
+
+.monthly-info-containers {
+  max-width: 1440px;
+  width: 100%;
+}
+
+.monthly-flex-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  max-width: 1440px;
+  margin-bottom: 20px;
+  margin-top: 150px;
+  gap: 28px;
+}
+
+.monthly-flex-container > * {
+  flex: 1;
+}
+
+.air-chart-container {
+  width: 100%;
+  max-width: 1440px;
+  margin-bottom: 20px;
+  margin-top: 80px;
+}
+
+.city-background {
+  width: 100vw;
+  position: relative;
+  flex-shrink: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.city-background-image {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  z-index: -1000;
+}
+
+.city-background h2.city-background-title {
+  text-align: center;
+  font-size: 60px;
+  margin-top: 200px;
+  font-weight: 300;
+  font-family: "HancomMalangMalang-Regular";
+}
+
+.city-background button {
+  padding: 16px 22px;
+  border-radius: 5px;
+  background-color: #004aad;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 20px;
+  cursor: pointer;
+  height: 60px;
+
+  z-index: 100;
+  margin-top: 60px;
+  margin-bottom: 30%;
+}
+
+.city-background button:hover {
+  background-color: #004add;
+}
+
+.mascot {
+  max-width: 980px;
+}
+
+.mascot img {
+  position: absolute;
+  left: 10%;
+  bottom: 0;
+  z-index: 1000;
+}
