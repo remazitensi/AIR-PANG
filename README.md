@@ -58,8 +58,6 @@
 | <h3>구글 로그인</h3>
 | <img src="https://github.com/user-attachments/assets/59856865-67ff-41f9-800b-204e8c7f8d90" height=300>|
 
-[소셜 로그인]
-
 
 | **우리동네 찾아보기** |
 |:-----:|
