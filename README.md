@@ -114,7 +114,7 @@
 ## ER-Diagram
 
 <div align=center>
-<img src="https://github.com/user-attachments/assets/a7612e3d-620f-4432-86a2-8fa1318aa730" height=750>
+<img src="https://github.com/user-attachments/assets/00b7dfb0-95fd-4beb-9130-b242f25c225b" height=600>
 </div>
 
 </br>
